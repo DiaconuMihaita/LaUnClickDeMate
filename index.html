@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MateAI – Asistent educațional</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <meta name="theme-color" content="#4F6AF5">
+</head>
+
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <header>
+        <div class="container">
+            <h1>MateAI</h1>
+            <p>Prietenul tău la matematică!</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#" class="nav-link" data-section="home">Acasă</a></li>
+            <li><a href="#" class="nav-link" data-section="lectii">Lecții</a></li>
+            <li><a href="#" class="nav-link" data-section="laborator">Laborator</a></li>
+            <li><a href="#" class="nav-link" data-section="explica">Explicații</a></li>
+            <li><a href="#" class="nav-link" data-section="profil">Progres</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <!-- Secțiunea Home -->
+        <section id="home" class="view">
+            </div>
+
+            <!-- Provocarea Zilei -->
+            <div id="daily-challenge-card" class="welcome-card hidden"
+                style="margin-top: 25px; border: 1px solid var(--primary-500);">
+                <h2 style="font-size: 1.5rem;">🌟 Provocarea Zilei</h2>
+                <p id="challenge-question" style="margin-bottom: 20px; color: white;"></p>
+                <div class="input-group" style="max-width: 350px; margin: 0 auto;">
+                    <input type="text" id="challenge-answer" placeholder="Răspunsul tău...">
+                    <button id="btn-challenge-submit">Verifică</button>
+                </div>
+                <div id="challenge-feedback" style="margin-top: 15px; font-weight: 700;"></div>
+            </div>
+        </section>
+
+        <!-- Secțiunea Lecții -->
+        <section id="lectii" class="view hidden">
+            <h2>Lecții Matematica Clasa a V-a</h2>
+            <div class="chapter-grid" id="chapter-list">
+                <!-- Generat din JS -->
+            </div>
+        </section>
+
+        <!-- Secțiunea Exerciții -->
+        <section id="exercitii" class="view hidden">
+            <h2>Rezolvă și Verifică Exercițiu</h2>
+            <div class="input-area">
+                <p>Pasul 1: Introdu cerința (ex: 1/2 + 1/4 sau 12*5):</p>
+                <input type="text" id="exercise-input" placeholder="Ex: 5 + 3 * 2">
+
+                <p style="margin-top: 15px;">Pasul 2: Introdu rezultatul tău (opțional, pentru verificare):</p>
+                <input type="text" id="student-answer" placeholder="Ex: 11">
+
+                <button id="btn-solve">Verifică Work-ul meu!</button>
+            </div>
+            <div id="exercise-result" class="result-box hidden"></div>
+        </section>
+
+        <!-- Secțiunea Explica-mi -->
+        <section id="explica" class="view hidden">
+            <h2>🤖 Discută cu MateAI</h2>
+            <p>Sunt aici să te ajut! Întreabă-mă orice despre matematică.</p>
+
+            <!-- F2: Scor sesiune -->
+            <div id="score-counter" class="score-counter hidden">
+                🏆 <span id="score-text">0/0 corecte</span>
+            </div>
+
+            <div id="chat-window">
+                <div id="chat-messages">
+                    <div class="message ai-message">
+                        Salut! Eu sunt MateAI. Ce capitol sau exercițiu vrei să-ți explic astăzi? 🍕🔢
+                    </div>
+                </div>
+                <div id="ai-typing" class="hidden">MateAI scrie...</div>
+                <div class="chat-input-area">
+                    <div class="level-selector chat-level">
+                        <label><input type="radio" name="level" value="simple" checked> Simplu</label>
+                        <label><input type="radio" name="level" value="detailed"> Detaliat</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="chat-input" placeholder="Scrie aici întrebarea ta...">
+                        <button id="btn-chat-mic" title="Vorbește cu MateAI"
+                            style="padding: 12px; min-width: 45px; background: var(--bg-glass-heavy);">🎤</button>
+                        <button id="btn-chat-send">Trimite</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F1/F6: Zona răspuns quiz/test (în afara chat-window!) -->
+            <div id="quiz-answer-area"></div>
+
+            <!-- F4: Sugestie capitol următor (în afara chat-window!) -->
+            <div id="suggestion-area"></div>
+        </section>
+
+        <!-- Secțiune Detalii Capitol (Dynamic) -->
+        <section id="chapter-detail" class="view hidden">
+            <button onclick="changeView('lectii')" class="btn-back">⬅ Înapoi la lecții</button>
+            <div id="detail-content"></div>
+        </section>
+
+        <!-- Secțiune Profil / Progres -->
+        <section id="profil" class="view hidden">
+            <h2>🏆 Profilul Mev & Progres</h2>
+            <div id="stats-container" class="welcome-card" style="text-align: left; padding: 30px;">
+                <div class="stat-row">
+                    <span>🚀 Capitole Explorate:</span>
+                    <strong id="stat-chapters">0/22</strong>
+                </div>
+                <div class="stat-row">
+                    <span>✅ Exerciții Corecte:</span>
+                    <strong id="stat-exercises">0</strong>
+                </div>
+                <div class="stat-row">
+                    <span>⭐ Insigne Câștigate:</span>
+                    <div id="badge-list" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                        <!-- Insigne generate din JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secțiune Laborator Geometrie -->
+        <section id="laborator" class="view hidden">
+            <h2>📐 Laborator de Geometrie</h2>
+            <p>Desenează și explorează formele matematice!</p>
+            <div class="welcome-card" style="padding: 20px;">
+                <div style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="geoLab.setShape('square')" title="Desenează un pătrat">Pătrat</button>
+                    <button onclick="geoLab.setShape('rect')" title="Desenează un dreptunghi">Dreptunghi</button>
+                    <button onclick="geoLab.setShape('circle')" title="Desenează un cerc">Cerc</button>
+                    <button onclick="geoLab.setShape('manual')" style="background: var(--primary-600);"
+                        title="Desenează liber cu mouse-ul">✏️ Desen Liber</button>
+                    <button onclick="geoLab.recognizeShape()" style="background: var(--grad-primary);"
+                        title="MateAI transformă desenul tău într-o formă perfectă">🪄 Magic</button>
+                    <button onclick="geoLab.clear()" style="background: #FF4757;" title="Șterge tot de pe planșă">🗑️
+                        Șterge Tot</button>
+                </div>
+
+                <div id="geo-controls"
+                    style="margin-bottom: 15px; display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <div class="geo-input-group" id="group-side">
+                        <label style="color: white; font-size: 0.8rem; margin-right: 5px;">Latură/Rază:</label>
+                        <input type="number" id="input-l" value="100" min="10" max="300"
+                            style="width: 60px; padding: 5px; border-radius: 5px; border: none;"
+                            oninput="geoLab.updateFromInputs()">
+                    </div>
+                    <div class="geo-input-group hidden" id="group-rect">
+                        <label style="color: white; font-size: 0.8rem; margin-right: 5px;">Lățime:</label>
+                        <input type="number" id="input-w" value="150" min="10" max="400"
+                            style="width: 60px; padding: 5px; border-radius: 5px; border: none;"
+                            oninput="geoLab.updateFromInputs()">
+                        <label
+                            style="color: white; font-size: 0.8rem; margin-left: 10px; margin-right: 5px;">Înălțime:</label>
+                        <input type="number" id="input-h" value="80" min="10" max="300"
+                            style="width: 60px; padding: 5px; border-radius: 5px; border: none;"
+                            oninput="geoLab.updateFromInputs()">
+                    </div>
+                </div>
+
+                <p style="font-size: 0.8rem; color: var(--text-500); margin-bottom: 10px;">💡 Schimbă valorile de mai
+                    sus sau desenează liber și apasă 🪄 Magic!</p>
+                <canvas id="geo-canvas" width="600" height="300"
+                    style="background: white; border-radius: 12px; cursor: crosshair;"></canvas>
+                <div id="geo-stats" style="margin-top: 15px; color: white; font-weight: 600;">
+                    Aria: 0 | Perimetru: 0
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 MateAI - Soft Educațional pentru clasa a V-a</p>
+    </footer>
+
+    <!-- Logica Principală -->
+    <script src="script.js"></script>
+</body>
+
+</html>
