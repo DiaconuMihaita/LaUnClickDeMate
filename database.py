@@ -24,6 +24,8 @@ def get_db_connection():
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
+get_db = get_db_connection
+
 
 def init_db():
     conn = get_db_connection()
