@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 import database
 
 app = Flask(__name__, static_folder='.')
+application = app # Pentru compatibilitate Vercel
 database.init_db()
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'data', 'uploads')

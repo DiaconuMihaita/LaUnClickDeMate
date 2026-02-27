@@ -7,7 +7,18 @@ from datetime import datetime, timedelta
 DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'mateai.db')
 
 
-def get_db():
+# Configurare bază de date pentru Vercel (serverless)
+if os.environ.get('VERCEL'):
+    DB_PATH = '/tmp/mateai.db'
+    if not os.path.exists(DB_PATH):
+        # Inițializăm baza de date în /tmp dacă nu există
+        import shutil
+        if os.path.exists('data/mateai.db'):
+            shutil.copy('data/mateai.db', DB_PATH)
+else:
+    DB_PATH = 'data/mateai.db'
+
+def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
@@ -15,7 +26,7 @@ def get_db():
 
 
 def init_db():
-    conn = get_db()
+    conn = get_db_connection()
     conn.executescript('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
