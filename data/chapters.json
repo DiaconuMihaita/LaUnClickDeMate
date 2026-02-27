@@ -56,8 +56,20 @@
                 "answer": "3"
             },
             {
-                "question": "Care este cifra zecilor în numărul 4583?",
-                "answer": "8"
+                "question": "Scrie cifra sutelor în numărul 123456.",
+                "answer": "4"
+            },
+            {
+                "question": "Scrie cel mai mare număr de 4 cifre distincte.",
+                "answer": "9876"
+            },
+            {
+                "question": "Scrie numărul format din 15 zeci și 3 unități.",
+                "answer": "153"
+            },
+            {
+                "question": "Câte cifre de zero are numărul un milion?",
+                "answer": "6"
             }
         ],
         "fun_facts": [
@@ -120,8 +132,20 @@
                 "answer": "9, 10, 11"
             },
             {
-                "question": "Care este succesorul numărului 99?",
-                "answer": "100"
+                "question": "Află predecesorul succesorului lui 50.",
+                "answer": "50"
+            },
+            {
+                "question": "Care este al 5-lea număr par nenul?",
+                "answer": "10"
+            },
+            {
+                "question": "Află distanța dintre punctele A(5) și B(12).",
+                "answer": "7"
+            },
+            {
+                "question": "Care este succesorul celui mai mare număr natural de 3 cifre?",
+                "answer": "1000"
             }
         ],
         "fun_facts": [
@@ -198,8 +222,16 @@
                 "answer": "0, 1, 2"
             },
             {
-                "question": "Pune semnul corect: 7892 ___ 7829",
-                "answer": ">"
+                "question": "Care este mai mare: 1002 sau 1020?",
+                "answer": "1020"
+            },
+            {
+                "question": "Care este cel mai mic număr natural de 3 cifre?",
+                "answer": "100"
+            },
+            {
+                "question": "Compară cel mai mare număr de 2 cifre cu cel mai mic de 3 cifre.",
+                "answer": "99 < 100"
             }
         ],
         "fun_facts": [
@@ -279,8 +311,16 @@
                 "answer": "78000"
             },
             {
-                "question": "Rotunjește 3450 la mii.",
-                "answer": "3000"
+                "question": "Rotunjește 1238 la zeci.",
+                "answer": "1240"
+            },
+            {
+                "question": "Aproximează prin lipsă la sute numărul 4567.",
+                "answer": "4500"
+            },
+            {
+                "question": "Rotunjește 850 la sute.",
+                "answer": "900"
             }
         ],
         "fun_facts": [
@@ -338,8 +378,20 @@
                 "answer": "2550"
             },
             {
-                "question": "Dacă a+b=50 și b+c=70, iar a+c=60, cât este a+b+c?",
-                "answer": "90"
+                "question": "Suma a două numere este 100, unul e 35. Care e celălalt?",
+                "answer": "65"
+            },
+            {
+                "question": "Calculează 123 + 456 + 77.",
+                "answer": "656"
+            },
+            {
+                "question": "Folosește proprietățile: (15+27)+13 = ?",
+                "answer": "55"
+            },
+            {
+                "question": "Calculează 999 + 1.",
+                "answer": "1000"
             }
         ],
         "fun_facts": [
@@ -402,8 +454,20 @@
                 "answer": "22157"
             },
             {
-                "question": "Verifică prin probă: 8200 - 3765 = 4435",
-                "answer": "corect"
+                "question": "Descăzutul e 100, diferența e 40. Care e scăzătorul?",
+                "answer": "60"
+            },
+            {
+                "question": "Calculează 1000 - 1.",
+                "answer": "999"
+            },
+            {
+                "question": "Dacă a - 15 = 30, cât este a?",
+                "answer": "45"
+            },
+            {
+                "question": "Calculează 125 - 25 - 50.",
+                "answer": "50"
             }
         ],
         "fun_facts": [
@@ -466,8 +530,20 @@
                 "answer": "2254"
             },
             {
-                "question": "Un tren are 12 vagoane, fiecare cu 48 de locuri. Câte locuri sunt în total?",
-                "answer": "576"
+                "question": "Produsul numerelor 15 și 4 este?",
+                "answer": "60"
+            },
+            {
+                "question": "Calculează 12 * 5 * 2.",
+                "answer": "120"
+            },
+            {
+                "question": "Dublul numărului 350 este?",
+                "answer": "700"
+            },
+            {
+                "question": "Un tren are 10 vagoane, fiecare cu 50 de locuri. Câte locuri sunt?",
+                "answer": "500"
             }
         ],
         "fun_facts": [
@@ -533,8 +609,20 @@
                 "answer": "16"
             },
             {
-                "question": "Un număr împărțit la 13 dă câtul 24 și restul 7. Care este numărul?",
-                "answer": "319"
+                "question": "Câtul împărțirii 81 la 9 este?",
+                "answer": "9"
+            },
+            {
+                "question": "Restul împărțirii 17 la 5 este?",
+                "answer": "2"
+            },
+            {
+                "question": "Dacă a : 4 = 12, cât este a?",
+                "answer": "48"
+            },
+            {
+                "question": "Câte jumătăți are un măr?",
+                "answer": "2"
             }
         ],
         "fun_facts": [
@@ -595,8 +683,20 @@
                 "answer": "4500"
             },
             {
-                "question": "Calculează: 99·35 + 35",
-                "answer": "3500"
+                "question": "Valoarea lui 9 * 15 - 9 * 5 este:",
+                "answer": "90"
+            },
+            {
+                "question": "Calculează: 12 * 7 - 12 * 6",
+                "answer": "12"
+            },
+            {
+                "question": "Scoate factor comun: 5 * 100 + 5 * 20 + 5 * 3",
+                "answer": "615"
+            },
+            {
+                "question": "Calculează rapid: 11 * 12 + 11 * 8",
+                "answer": "220"
             }
         ],
         "fun_facts": [
@@ -663,8 +763,20 @@
                 "answer": "76"
             },
             {
-                "question": "Este 216 cub perfect? Dacă da, al cărui număr?",
-                "answer": "da, 6"
+                "question": "Valoarea lui 2 la puterea 10 este?",
+                "answer": "1024"
+            },
+            {
+                "question": "Care este baza puterii 5^3?",
+                "answer": "5"
+            },
+            {
+                "question": "Calculează 0 la puterea 100.",
+                "answer": "0"
+            },
+            {
+                "question": "Este 1000 cub perfect? (da/nu)",
+                "answer": "da"
             }
         ],
         "fun_facts": [
@@ -731,8 +843,20 @@
                 "answer": "4"
             },
             {
-                "question": "Adu la aceeași bază: 9³ · 27²",
-                "answer": "3^10"
+                "question": "Simplifică: 2^2 * 2^3",
+                "answer": "2^5"
+            },
+            {
+                "question": "Calculează: 5^10 : 5^8",
+                "answer": "25"
+            },
+            {
+                "question": "(10^2)^3 este egal cu 10 la puterea...?",
+                "answer": "6"
+            },
+            {
+                "question": "Calcul: 3^4 * 3^1",
+                "answer": "3^5"
             }
         ],
         "fun_facts": [
@@ -792,8 +916,20 @@
                 "answer": "2^30 = 4^15"
             },
             {
-                "question": "Care este mai mare: 5¹⁰ sau 10⁵?",
-                "answer": "10^5"
+                "question": "Care este mai mare: 2^3 sau 3^2?",
+                "answer": "3^2"
+            },
+            {
+                "question": "Compară 5^2 cu 2^5. Care e mai mare?",
+                "answer": "2^5"
+            },
+            {
+                "question": "Este 1^100 mai mare decât 100^0? (da/nu)",
+                "answer": "nu"
+            },
+            {
+                "question": "Care este mai mic: 10^3 sau 3^10?",
+                "answer": "10^3"
             }
         ],
         "fun_facts": [
@@ -865,8 +1001,20 @@
                 "answer": "4"
             },
             {
-                "question": "Calculează: 100 - 5·(3² + 1)",
-                "answer": "50"
+                "question": "Rezultatul 10 + 10 : 2 este:",
+                "answer": "15"
+            },
+            {
+                "question": "Calculează: 7 * 8 - 6 * 4",
+                "answer": "32"
+            },
+            {
+                "question": "Cât face 2 + 3 * (4 + 1)?",
+                "answer": "17"
+            },
+            {
+                "question": "Rezolvă: 100 - 100 : 4",
+                "answer": "75"
             }
         ],
         "fun_facts": [
@@ -936,8 +1084,20 @@
                 "answer": "8"
             },
             {
-                "question": "Transformă 100₍₁₀₎ în binar",
-                "answer": "1100100"
+                "question": "Scrie numărul binar 1111 în baza 10.",
+                "answer": "15"
+            },
+            {
+                "question": "Transformă 20 din baza 10 în baza 2.",
+                "answer": "10100"
+            },
+            {
+                "question": "Care este următoarea putere a lui 2 după 16?",
+                "answer": "32"
+            },
+            {
+                "question": "Este 101₍₂₎ egal cu 5₍₁₀₎? (da/nu)",
+                "answer": "da"
             }
         ],
         "fun_facts": [
@@ -1006,8 +1166,20 @@
                 "answer": "11"
             },
             {
-                "question": "Într-o săptămână temperaturile au fost: 15,17,16,18,14,13,15°C. Media?",
-                "answer": "15.43"
+                "question": "Media numerelor 10, 20 și 30 este:",
+                "answer": "20"
+            },
+            {
+                "question": "Dacă media a două numere este 50, care este suma lor?",
+                "answer": "100"
+            },
+            {
+                "question": "Media vârstelor a doi copii de 10 și 14 ani este:",
+                "answer": "12"
+            },
+            {
+                "question": "Care este media numerelor 1, 2, 3, 4, 5?",
+                "answer": "3"
             }
         ],
         "fun_facts": [
@@ -1075,8 +1247,20 @@
                 "answer": "28"
             },
             {
-                "question": "5 muncitori termină o lucrare în 12 zile. În câte zile o termină 3 muncitori?",
+                "question": "Dacă 2 kg de mere costă 10 lei, cât costă 5 kg?",
+                "answer": "25"
+            },
+            {
+                "question": "Un robot face 3 piese în 10 minute. Câte face într-o oră?",
+                "answer": "18"
+            },
+            {
+                "question": "Dacă 4 muncitori termină lucrarea în 5 ore, 1 muncitor în cât termină?",
                 "answer": "20"
+            },
+            {
+                "question": "10 pixuri costă 50 lei. Cât costă un singur pix?",
+                "answer": "5"
             }
         ],
         "fun_facts": [
@@ -1138,7 +1322,19 @@
                 "answer": "20"
             },
             {
-                "question": "2a+5b=29; 2a+8b=41. Află b.",
+                "question": "5 cărți și 2 caiete = 120 lei; 5 cărți și 4 caiete = 140 lei. Cât costă un caiet?",
+                "answer": "10"
+            },
+            {
+                "question": "x+y=10, x-y=4. Află x.",
+                "answer": "7"
+            },
+            {
+                "question": "3 mere și 3 pere costă 15 lei. Cât costă 1 măr și 1 pară?",
+                "answer": "5"
+            },
+            {
+                "question": "Dacă 2a + b = 10 și 2a + 3b = 18, cât este b?",
                 "answer": "4"
             }
         ],
@@ -1205,8 +1401,20 @@
                 "answer": "8"
             },
             {
-                "question": "M-am gândit la un număr, l-am triplat, am scăzut 5, am obținut 22. La ce număr m-am gândit?",
-                "answer": "9"
+                "question": "Un număr adunat cu 5 și apoi înmulțit cu 2 dă 20. Care e numărul?",
+                "answer": "5"
+            },
+            {
+                "question": "Dacă (x-10):5=2, cât este x?",
+                "answer": "20"
+            },
+            {
+                "question": "M-am gândit la un număr, am scăzut 7 și am obținut 3. Care e numărul?",
+                "answer": "10"
+            },
+            {
+                "question": "Jumătatea unui număr mărită cu 10 este 15. Numărul este?",
+                "answer": "10"
             }
         ],
         "fun_facts": [
@@ -1275,6 +1483,22 @@
             {
                 "question": "50 bilete (copii 5 lei, adulți 15 lei), venit 550 lei. Câte bilete de adulți?",
                 "answer": "30"
+            },
+            {
+                "question": "10 monede de 50 și 10 bani totalizează 300 bani. Câte monede de 50 sunt?",
+                "answer": "5"
+            },
+            {
+                "question": "Într-o curte sunt 5 animale (găini și oi) cu 14 picioare. Câte oi sunt?",
+                "answer": "2"
+            },
+            {
+                "question": "20 de vehicule (biciclete și mașini) au 60 de roți. Câte mașini sunt?",
+                "answer": "10"
+            },
+            {
+                "question": "Dacă 10 bilete costă 70 lei (unele de 5, altele de 10), câte sunt de 10 lei?",
+                "answer": "4"
             }
         ],
         "fun_facts": [
@@ -1346,8 +1570,20 @@
                 "answer": "7, 14, 21, 28, 35"
             },
             {
-                "question": "Câți divizori proprii are 20?",
-                "answer": "4"
+                "question": "Care este cel mai mare divizor al lui 10?",
+                "answer": "10"
+            },
+            {
+                "question": "Scrie multiplii lui 10 mai mici ca 50.",
+                "answer": "0, 10, 20, 30, 40"
+            },
+            {
+                "question": "Este 7 divizor al lui 49?",
+                "answer": "da"
+            },
+            {
+                "question": "Câți divizori are numărul 1?",
+                "answer": "1"
             }
         ],
         "fun_facts": [
@@ -1423,8 +1659,20 @@
                 "answer": "0, 9"
             },
             {
-                "question": "Cel mai mic număr de 3 cifre divizibil cu 5 este:",
-                "answer": "100"
+                "question": "Un număr e divizibil cu 10 dacă se termină în...?",
+                "answer": "0"
+            },
+            {
+                "question": "Este 123 divizibil cu 3?",
+                "answer": "da"
+            },
+            {
+                "question": "Care este cel mai mic număr de 2 cifre divizibil cu 5?",
+                "answer": "10"
+            },
+            {
+                "question": "Cifra x pentru care 2x e divizibil cu 2 și 5 simultan?",
+                "answer": "0"
             }
         ],
         "fun_facts": [
@@ -1512,8 +1760,20 @@
                 "answer": "1"
             },
             {
-                "question": "Cel mai mic număr prim mai mare ca 50 este:",
-                "answer": "53"
+                "question": "Care este singurul număr prim par?",
+                "answer": "2"
+            },
+            {
+                "question": "Este 9 număr prim? (da/nu)",
+                "answer": "nu"
+            },
+            {
+                "question": "Scrie numerele prime mai mici ca 10.",
+                "answer": "2, 3, 5, 7"
+            },
+            {
+                "question": "Cel mai mic număr compus este?",
+                "answer": "4"
             }
         ],
         "fun_facts": [
@@ -1626,6 +1886,22 @@
             {
                 "question": "Adună: 2/7 + 3/7",
                 "answer": "5/7"
+            },
+            {
+                "question": "Fracția 2/4 simplificată este?",
+                "answer": "1/2"
+            },
+            {
+                "question": "Care e mai mare: 1/2 sau 1/4?",
+                "answer": "1/2"
+            },
+            {
+                "question": "Suma fracțiilor 1/3 și 1/3 este?",
+                "answer": "2/3"
+            },
+            {
+                "question": "O fracție este supraunitară dacă numărătorul este ... decât numitorul.",
+                "answer": "mai mare"
             }
         ],
         "fun_facts": [

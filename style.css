@@ -48,6 +48,12 @@
     --r-xl: 30px;
     --r-full: 9999px;
 
+    /* Colors */
+    --green-100: #DCFCE7;
+    --orange-100: #FFEDD5;
+    --red-100: #FEE2E2;
+    --orange-500: #F59E0B;
+
     /* Transitions */
     --ease: cubic-bezier(0.4, 0, 0.2, 1);
     --duration: 0.3s;
@@ -403,7 +409,9 @@ button:active {
 }
 
 textarea,
-input[type="text"] {
+input[type="text"],
+input[type="password"],
+select {
     width: 100%;
     padding: 14px 20px;
     margin-top: 10px;
@@ -412,9 +420,29 @@ input[type="text"] {
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     color: white;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(30, 41, 70, 0.85);
     transition: all var(--duration) var(--ease);
     outline: none;
+    cursor: pointer;
+}
+
+select option {
+    background: #1e2946;
+    color: white;
+    padding: 10px;
+    font-size: 0.95rem;
+}
+
+select option:checked,
+select option:hover {
+    background: var(--primary-600);
+    color: white;
+}
+
+select:focus {
+    border-color: var(--primary-500);
+    box-shadow: var(--shadow-glow);
+    background: rgba(40, 55, 95, 0.95);
 }
 
 textarea:focus,
@@ -565,6 +593,17 @@ footer {
     box-shadow: var(--shadow-glow);
 }
 
+/* Feedback Styles */
+.feedback-correct {
+    border: 2px solid var(--accent-green) !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+}
+
+.feedback-wrong {
+    border: 2px solid #FF4757 !important;
+    background: rgba(255, 71, 87, 0.1) !important;
+}
+
 .chat-input-area {
     padding: 20px 25px;
     background: rgba(255, 255, 255, 0.03);
@@ -633,7 +672,8 @@ footer {
 }
 
 .message strong {
-    color: var(--primary-600);
+    color: var(--primary-400);
+    /* Lighter indigo for better contrast */
 }
 
 .user-message strong {
@@ -644,10 +684,11 @@ footer {
     display: block;
     margin-top: 6px;
     padding: 8px 12px;
-    border-left: 3px solid var(--orange-500);
+    border-left: 3px solid var(--accent-orange);
     font-style: italic;
     font-size: 0.88rem;
-    background: var(--orange-100);
+    background: rgba(245, 158, 11, 0.1);
+    /* Darker background for dark mode */
     border-radius: 0 var(--r-sm) var(--r-sm) 0;
     color: var(--text-700);
 }
@@ -820,7 +861,9 @@ footer {
     border-radius: var(--r-md);
     font-size: 0.92rem;
     min-width: 150px;
-    background: var(--white);
+    background: rgba(15, 23, 42, 0.4);
+    /* Dark background for visibility */
+    color: white;
 }
 
 .quiz-input-box input[type="text"]:focus {
@@ -1089,4 +1132,289 @@ footer {
     font-family: 'Inter', sans-serif;
     color: white;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Classroom Tabs */
+.btn-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-500);
+    padding: 10px 20px;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.btn-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.active-tab {
+    background: var(--grad-primary) !important;
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: var(--shadow-glow);
+}
+
+/* Homework styling adjustments */
+#teacher-homework-list div,
+#student-homework-list div {
+    transition: transform 0.2s ease;
+}
+
+#teacher-homework-list div:hover,
+#student-homework-list div:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Test list styling */
+#teacher-test-list div,
+#student-test-list div {
+    transition: transform 0.2s ease;
+}
+
+#teacher-test-list div:hover,
+#student-test-list div:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Completion badge for teacher view */
+.hw-completion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid var(--primary-400);
+    border-radius: var(--r-full);
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary-400);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hw-completion-badge:hover {
+    background: rgba(99, 102, 241, 0.3);
+    transform: scale(1.05);
+}
+
+.hw-completions-panel {
+    margin-top: 10px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--r-md);
+    border: 1px solid var(--glass-border);
+    font-size: 0.85rem;
+    animation: fadeUp 0.25s ease;
+}
+
+.hw-completions-panel .done {
+    color: #4ECDC4;
+}
+
+.hw-completions-panel .notdone {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Teacher section divider */
+.teacher-section-title {
+    margin: 28px 0 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 8px;
+}
+
+/* =========================================
+   AUTH UI (GLASSMORPHISM & 3D FLIP)
+   ========================================= */
+
+.auth-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-card {
+    width: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-card.show-register {
+    transform: rotateY(180deg);
+}
+
+.auth-face {
+    width: 100%;
+    backface-visibility: hidden;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.auth-face.auth-login {
+    position: relative;
+    z-index: 2;
+}
+
+.auth-face.auth-register {
+    transform: rotateY(180deg);
+}
+
+.auth-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-500);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.auth-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-icon {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.2rem;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.auth-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem 1rem 1rem 3rem;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.auth-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.auth-input:focus+.auth-icon,
+.auth-input:not(:placeholder-shown)+.auth-icon {
+    opacity: 1;
+}
+
+.btn-auth {
+    background: var(--grad-primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+}
+
+.btn-auth:active {
+    transform: translateY(1px);
+}
+
+.auth-role-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.auth-role-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.auth-role-option input[type="radio"] {
+    display: none;
+}
+
+.auth-role-box {
+    text-align: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-500);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.auth-role-option input[type="radio"]:checked+.auth-role-box {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary-500);
+    color: white;
+    box-shadow: inset 0 0 0 1px var(--primary-500);
+}
+
+.auth-switch-text {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-500);
+}
+
+.auth-switch-text a {
+    color: var(--primary-400);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.auth-switch-text a:hover {
+    color: #A5B4FC;
+    text-decoration: underline;
 }

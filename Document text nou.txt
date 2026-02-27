@@ -1,0 +1,3615 @@
+Scrierea și citirea numerelor naturale în sistemul de numerație zecimal 
+ 
+Scrierea 
+Așa cum un text este alcătuit din litere și cuvinte, limbajul matematic este alcătuit din cifre și 
+numere. 
+! Cifrele în sistemul de numerație zecimal sunt: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 
+Numărul numerelor naturale este infinit și totuși trebuie să găsim o metodă să le scriem cu cele 
+zece cifre.  
+Sistemul folosit de noi se numește sistemul de numerație zecimal. 
+Folosim această denumire pentru că: - zece unități formează un zece - zece zeci formează o sută - zece sute formează o mie ș.a.m.d. 
+! Fiecare număr se scrie ca o succesiune de cifre, care se pot repeta și prima cifră a unui număr 
+(mai mult de două cifre) nu poate fi 0. 
+! Valoarea fiecărei cifră depinde de poziția ei ocupată în număr, de acea această scriere se 
+numește scriere pozițională.  
+Astfel. 
+Ex.  1435=5∙1+3∙10+4∙100+1∙1000 
+Deci 5 arată numărul unităților, 3  arată numărul zecilor, 4 a sutelor și 1 a miilor. 
+ 
+Citirea 
+Pentru a citi un număr natural, separăm cifrele sale în grupe de câte trei, plecând de la dreapta 
+spre stânga. Grupele obținute se numesc clase. Fiecare clasă este alcătuită din unități, zeci și 
+sute.  
+Pentru a citi un număr natural în sistemul de numerație zecimal, putem folosi următorul tabel: 
+ 
+Clasa miliardelor 
+ 
+Clasa milioanelor 
+ 
+Clasa miilor 
+ 
+Clasa unităților 
+ 
+sute zeci unități sute zeci unități sute zeci unități sute zeci unități 
+ 
+Ex:  Fie numărul 234567890123 
+ Grupăm cifrele: 234   567   890   123 
+ Avem deci: 234 567 890 123
+ăț
+ 
+Scris în tabel: 
+ 
+Clasa miliardelor 
+ 
+Clasa milioanelor 
+ 
+Clasa miilor 
+ 
+Clasa unităților 
+ 
+sute zeci unități sute zeci unități sute zeci unități sute zeci unități 
+2 3 4 5 6 7 8 9 0 1 2 3 
+Citit: două sute treizeci și patru miliarde cinci sute șaizeci și șapte milioane opt sute nouăzeci 
+mii o sută douăzeci și trei 
+! În matematică orice număr (cifră) necunoscut se notează cu o literă: a, b, c, x, y, z 
+! Un număr de două cifre, în sistemul natural de numerație zecimal, notăm cu: 𝑎𝑏, unde a 
+ocupă locul zecilor (nu poate fi 0) și b a unităților. 
+Deci 𝑎𝑏=𝑎∙10+𝑏∙1 
+! Un număr de trei cifre, în sistemul natural de numerație zecimal, notăm cu: 𝑎𝑏𝑐, unde a ocupă 
+locul sutelor (nu poate fi 0), b a zecilor și c a unităților. 
+Deci 𝑎𝑏𝑐=𝑎∙100+𝑏∙10+𝑐∙1
+
+
+Șirul numerelor naturale.  
+Reprezentarea numerelor naturale pe axa numerelor. 
+Prof. Liliana Veres 
+Colegiul Național „Doamna Stanca” Satu Mare 
+ Numerele naturale scrise în ordinea : 0,1,2,3,4,...,9, 10,11,...formează șirul 
+numerelor naturale.  
+ Șirul numerelor naturale este infinit, iar numerele ce-l compun se numesc 
+termenii șirului și au un loc bine fixat. 
+ Șirul numerelor naturale nenule (diferite de zero) este: 1,2,3,4,...., 13, 14, 
+15,... . 
+ Șirul numerelor naturale pare este: 0,2,4,6,...,78,80,82,... . 
+ Forma generală a unui număr par este 2·n , unde n este un număr natural 
+oarecare. 
+ Șirul numerelor naturale impare este: 1,3,5,7,...,129, 131, 133,... . 
+ Forma generală a unui număr impar este 2·n+1 , unde n este un număr 
+natural oarecare. 
+ Fie n un număr natural oarecare. 
+n-1 se numește predecesorul lui n; 
+n+1 se numește succesorul lui n; 
+n-1 , n , n+1 se numesc numere naturale consecutive. 
+Exemple: 
+1) În șirul numerelor naturale pe locul 10 se află numărul 9; 
+R: 10-1=9 
+2) Pe locul 17 în șirul numerelor naturale pare se află numărul 32; 
+R: 17·2-2=32 
+3) Numărul 173 se află pe locul 87 în șirul numerelor naturale impare; 
+R: 174:2=87 
+4) Numărul 134 se află pe locul 68 în șirul numerelor naturale pare; 
+R: 134:2+1=68 
+5) Pe locul 100 în șirul numerelor naturale impare se află numărul 199; 
+R: 100·2-1=199 
+6) Suma primilor 31 de termeni ai șirului numerelor naturale pare este egală 
+cu 930; 
+R: Pe locul 31 se află termenul: 31·2-2=60. Notăm cu S suma primilor 31 de 
+termeni. 
+S=     0+   2 + 4+  6+ ... + 54+ 56+ 58+ 60 
+S=   60+58+56+54 +... +  6+   4+   2  +  0       (+) 
+2·S=60+60+60+60 +  ... +60+60+60+60(de 31 de ori)=60·31=1860. Deci, 
+S=1860:2=930 
+7) Suma primilor 92 de termeni ai șirului numerelor naturale nenule este egală 
+cu 4 278; 
+R: Folosim formula: 1+2+3+4+...+n=n·(n+1):2, unde n este un număr natural 
+mai mare sau egal cu 2. 
+1+2+3+4+...+90+91+92=92·93:2=8 556:2=4 278 
+8) Suma primilor 72 de termeni ai șirului numerelor naturale impare este egală 
+cu 5 184; 
+R: Pe locul 72 se află termenul: 72·2-1=143. Notăm cu S suma primilor 72 de 
+termeni. 
+S=1+   3+    5+     7+ ...  + 137+ 139+ 141+ 143 
+S=143+141+139+137+...+    7+    5  +     3  +   1        
+(+) 
+2·S= 144+144+144+144+...+144+144+144+144(de 72 de ori)=144·72=10 368. 
+Deci, S=10368:2=5 184 
+9) Succesorul  celui de-al  19-lea termen al șirului numerelor naturale este 19; 
+R: Al 19-lea termen este: 19-1=18, iar succesorul lui 18 este 18+1=19 
+10) 
+Predecesorul celui de-al 24-lea termen al șirului numerelor naturale 
+nenule este 23. 
+R: Al 24-lea termen este 24, iar predecesorul lui 24 este 24-1=23 
+ Axa numerelor - este o dreaptă pe care se fixează un punct O numit origine, 
+un sens pozitiv (de la origine spre dreapta, indicat printr-o săgeată ) și o 
+unitate de măsură. 
+ Punctului O îi corespunde pe axă numărul natural 0(zero), numit 
+coordonata originii, se notează cu O(0) și se citește „punctul O de 
+coordonată zero”. 
+ Fiecărui număr natural îi corespunde un punct pe axa numerelor. Punctele 
+se notează cu litere mari de tipar. 
+ Exemple: Pe axa de mai jos observați următoarele puncte:  
+A(2), B(3), C(5) .  
+ În acest caz, coordonata unui punct este egală cu numărul unităților 
+de măsură de la origine(O) până la punctul respectiv.
+
+
+Compararea si ordonarea numerelor naturale 
+Clasa a V-a  
+ Compararea numerelor naturale 
+Pentru compararea a doua numere naturale folosim unul dintre semnele: 
+< mai mic 
+> mai mare 
+= egal 
+Dintre doua numere naturale care nu au acelasi numar de cifre este mai mare numarul 
+care are mai multe cifre. 
+Exemplu: 1256<34580 
+Pentru a compara doua numere naturale care au un numar egal de cifre, se compara 
+cifra cu cifra, incepand de la stanga, pana cand doua cifre de acelasi ordin sunt diferite. Este 
+mai mare numarul care are cifra respective mai mare. 
+Exemplu: 3675>3629 
+ Ordonarea numerelor natural 
+Prin ordonarea numerelor natural intelegem scrierea in ordine crescatoare sau 
+descrescatoare a acestor numere.
+
+
+Aproximări 
+De multe ori, nu cunoaștem exact valoarea unui număr, dar putem spune o valoare 
+apropiată de acel număr. Atunci când nu știm valoarea reală și considerăm o valoare 
+apropiată de cea reală, spunem că aproximăm.  
+Aproximarea se poate face prin lipsă sau prin adaos, în funcție de cum vrem să 
+considerăm valoarea apropiată de cea reală: 
+ 
+ 𝑝𝑟𝑜𝑥𝑖𝑚𝑎𝑟𝑒𝑎 𝑝𝑟𝑖𝑛 𝑙𝑖𝑝𝑠ă<𝑛𝑢𝑚ă𝑟𝑢𝑙 𝑛𝑎𝑡𝑢𝑟𝑎𝑙<𝑎𝑝𝑟𝑜𝑥𝑖𝑚𝑎𝑟𝑒𝑎 𝑝𝑟𝑖𝑛 𝑎𝑑𝑎𝑜𝑠 
+Aproximarea prin lipsă la: 
+ zeci înseamnă să găsim cel mai mare număr natural format doar din zeci mai mic 
+decât numărul dat. 
+ sute înseamnă să găsim cel mai mare număr natural format doar din sute mai mic 
+decât numărul dat.  
+ mii înseamnă să găsim cel mai mare număr natural format doar din mii mai mic decât 
+numărul dat. 
+! În mod asemănător se aproximează prin lipsă până la zeci de mii, sute de mii 
+etc, în funcție de câte cifre are numărul și ce aproximare dorim. 
+Aproximarea prin adaos până  la: 
+ zeci a unui număr dat se obține mărind cu 1 cifra zecilor a numărului dat, iar cifrele de 
+la dreapta devin 0 (ultima cifră) 
+ sute a unui număr dat se obține mărind cu 1 cifra sutelor numărului dat, iar cifrele de 
+la dreapta devin 0 (ultimele două cifre) 
+ la mii se obține mărind cu 1 cifra miilor numărului dat, iar cifrele de la dreapta devin 
+0 (ultimele trei cifre) 
+! În mod asemănător se aproximează prin adaos până la zeci de mii, sute de mii 
+etc, în funcție de câte cifre are numărul și ce aproximare dorim. 
+Să exersăm: 
+Numărul 
+natural 
+Aproximări 
+PRIN LIPSĂ la... PRIN ADAOS la... 
+zeci sute mii zeci sute mii 
+3187 3180 3100 3000 3190 3200 4000 
+15648 15640 15600 15000 15650 15700 16000 
+78047 78040 78000 78000 78050 78100 79000 
+20712 20710 20700 20000 20120 20200 21000 
+1290 1290 1200 1000 1300 1300 2000 
+ 
+  
+Rotunjiri 
+Profesor: Derecski Melinda 
+Școala: Școala Gimnazială Vama  
+Rotunjirea până la zeci, sute, mii etc. a unui număr este aproximarea (prin lipsă sau prin 
+adaos) care e cea mai apropiată de numărul dat: 
+ dacă cifra este 0, 1, 2, 3, 4, atunci rotunjim prin lipsă;  
+ dacă cifra este 5, 6, 7, 8, 9, atunci rotunjim prin adaos.  
+Exemplu:  15264 rotunjit la zeci 15260 
+15264 rotunjit la sute 15300 
+15264 rotunjit la mii 15000 
+
+
+
+ADUNAREA NUMERELOR NATURALE 
+Prin adunarea numerelor naturale  a  şi  b se obţine un numӑr natural   s , 
+numit suma numerelor  a şi  b. 
+a + b = s 
+Numerele  a şi   b se numesc termenii adunӑrii 
+Numӑrul natural s ,  rezultatul adunӑrii se numeşte suma. 
+Exemplu:   342 + 6157 = 6499 
+Pentru a aduna douӑ numere naturale, se adunӑ unitӑţile de acelaşi ordin şi se ţine 
+cont cӑ zece unitӑţi de un anumit ordin formeazӑ o unitate de ordin imediat 
+superior. 
+Exemplu:    564 + 79  =  643 
+Proprietӑţile adunӑrii 
+Adunarea numerelor naturale este: 
+1. Comutativӑ:    a + b  =  b + a    pentru orice numere naturale a şi b 
+Exemplu:   87 + 349 =  436   şi  349 + 87  = 436 
+2. Asociativӑ:  ( a + b ) + c = a + ( b + c ) pentru orice numere naturale a, b ,c 
+Exemplu:   ( 1043 + 57 ) + 93 = 1100 + 93 = 1193 
+1043 + ( 57 + 93 ) = 1043 + 150 = 1193 
+3. 0 este element neutru:  a + 0 = 0 + a = a pentru orice numӑr natural  a, 
+Exemplu:   785 + 0 = 785 şi  0 + 785 = 785 
+Prof. Faur Melinda 
+Liceul Teoretic German “Johann Ettinger” 
+E-mail: faurmelinda@yahoo.de 
+Suma primelor n numere naturale. Sume Gauss 
+Pentru orice numӑr natural n>2 are loc egalitatea:  1+2+3+…+n = n·(n+1 ):2                                                
+Exemplu:   1 + 2 + 3 + … + 44 = 44·( 44 + 1 ):2 = 44·45:2 = 1980:2 = 990 
+SCĂDEREA NUMERELOR NATURALE 
+Se numeşte diferenţa numerelor a şi b, a ≤ b, numӑrul natural d cu proprietatea  cӑ                                                               
+.                                                
+     a – b =  d  
+Numӑrul natural a se numeşte descӑzut. 
+Numӑrul natural b se numeşte scӑzӑtor. 
+Exemplu: 9725 – 8103 = 1622 
+Operaţia prin care din numerele naturale a şi b se obţine diferenţa lor, a – b , se   
+numeşte scӑdere. 
+Pentru a scӑdea douӑ numere naturale, se scad unitӑţile de acelaşi ordin şi, dacӑ nu 
+sunt suficiente unitӑţi la descӑzut, se ia o unitate de ordin imediat superior şi se 
+transformӑ în zece unitӑţi de ordin imediat inferior. 
+Exemplu:    3875 – 986 = 2889 
+Scӑderea, fiind operaţia inversӑ adunӑrii, proba adunӑrii se efectueazӑ prin scӑdere. 
+Dacӑ   a + b = s  atunci  a = s – b  şi  b = s – a  
+Exemplu:  dacӑ  644 + 523 = 1167 ,    Proba: 644 = 1167 – 523  
+523 = 1167 – 644  
+Proba scӑderii se efectueazӑ prin altӑ scӑdere , sau prin adunare 
+Dacӑ   a – b = d   atunci  b = a – d   şi   a = b + d 
+Exemplu:  10005 – 792 = 9213 ,        
+Prof. Faur Melinda 
+Liceul Teoretic German “Johann Ettinger” 
+ Proba: 792 = 10005 – 9213  
+10005 = 792 + 9213 
+E-mail: faurmelinda@yahoo.de 
+Scӑderea numerelor naturale nu este nici comutativӑ, nici asociativӑ! 
+a – b ≠ b – a ,  Exemplu:  20 – 9 = 11  şi  9 – 20  nu este numӑr natural 
+( a – b) – c ≠ a – ( b – c ),  (9 – 4 ) – 2 ≠ 9 – (4 – 2 )  ,  3 ≠ 7 
+Legӑtura dintre operaţia de adunare / scӑdere şi relaţiile de egalitate / 
+inegalitate. 
+1. Adunând/scӑzând un numӑr natural în ambii membri ai unei egalitӑţi, egalitatea 
+se pӑstreazӑ: 
+Dacӑ a = b,  atunci a + c = b + c  pentru orice numӑr natural c.  
+Dacӑ a = b,  atunci a – c = b – c   pentru orice numӑr natural c ≤ a.  
+2.Adunând/scӑzând un numӑr natural în ambii membri ai unei inegalitӑţi, 
+inegalitatea se pӑstreazӑ: 
+Dacӑ a < b,  atunci a + c < b + c  pentru orice numӑr natural c.   
+Dacӑ a < b,  atunci a – c < b – c   pentru orice numӑr natural c < a.   
+Exemplu:  56 < 73  atunci  56 + 103 < 73 + 103  adicӑ 169 < 176 
+74 <  87 atunci  74 – 36 < 87 – 36      
+adicӑ  38 <  51 
+3.Adunând/scӑzând termen cu termen douӑ egalitӑţi , egalitatea se pӑstreazӑ: 
+Dacӑ   a = b  şi  c = d , atunci  a + c = b + d. 
+Dacӑ   a = b  şi  c = d , atunci  a – c = b – d , c < a 
+4.Adunând  termen cu termen douӑ inegalitӑţi , inegalitatea se pӑstreazӑ: 
+Dacӑ   a < b  şi  c < d , atunci  a + c < b + d. 
+Dacӑ   a > b  şi  c > d , atunci  a + c > b + d 
+Exemplu:   
+72 < 125    şi    45 < 112  atunci   72 + 45  < 125 + 112   adicӑ      
+90  >  55    şi     72 > 45   atunci    90 + 72  > 55 + 45      adicӑ       
+Prof. Faur Melinda 
+Liceul Teoretic German “Johann Ettinger” 
+ 117 < 237 
+162 > 100 
+E-mail: faurmelinda@yahoo.de 
+Exerciţii rezolvate. 
+1. Un elev are suma de 3980 lei. A mai primit 3000 lei. Ce sumӑ are 
+elevul? 
+Rezolvare:  3980 + 3000 = 6980     
+2. Care este cantitatea de lapte primitӑ la o fabricӑ, dacӑ dimineaţa s-au 
+primit 560 hl de lapte, iar seara cu 78 hl de lapte mai mult?  
+Rezolvare:  560 + ( 560 + 78 ) = 560 + 638 = 1198 
+3. Ana citeşte o carte în 20 de zile. Câte pagini are cartea , dacӑ în prima zi 
+a citit o paginӑ, şi în fiecare zi a citit cu o pagina mai mult decât în ziua 
+precedentӑ?  
+Rezolvare:  1+2+3+…+20 = 20·(20+1):2= 20·21:2 = 210  pagini 
+4. Tatӑl are 42 de ani, iar vârsta fiului este cu 32 de ani mai micӑ. Aflaţi 
+vârsta fiului. 
+Rezolvare:  42 – 32 = 10  ani 
+5. Folosind proprietӑţile adunӑrii numerelor naturale, calculaţi mai rapid: 
+a) 274+825+26+75 = (274+26) + (825+75) = 500+900 = 1400 
+b) 39+0+461+0+560+0+40+0=(39+461)+(560+40)=500+600=1100 
+6. Se considerӑ numerele x , y. Știind cӑ x + 2y = 39 şi   x + y = 20 , 
+determinaţi y. 
+Rezolvare:  x + y + y = 39      
+20 + y = 39 
+y = 39 – 20  
+y = 19
+
+
+
+Înmulțirea numerelor naturale 
+Produsul a două numere naturale este tot un număr natural.  
+ 
+  ∙ 𝑏 = 𝑐  
+➢ a și b se numesc factori;  
+➢ c  se numește produs.  
+Operația prin care se obține produsul a două numere naturale se numește înmulțirea 
+numerelor naturale. 
+Înmulțirea este o operație de ordinul al 2-lea și se efectuează înaintea operațiilor de adunare 
+sau scădere (care sunt operații de ordinul întâi).  
+Proprietățile înmulțirii: 
+1. Comutativitatea:  
+ 
+  ∙ 𝑏 = 𝑏 ∙ 𝑎, pentru orice numere naturale a și b 
+2. Asociativitatea: 
+(𝑎 ∙ 𝑏) ∙ 𝑐 = 𝑎 ∙ (𝑏 ∙ 𝑐), pentru orice numere naturale a, b și c 
+3. Numărul 1 este element neutru la înmulțire:  
+ 
+  ∙ 1 = 𝑎, pentru orice număr natural a  
+4. Distributivitate față de adunare și scădere:  
+ 
+  ∙ ( 𝑏 + 𝑐) = 𝑎 ∙ 𝑏 + 𝑎 ∙ 𝑐  
+ 
+  ∙ ( 𝑏 − 𝑐) = 𝑎 ∙ 𝑏 − 𝑎 ∙ 𝑐 , pentru orice numere naturale a, b și c.  
+5. Un produs de numere naturale este zero dacă și numai dacă cel puțin unul dintre factori 
+este zero.  
+ 
+  ∙ 𝑏 = 0 ⇔ 𝑎 = 0 𝑠𝑎𝑢 𝑏 = 0  
+6. Dacă unul din factorii unui produs este zero, atunci produsul este zero. 
+ 
+  ⋅ 0 =0⋅𝑎 =0 
+Legătura dintre operația de înmulțire și relația de egalitate:  
+1. Înmulțind cu un număr natural ambii termeni ai unei egalități, egalitatea se păstrează:  
+ 
+  = 𝑏        |∙𝑐  
+⟹ 𝑎 ∙ 𝑐 = 𝑏 ∙ 𝑐 , pentru orice număr natural c  
+2. Înmulțind termen cu termen două egalități egalitatea se păstrează:  
+ 
+  =𝑏 
+ 
+  =𝑑 }⇒𝑎 ∙ 𝑐 = 𝑏 ∙ 𝑑  
+Legătura dintre operația de înmulțire și relația de inegalitate: 
+1. Înmulțind cu un număr natural ambii termeni ai unei inegalități, inegalitatea se 
+păstrează:   
+ 
+  < 𝑏       |∙ 𝑐  
+⟹ 𝑎 ∙ 𝑐 < 𝑏 ∙ 𝑐 , pentru orice număr natural c  
+2. Înmulțind termen cu termen două inegalități de același sens inegalitatea se păstrează 
+ 
+  < 𝑏  
+ 
+  < 𝑑 }⇒ 𝑎 ∙ 𝑐 < 𝑏 ∙ 𝑑 
+Relația < se poate înlocui cu  >, ≤, ≥  și proprietățile se păstrează. 
+Exerciții rezolvate: 
+1. Determinați numărul care este de 10 ori mai mare decât produsul numerelor 35 și 27. 
+Soluție: 
+Calculăm produsul numerelor 35 și 27:     
+35⋅ 27 = 945 
+Numărul cerut este 10 ⋅ 945 = 9450. 
+2. Calculați folosind distributivitatea înmulțirii față de adunare și scădere: 
+a) 12⋅(23+102) 
+b) 31⋅(153−29) 
+Soluție: 
+a) 12⋅(23+102) = 12⋅23+12⋅102= 276+1224= 1500 
+b) 31⋅(153−29) = 31⋅153−31⋅29 = 4743−899= 3844 
+3. Pentru cei 15 copii de la grupa mare de la grădiniță s-au cumpărat 72 de creioane 
+colorate. Aflați câte creioane colorate mai sunt necesare pentru ca fiecare copil să 
+primească 6 creioane. 
+Soluție: 
+15⋅ 6 = 90 – creioane sunt necesare în total 
+90−72=18 – creioane trebuie cumpărate pentru ca fiecare copil să primească 6 
+creioane.
+
+
+Împărțirea numerelor naturale 
+1. Împărțirea cu rest 0 ( sau împărțirea exactă) 
+Dacă a și b sunt două numere naturale astfel încât b diferit de 0, câtul dintre a și b, notat 
+prin a : b, este acel număr c, în cazul în care el există, pentru care 𝑎 = 𝑏 ⋅ 𝑐. Numărul a se 
+numește deîmpărțit, iar b se numește împărțitor. 
+Se scrie  c = a: b 
+Observații: 
+ Împărțirea este o scădere repetată 
+ Dacă a : b = c, atunci a : c = b. 
+ Nu se poate împărți un număr natural cu 0 ( vom spune că împărțirea la 0 nu are 
+sens). În particular, împărțirea 0:0 nu are sens. 
+Exemple: 
+1) Câtul numerelor 168 și 4 este numărul 42, deoarece 168 =  4 ⋅ 42. Vom 
+spune că 42 este de 4 ori mai mic decât 168. 
+2) Câtul numerelor 345 și 5 este numărul 69, deoarece 245 =  5 ⋅ 69. Vom 
+spune că 69 este de 5 ori mai mic decât 345. 
+3) Câtul numerelor 0 și 7 este egal cu 0, deoarece 0 = 7 ⋅ 0 
+4) Împărțirea 12: 0 nu are sens. 
+Reguli de calcul (ce pot fi folosite în rezolvarea problemelor cu împărțiri exacte): 
+1.  𝒂:𝟏 = 𝒂, pentru orice număr natural a. 
+2. 𝒂:𝒂 = 𝟏, pentru orice număr natural nenul a. 
+3. 𝟎:𝒂 = 𝟎, pentru orice număr natural nenul a. 
+4. (𝒂 +𝒃):𝒄 = 𝒂:𝒄+𝒃:𝒄 și (𝒂−𝒃):𝒄 = 𝒂:𝒄−𝒃:𝒄, a ≥ b 
+5. Dacă 𝒂 = 𝒃, atunci 𝒂:𝒄 = 𝒃:𝒄, 𝒄 ≠ 𝟎 
+6. (𝒂:𝒃) ⋅ 𝒃 = 𝒂 și  (𝒂⋅ 𝒃):𝒃 = 𝒂. 
+7. Dacă 𝒂:𝒄 = 𝒃:𝒄, 𝒄 ≠ 𝟎, atunci 𝒂 = 𝒃. 
+8. Dacă 𝒂 = 𝒃 și 𝒄 = 𝒅, atunci 𝒂:𝒄 = 𝒃:𝒅, 𝒄 ≠ 𝟎 
+prof.Halas Simona 
+Liceul Tehnologic„ I.G.Andron” 
+Negrești Oaș 
+9. Dacă 𝒂 < 𝒃, 𝒄 ≠ 𝟎 atunci 𝒂:𝒄 < 𝒃:𝒄. 
+10. Dacă 𝒂:𝒄 < 𝒃:𝒄, 𝒄 ≠ 𝟎,  atunci 𝒂 < 𝒃. 
+11. (𝒂 ⋅ 𝒃):𝒄 = 𝒂⋅(𝒃:𝒄) = (𝒂:𝒄)⋅𝒃 
+12. (𝒂:𝒃):𝒄 = (𝒂:𝒄):𝒃 = 𝒂:(𝒃⋅𝒄) 
+2. Împărțirea cu rest a numerelor naturale 
+Teorema împărțirii cu rest :   
+Oricare ar fi numerele naturale a și b, b ≠ 0, există două numere naturale unice c și r, 
+astfel încât   𝒂 = 𝒃 ⋅ 𝒄 + 𝒓 și 𝒓 < 𝒃, unde 𝒄 este câtul și 𝒓 este restul împărțirii lui a la b. 
+Observații: 
+ Împărțirea nu este comutativă, adică 𝒂:𝒃 ≠ 𝒃:𝒂. 
+ Împărțirea nu este asociativă, adică (𝒂:𝒃):𝒄 ≠ 𝒂:(𝒃:𝒄). 
+ Împărțind un număr natural a la numărul natural nenul b putem obține unul din 
+următoarele resturi: 0,1,2,3,...,b -1 
+ Dacă a : b =c, a≠0, b ≠0,  atunci deîmpărțitul  𝒂 = 𝒄 ⋅ 𝒃 și împărțitorul 𝒃 = 𝒂:𝒄. 
+Exemple: 
+1) Împărțind numărul 247 la 7 obținem câtul 35 și restul 2. Deci, 
+247 = 7⋅35+2 
+2) Împărțind un număr natural la 5, putem obține unul din resturile  0,1,2,3 
+sau 4. 
+Exercițiu rezolvat 1. 
+Să se calculeze suma numerelor naturale care, împărțite la 6 dau câtul 13. 
+Soluție: 
+Numerele căutate sunt: 6 ⋅ 13 + 0 ;6 ⋅ 13 + 1; 6 ⋅ 13 + 2; 6 ⋅13 +3;6 ⋅13 +4 ș𝑖 
+6 ⋅ 13+5 adică numerele 78; 79; 80; 81; 82 și 83. Suma acestor numere este numărul 
+natural 78+79+80+81+82+83 = 483. 
+Exercițiu rezolvat 2. 
+Dacă a și b sunt numere naturale și 𝑎 = 6𝑏 + 17, să se afle restul împărțirii 
+numărului a la 3. 
+Soluție: 
+Numărul a se mai poate scrie 𝑎 = 6𝑏 + 15 + 2, de unde obținem 𝑎 = 3(2𝑏 + 5) + 2 și 2<3, 
+deci câtul împărțirii este  numărul 2b+5 și restul este 2.
+
+
+
+
+Factorul comun 
+Dacă fiecare termen al unei sume sau al unei diferențe este scris ca produs 
+de doi factori, iar unul dintre factori apare în ambii termeni, atunci acel factor se 
+numește factor comun și se poate scrie astfel: 
+ab+ac=a(b+c)  
+ab-ac=a(b-c)   
+(a este factorul comun) 
+Folosind această proprietate de multe ori calculele devin mai ușoare. 
+Exemple: 
+1. 65∙44−55∙44 = 44∙ 65−55 =44∙10=440 
+2. 1291∙32+9∙32−300∙32 = 32∙ 1291+9−300 =32∙1000=
+32000 
+3. 48+9∙48 = 1∙48+9∙48=48∙ 1+9 =48∙10=480 
+4. 7777∙52+7777∙47+7777 = 7777∙ 52+47+1 = 7777∙100=
+777700 
+
+
+
+
+Ridicarea la putere cu exponent număr natural  
+a unui număr natural 
+Fie  a și n sunt numere naturale, atunci  a∙a∙a∙…∙a         
+de n ori
+  se notează an. 
+a∙a∙a∙…∙a         
+de n ori
+=an 
+ 
+a se numește baza puterii iar n exponentul. 
+ 
+ 
+Exemple:  
+7∙7∙7=73 11∙11∙11∙11∙11=115  
+ 
+Produsul a doi factori egali, a ∙ a, este numărul natural  a2  care se numește 
+pătratul lui a sau a la puterea a doua (a2 se mai numește pătrat perfect). 
+ 
+Exemple:  
+52=25, 25 este pătratul lui 5 
+122=144, 144 este pătratul lui 12 
+ 
+Șirul numerelor naturale pătrate perfecte,  
+0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, ... 
+Prin convenție, pentru orice număr natural diferit de zero, avem 
+a1 = a și a0 = 1. 
+ 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+Produsul a trei factori egali, a · a · a, este numărul natural a3 care se 
+numește cubul lui a sau a la  puterea a 3-a. 
+Exemple:  
+53=125, 125 este cubul lui 5 
+33=27, 27 este cubul lui 3 
+ 
+ 
+ Nu se definește 00, sau spunem că nu există.  
+ 0n=0, pentru orice n natural nenul 
+ 1n=1, pentru orice n natural
+
+
+
+Reguli de calcul cu puteri 
+1. 𝑎𝑚 ∙𝑎𝑛 = 𝑎𝑚+𝑛, unde a, n şi m sunt numere naturale, a ≠ 0. 
+2. 𝑎𝑚:𝑎𝑛 = 𝑎𝑚−𝑛, unde a, n şi m sunt numere naturale, a ≠ 0, mn. 
+3.  𝑎𝑚 𝑛 =𝑎𝑚∙𝑛, unde a , n şi m sunt numere naturale, a ≠ 0. 
+4. 𝑎𝑛 ∙ 𝑏𝑛 = 𝑎∙𝑏 𝑛unde a, b şi n sunt numere naturale, a ≠ 0, b ≠ 0 
+5. 𝑎𝑛:𝑏𝑛 = 𝑎:𝑏 𝑛 , unde a, b şi n sunt numere naturale, a ≠ 0, b ≠ 0. 
+Dacă avem puteri de tipul 𝑎𝑚𝑛 , efectuăm mai întâi 𝑚𝑛. 
+Exemple:  
+1. 75 ∙ 76 = 711 
+2. 1132:1130 = 112 = 121 
+3.  32 9 =318 
+4. 58 ∙ 28 = 108 
+5. 156:56 = 36 
+6.  711 3:732 = 733:732 = 71 = 7 
+7. 59 ∙29:106 = 109:106 = 103 = 10∙10∙10 = 1000 
+8. 63 ∙ 612 ∙ 6:316:214 = 63+12+1:316:214 = 616:316:214 = 216:214 =
+22 = 4 
+9. 8540 = 81 = 8 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+10. 412 ∙ 24:89 (pentru a putea aplica regulile transformăm bazele, 4 = 22 și 
+8 =23) =  22 12 ∙24: 23 9 = 224 ∙24:227 = 224+4−27 = 21 = 2 
+11. 275:97 + 1254:510 = 33 5: 32 7 + 53 4:510 = 315:314 +512:510 =
+31 +52 =3+25=28
+
+
+
+
+Compararea puterilor 
+1. Dacă n < m, atunci an < am, unde a, n şi m sunt numere naturale, a ≠ 1.  
+2. Dacă an < am, atunci n < m, unde a, n şi m sunt numere naturale, a ≠ 0.  
+3. Dacă a < b, atunci an < bn, unde a, b şi n sunt numere naturale, a, b, n ≠ 0.  
+4. Dacă an < bn, atunci a < b, unde a, b şi n sunt numere naturale, a ≠ 0, b ≠ 0.  
+5. Dacă puterile nu au nici același exponent, nici aceeași bază, atunci avem 
+următoarele posibilități: 
+ aducerea la aceeași bază; 
+ aducerea la același exponent; 
+ dacă exponenții nu sunt mari, efectuăm ridicările la putere; 
+ introducerea unei puteri intermediare. 
+Exemple:  
+1. 756 < 765 deoarece 56 < 65 
+2. 41025 > 40125 deoarece 4102 > 4012 
+3. 610 = 490 (deoarece ambele sunt egale cu 1) 
+4. 139 = 199 (deoarece ambele sunt egale cu 1) 
+5. 52 < 33 (deoarece efectuând avem 2527) 
+6. 436 = 272 (deoarece transformând baza primei puteri avem 436 =
+22 36 = 22∙36 = 272) 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+7. 2715 < 8112 (deoarece transformând bazele avem, 2715 = 33 15 = 345 
+și 8112 = 34 12 = 348 iar 45  48) 
+8. 221 < 314 (deoarece transformând exponenții avem, 221 = 23∙7 = 87 și 
+314 = 32∙7 = 97 iar 8  9)
+
+
+ORDINEA EFECTUĂRII OPERAȚIILOR ȘI FOLOSIREA PARANTEZELOR 
+În efectuarea operațiilor dintr-un exercițiu vom utiliza următoarele reguli: 
+1. Dacă un exercițiu conține numai operații de același ordin, acestea se efectuează 
+în ordinea în care sunt scrise, de la stânga la dreapta. 
+2. Dacă un exercițiu conține operații de ordine diferite, efectuăm: - Mai întâi operațiile de ordinul III- ridicarea la putere - Apoi operațiile de ordinul II- înmulțirea și împărțirea - Apoi operațiile de ordinul I- adunarea și scăderea 
+3. Dacă un exercițiu conține mai multe tipuri de paranteze, efectuăm mai întâi 
+operațiile din parantezele rotunde; parantezele pătrate se transformă în 
+paranteze rotunde, iar acoladele se transformă în paranteze pătrate ș.a.m.d. 
+Exemple: 
+1. Efectuați: a) 81:32 + 57 
+Rezolvare: 81:32 + 57 = 81:9+57 = 9+57 = 66 
+b) (72 +35)∙10 
+Rezolvare:(72 + 35) ∙ 10 = (49+ 35)∙ 10 = 84∙10 = 840 
+2. Calculați: 103 ∙ [(512 + 4 ∙ 512):255 − 110] 
+Rezolvare: 
+103 ∙ [(512 + 4 ∙ 512):255 − 110 = 1000∙{[512 ∙(1+
+4)]:(52)5 − 1}=1000 ∙ [(512 ∙ 5):510 − 1] = 1000∙ (53 − 1) = 1000∙
+124 = 124000
+
+
+
+
+Scrierea în baza 10. Scrierea în baza 2 
+Sistemul de numerație folosit cu precădere în practică este sistemul zecimal, adică sistemul 
+cu baza  10.  Baza de numerație este numărul care arată câte unități de un anumit ordin formează 
+o unitate de ordin imediat superior . Adică , zece unități de un anumit ordin dau o unitate de ordin 
+imediat superior. Acest sistem utilizează pentru scrierea numerelor cele zece cifre arabe: 0, 1, 2, 
+3, 4, 5, 6, 7, 8 și 9 . Spunem astfel că avem un număr scris în baza 10.  
+ Orice număr natural se poate scrie ca o sumă de produse în care un factor este de forma 𝟏𝟎𝒏 , 
+cu 𝑛 număr natural , iar celălalt factor este reprezentat de una dintre cifrele ce formează 
+numărul . 
+Exemple:  
+1)   𝟏𝟑𝟓(𝟏0) = 𝟏∙100+𝟑∙10+𝟓 = 𝟏∙102 +𝟑∙101 +𝟓∙100 
+2)  𝟐𝟎𝟏𝟕(10) = 𝟐∙1000+𝟎∙100+𝟏∙10+𝟕 = 𝟐∙103 +𝟎∙102 +𝟏∙101 +𝟕∙100 
+ În general :   𝑎𝑏
+̅̅̅(10) = 𝑎 ∙ 10 + 𝑏 
+ 
+ 𝑏𝑐
+̅̅̅̅̅(10) = 𝑎 ∙ 102 + 𝑏 ∙ 10 + 𝑐 
+ 
+ 𝑏𝑐𝑑
+̅̅̅̅̅̅̅(10) = 𝑎 ∙ 103 + 𝑏 ∙ 102 + 𝑐 ∙ 10 +𝑑, unde 𝑎,𝑏,𝑐,𝑑  sunt cifre, 𝑎 ≠ 0      
+reprezintă scrierea zecimală sau scrierea în baza 10. 
+Sistemul de numerație în baza 2 se numește sistem de numerație binar . Trecerea de la 
+un ordin la ordinul imediat superior se poate face și din 2 în 2. Două unități de un anumit ordin 
+dau o unitate de ordin imediat superior. În acest caz, folosim numai două cifre : 0 și 1,  care se 
+numesc cifre binare . Spunem astfel că avem un număr scris în baza 2.  
+Exemple:  
+1)   
+ 
+ 𝟎𝟏(𝟐) = 𝟏∙22 +𝟎∙21 +𝟏∙20 =   𝟏∙22 +𝟎∙2+𝟏 = 𝟓(10) 
+2)  𝟏𝟏𝟎𝟏(𝟐) = 𝟏∙23 +𝟏∙22 +𝟎∙21 +𝟏∙20 =   𝟏∙23+𝟏∙22+𝟎∙2+𝟏 = 𝟏𝟑(10) 
+Școala Gimnazială ″Gheorghe Bulgăr″ Sanislău 
+Prof. Iluț Mihaela 
+CLASA A V-A  
+BREVIAR TEORETIC CU EXEMPLE 
+ În general :   𝑎𝑏
+̅̅̅(2) = 𝑎 ∙ 21 + 𝑏 ∙20 
+ 
+ 𝑏𝑐
+̅̅̅̅̅(2) = 𝑎 ∙ 22 + 𝑏 ∙ 21 + 𝑐 ∙20 
+ 
+ 𝑏𝑐𝑑
+̅̅̅̅̅̅̅(2) = 𝑎 ∙ 23 + 𝑏 ∙ 22 + 𝑐 ∙ 21 +𝑑 ∙20, unde 𝑎,𝑏,𝑐,𝑑  sunt cifre binare, 𝑎 ≠ 0   
+reprezintă scrierea binară sau scrierea în baza 2 . 
+ Trecerea  de la baza 10 la baza 2  se face prin împărțiri succesive.  
+Exemplu:  Să trecem numărul 43 din baza 10 în baza 2 .  
+43 
+: 
+: 
+2 
+→ 𝑐=21 𝒓=𝟏  Am împărțit 43 la 2. 
+21 
+2 
+: 
+→ 𝑐=10 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+10 
+2 
+→ 
+ 
+  =5 𝒓=𝟎  Am împărțit câtul anterior la 2 . 
+5 
+: 
+2 
+→ 
+ 
+  =2 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+2 
+: 
+2 
+→ 
+ 
+  =1 𝒓=𝟎  Am împărțit câtul anterior la 2 . 
+1 
+: 
+2 
+→ 
+ 
+  =0 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+Mă opresc atunci când obțin câtul 0. 
+Numărul obținut prin scrierea resturilor în ordine inversă ( de jos în sus ) reprezintă 
+scrierea numărului 43 din baza 10 , în baza 2 :  
+43(10) = 101 011(2) 
+ Trecerea de la baza 2 la baza 10 se face folosind scrierea binară și efectuând calculele. 
+Exemplu:  Să trecem numărul 101 011(2) în baza 10.  
+Avem: 
+ 
+ 𝟎𝟏 𝟎𝟏𝟏(𝟐) = 𝟏∙25 +𝟎∙24 +𝟏∙23 +𝟎∙22 +𝟏∙21 +𝟏∙20 = 32+8+2+1 =𝟒𝟑(𝟏𝟎) 
+Aplicații rezolvate 
+1. Scrie în baza 2 următoarele numere:   
+a) 𝟑𝟔(𝟏𝟎); 
+b) 𝟏𝟐𝟒(𝟏𝟎). 
+Rezolvare :  
+Școala Gimnazială ″Gheorghe Bulgăr″ Sanislău 
+Prof. Iluț Mihaela 
+CLASA A V-A  
+BREVIAR TEORETIC CU EXEMPLE 
+a)    
+36 
+: 
+: 
+2 
+→ 𝑐=18 𝒓=𝟎  Am împărțit 36 la 2. 
+18 
+2 
+→ 
+ 
+  =9 𝒓=𝟎  Am împărțit câtul anterior la 2 . 
+9 
+: 
+2 
+→ 
+ 
+  =4 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+4 
+: 
+2 
+→ 
+ 
+  =2 𝒓=𝟎  Am împărțit câtul anterior la 2 . 
+2 
+: 
+2 
+→ 
+ 
+  =1 𝒓=𝟎  Am împărțit câtul anterior la 2 . 
+1 
+: 
+2 
+→ 
+ 
+  =0 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+Mă opresc atunci când obțin câtul 0. 
+Obținem 36(10) = 𝟏𝟎𝟎 𝟏𝟎𝟎(2) 
+b)  
+124 
+: 
+: 
+2 
+→ 𝑐=62 𝒓=𝟎  Am împărțit 124 la 2. 
+62 
+2 
+: 
+→ 𝑐=31 𝒓=𝟎  Am împărțit câtul anterior la 2 . 
+31 
+2 
+: 
+→ 𝑐=15 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+15 
+2 
+→ 
+ 
+  =7 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+7 
+: 
+2 
+→ 
+ 
+  =3 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+3 
+: 
+2 
+→ 
+ 
+  =1 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+1 
+: 
+2 
+→ 
+ 
+  =0 𝒓=𝟏  Am împărțit câtul anterior la 2 . 
+Mă opresc atunci când obțin câtul 0. 
+Obținem 124(10) = 𝟏 𝟏𝟏𝟏 𝟏𝟎𝟎(2) 
+2. Compară numerele 𝟏𝟏 𝟎𝟎𝟏(𝟐)  și 𝟏 𝟎𝟏𝟏(𝟐)  trecându-le în baza 10. 
+Rezolvare: 
+ 
+ 𝟏 𝟎𝟎𝟏(𝟐) =  𝟏∙24 +𝟏∙23 +𝟎∙22 +𝟎∙21+𝟏∙20 = 16+8+1 =𝟐𝟓(𝟏𝟎) 
+ 
+  𝟎𝟏𝟏(𝟐) =  𝟏∙23 +𝟎∙22 +𝟏∙21 +𝟏∙20 = 8+2+1=𝟏𝟏(𝟏𝟎) 
+Cum  25 > 11 rezultă  𝟏𝟏 𝟎𝟎𝟏(𝟐) > 𝟏 𝟎𝟏𝟏(𝟐). 
+
+
+
+
+Media aritmetică a două numere naturale cu rezultat număr natural 
+Media aritmetică a două numere naturale este un concept pe care îl întâlnim în numeroase 
+activități cotidiene. 
+Exemplu:          
+O gospodină cumpără de la piață 1 kg de prune pentru care plătește 2 lei și 1 kg de 
+struguri pentru care plătește 4 lei. Cât plătește gospodina pentru un kilogram de fructe? 
+Rezolvare: Raționamentul este următorul: 
+▪ pentru 2 kg de fructe, gospodina plătește:  
+▪ pentru 1 kg de fructe, gospodina plătește:            
+2 lei + 4 lei = 6 lei 
+ 6 lei : 2 = 3 lei 
+Deci, pentru un kilogram de fructe gospodina plătește: ( 2 + 4 ):2 = 3 (lei). 
+Media aritmetică a prețului unui kilogram de fructe este de 3 lei. 
+Media aritmetică a două numere naturale a și b este numărul obținut prin împărțirea la 2 
+a sumei lor: 
+Exemple:          
+ma=( a+b ) : 2. 
+1. Media aritmetică a numerelor 7 și 11 este numărul:   ma=(7+11):2=18:2=9. 
+2. Media aritmetică a numerelor 12 și 28 este numărul:   ma=(12 + 28):2=40:2=20. 
+Observație. Media aritmetică a două numere naturale nu este totdeauna număr natural. 
+Exemplu. Media aritmetică a numerelor 5 și 8 este ma = ( 5+8 ): 2 = 13:2  care nu este număr 
+natural. 
+Media aritmetică a trei numere naturale a, b și c este numărul obținut prin împărțirea la 
+3 a sumei lor: 
+ma= ( a+b+c ) : 3 
+Exemplu: Media aritmetică a numerelor 6, 15 și 24 este numărul  ma=( 6+15+24 ):3=45:3=15. 
+Fiind date n numere naturale notate a1, a2, a3, … ,an  se numește media aritmetică  
+numărul obținut prin împărțirea la n a sumei lor: 
+ma= ( a1+a2+a3+ … +an ) : n 
+Exemplu. La sfârșitul primului semestru Maria are la istorie notele 9, 10, 7, 10, 9. Media 
+aritmetică a notelor ei la istorie este egală cu ma=( 9+10+7+10+9 ):5=45:5=9.  
+Observație. Media aritmetică a n numere naturale distincte este mai mare decât cel mai mic 
+dintre numere și este mai mică decât cel mai mare dintre numere. 
+Exemplu. Media aritmetică a numerelor 2, 18, 21 și 31 este ma= (2+18+21+31):4=72:4=18, iar 
+min{2, 18, 21, 31} =2 și max{2, 18, 21, 31}=31. Se verifică relația: 2 ≤ 18 ≤31. 
+
+
+
+Metoda reducerii la unitate 
+Metoda reducerii la unitate este una din metodele aritmetice utile de rezolvare a problemelor. 
+Ea se aplică în multe situații întâlnite în viața de zi cu zi.  
+Algoritmul de rezolvare al acestui tip de probleme constă în aflarea mărimii cerute 
+printr-o fază intermediară de comparare cu unitatea. În acest sens, trebuie să avem 
+mare atenție în stabilirea dependenței între mărimi. 
+Putem întâlni două tipuri de probleme: 
+I. Probleme în care „Dacă o mărime crește (scade) de n ori, atunci și cealaltă 
+mărime crește (scade) de n ori” 
+II. Probleme în care „Dacă o mărime crește (scade) de n ori, atunci cealaltă mărime 
+scade (crește) de n ori” 
+Exemple:  
+Tipul I: „Dacă o mărime crește (scade) de n ori, atunci și cealaltă mărime crește (scade) 
+de n ori” 
+1) Dacă 6 kg de mere costă 18 lei, aflați cât costă 2 kg de mere de aceeași calitate. 
+Vom rezolva problema în două moduri: 
+I. 
+Rezolvarea problemei cu plan: 
+Aflăm mai întâi cât costă 1 kg de mere și apoi cât costă 2 kg de mere, de aceeași calitate. 
+Observăm că dacă prima mărime (cantitatea de mere) scade, a doua mărime (suma plătită) 
+trebuie să scadă și ea. 
+a) Cât costă 1 kg de mere? 
+18 lei : 6 = 3 lei, deci 3 lei costă 1 kg de mere 
+b) Cât costă 2 kg de mere, de aceeași calitate? 
+2 kg  3 lei = 6 lei, deci 2 kg de mere de aceeași calitate, costă 6 lei 
+Nume și prenume: Mondici Claudiu 
+Școala: Școala Gimnazială ,,Grigore Moisil"  Satu Mare 
+E-mail:claudiu.mondici@yahoo.com  
+R: 6 lei 
+II. 
+Rezolvare cu metoda reducerii la unitate 
+6 kg mere …………………………………….. 18 lei  
+1 kg mere …………………………………….. 18 lei : 6 = 3 lei 
+2 kg mere ……………………………………... 2  3 lei = 6 lei 
+R: 6 lei 
+Observație: Cantitatea de mere scade de 3 ori (de la 6 kg la 2kg), deci pentru o cantitate 
+de 3 ori mai mică și suma plătită trebuie să fie  de 3 ori mai mică (adică de la 18 lei scade 
+la 18 : 3 = 6 lei) 
+2) Inima unui om bate de aproximativ 210 ori in 3 minute. De câte ori bate într-o 
+oră? 
+I. Rezolvarea problemei cu plan: 
+Aflăm mai întâi de câte ori va bate inima unui om într-un minut, apoi de câte ori va bate 
+într-o oră. 
+a) De câte ori bate inima unui om într-un minut? 
+210 bătăi : 3 = 70 bătăi (într-un minut) 
+b) De câte ori bate inima unui om într-o oră (60 minute)? 
+70 bătăi  60 = 4200 bătăi (într-o oră) 
+II. Rezolvare cu metoda reducerii la unitate 
+3 minute ………………………. 210 bătăi 
+1 minut ………………………… 210 : 3 = 70 bătăi 
+60 minute ………………………. 70  60 = 4200 bătăi 
+R: 4200 bătăi 
+R: 4200 bătăi 
+Observăm că dacă a doua mărime crește (de la 3 minute la o oră = 60 minute, deci crește 
+de 20 de ori), atunci și prima mărime trebuie să crească ( de 20 de ori).
+
+
+METODA COMPARAȚIEI 
+Rezolvarea unei probleme prin metoda comparației constă în a compara două situații 
+diferite, eliminarea unei necunoscute și determinarea celeilalte necunoscute. Prin înlocuire într
+una din situațiile inițiale se află și cealaltă necunoscută. 
+Se disting două situații: 
+1. Eliminarea unei necunoscute prin scădere, precedată eventual de aducerea la același 
+termen de comparație 
+2. Eliminarea unei necunoscute prin înlocuire. 
+Exemple:  
+1. Pentru 6 pixuri și 5 creioane, Natalia a plătit 28 lei iar Alexandra a cumpărat 7 creioane 
+și 6 pixuri de același fel și a plătit 32 lei. Cât costă un creion și cât costă un pix? 
+Rezolvare: 
+Pentru a compara așezăm datele problemei astfel: 
+6 pixuri___________________5 creioane__________________28 lei 
+6 pixuri___________________7 creioane__________________32 lei 
+Comparând cele două situații observăm că avem același termen de comparație, 6 pixuri. 
+Reiese că diferența dintre sumele de bani se datorează numărului de creioane în plus pe 
+care le-a cumpărat Alexandra. 
+Scădem relațiile astfel:  
+6 pixuri___________________5 creioane__________________28 lei 
+6 pixuri___________________7 creioane__________________32 lei 
+/     
+De unde, 
+2 creioane__________4 lei 
+1 creion ____________4:2=2 lei 
+Rescriem prima relație astfel, 
+(7-5) creioane________________32-28 = 4 lei 
+6 pixuri___________________5 2 lei __________________28 lei 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+De unde, 6 pixuri ____________28 – 10=18 lei 
+1 pix____________18:6= 3 lei 
+Răspuns: 1 creion costă 2 lei, 1 pix costă 3 lei. 
+Observație: Spre deosebire de problema de mai sus, în alte cazuri este nevoie ca datele să 
+fie aduse la același termen de comparație. Uneori este nevoie să înmulțim una din relații 
+convenabil (exemplul 2) sau alteori, ambele relații (exemplul 3). 
+2. 3 saci de ovăz și 5 saci de grâu cântăresc 595 kg iar 6 saci de ovăz și 3 de grâu cântăresc 
+630 kg. Cât cântărește un sac de ovăz și cât cântărește un sac de grâu? 
+Rezolvare:  
+3 saci ovăz___________________5 saci grâu__________________595 kg 
+6 saci ovăz ___________________3 saci grâu__________________630 kg 
+Pentru a aduce la același termen de comparație înmulțim prima relație cu 2 și obținem: 
+32=6 saci ovăz_______________52=10 saci grâu______________5952=1190 kg 
+6 saci ovăz ___________________3 saci grâu__________________630 kg 
+Deoarece avem același termen de comparație, 6 saci ovăz. Acum scădem relațiile, ca în 
+primul exemplu și avem: 
+10-3=7 saci grâu___________1190-630=560 kg 
+De unde, 1 sac grâu_________560:7=80 kg 
+Folosind prima relație avem: 3 saci ovăz________580 kg =400 kg ______595 kg 
+De unde 3 saci ovăz _______ 595-400=195 kg 
+1 sac ovăz ___________195:3=65 kg 
+Răspuns: 1 sac ovăz cântărește 65 kg, un sac grâu cântărește 80 kg. 
+3. Un croitor folosește pentru 7 rochii și 5 fuste  31 m stofă. Când face 2 rochii  și 6 fuste, 
+foloseste 18 m stofă. Câți m de stofă se folosesc pentru o rochie și câți pentru o fustă? 
+Rezolvare:  
+7 rochii___________________5 fuste__________________31 m 
+2 rochii ___________________6 fuste __________________18 m 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+Pentru a aduce la același termen de comparație înmulțim, de exemplu,  prima relație cu 
+2 și a doua relație cu 7 și obținem: 
+14 rochii___________________10 fuste__________________62 m 
+14 rochii ___________________42 fuste __________________126 m 
+Am obținut același termen de comparație: 14 rochii. 
+Scădem relațiile, 42-10=32 fuste _________________126-62=64 m 
+De unde,  1 fustă_____________64:32=2 m 
+Rescriem prima relație, înlocuind, 
+7 rochii___________________52 m __________________31 m 
+De aici, 7 rochii__________________31-10=21 m 
+De unde, 1 rochie _________________21:7=3 m 
+Răspuns: pentru o rochie se folosesc 3 m, pentru o fustă se folosesc 2 m.
+
+
+
+Exemplul 1: Antonia s-a gândit la un număr pe care l-a înmulțit cu 7. Apoi, a mărit 
+numărul obținut cu 11, a împărțit noul rezultat la 5 și astfel a obținut 19. La ce număr s-a gândit 
+Antonia? 
+ Problema se poate împărți în trei probleme mai mici: 
+1. Antonia a înmulțit un număr necunoscut cu 7, vom numi rezultatul, produs, necunoscut 
+și el. 
+2. A mărit produsul cu 11, vom numi rezultatul sumă, necunoscută și ea. 
+3. A împărțit suma la 5 și a obținut 19. 
+Rezolvare:  
+Vom rezolva problemele în ordine inversă: 
+Problema 3: pentru  a afla suma , S:5=19, de unde S=195, S=95 
+Problema 2: P+11=95, de unde P=95-11, P=84 
+Problema 1: n7=84, de unde n=84:7, n=12. 
+Răspuns: numărul căutat este 12 
+ 
+Exemplul 2: Numărul de angajați ai unei firme se dublează o dată la cinci ani. Știind că 
+această firmă are o vechime de 25 de ani, iar acum sunt angajați 3 520 de angajați, câți angajați 
+erau la început? 
+Rezolvare:  
+Rezolvăm în ordine inversă , succesiv astfel: 
+Moment  Număr angajați 
+În prezent 3520  
+Acum 5 ani 3520:2=1760 
+Acum 10 ani 1760:2=880 
+Acum 15 ani 880:2=440 
+Acum 20 ani 440:2=220 
+Acum 25 ani, adică la început 220:2=110 
+Răspuns: 110 angajați  
+CLASA A V-A 
+FIȘĂ DE LUCRU 
+METODA MERSULUI INVERS 
+1. Anabela se gândește la un număr, îl împarte la 4, apoi adună rezultatul cu 7 și obține 18. 
+La ce număr s-a gândit Anabela? 
+2. Determină numărul natural x din relația următoare: 
+a) [(x : 4 + 5) : 6 + 10] : 10 + 3 = 13 
+b) [(3∙ 𝑥 −12):6+7]:10−2 = 0 
+3. Un turist parcurge un traseu în trei zile. În a doua zi a 
+parcurs o distanță de cinci ori mai mare decât în prima zi. În 
+a treia zi a parcurs cu 5 km mai mult decât în ziua a doua, 
+adică 30 km. Ce lungime a avut traseul?  
+4. Cât este numărul natural x din relația: (2 · x – 30) : 15 + 15 = 315? 
+5. Andrei are o sumă de bani cu 387 de lei mai mare decât dublul sumei de bani pe care o 
+are Ana. Ce sumă de bani are Ana, dacă Andrei are 579 de lei?
+
+
+
+METODA FALSE IPOTEZE  
+Exemplul 1: Într-un bloc sunt 24 apartamente, unele cu 2 camere, altele cu 3 camere, 
+în total 54 camere. Câte apartamente sunt cu 2 camere și câte cu 3 camere? 
+Metoda de rezolvare constă în a porni de la presupunerea (ipoteza) că  toate 
+apartamentele sunt de același fel, se continuă cu raționamentul până se ajunge la o comparație 
+cu datele problemei în urma căreia se stabilește că presupunerea este falsă și se determină cu 
+cât sau de câte ori. 
+Rezolvare: presupunem că toate apartamentele au 3 camere.  
+În total ar fi 243=72 camere. Dar avem 54 camere! Atunci presupunerea făcută este 
+falsă! 
+Facem diferența, 72-54=18. Această diferență provine din faptul că unele apartamente 
+au 2 camere, nu 3! 
+Cu câte camere în plus are apartamentul cu 3, față de cel cu 2? 
+3-2=1 
+De unde, 18:1=18 este numărul apartamentelor cu 2 camere! 
+Prin diferență aflăm numărul apartamentelor cu 3 camere, 24-18=6 
+Răspuns: 18 apartamente cu 2 camere, 6 apartamente cu 3 camere. 
+Exemplul 2: Un fermier are găini și iepuri, în total 100 capete și 240 picioare. Câte 
+gâini și câți iepuri are fermierul? 
+Rezolvare: presupunem că toate animalele sunt iepuri.   
+În total ar fi 1004=400 picioare. Dar avem 240 picioare! Atunci presupunerea făcută 
+este falsă! 
+Facem diferența, 400-240=160. Această diferență provine din faptul că unele animale 
+sunt găini (care au două picioare) și nu iepuri (care au patru picioare). 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+Cu câte picioare are în plus un iepure față de o găină? 
+4-2=2. 
+De unde, 160:2=80 este numărul găinilor! 
+Prin diferență aflăm numărul iepurilor, 100-80=20 
+Răspuns: 80 găini, 20 iepuri
+
+
+
+Divizor. Multiplu. 
+Un număr natural a este divizibil (se divide) cu un număr natural b dacă există un număr natural 
+c, astfel încât a = b ∙ c. 
+Dacă a = b ∙ c spunem că a este multiplu al numerelor b și c iar b și c sunt divizori ai lui a. 
+Scriem 𝑎 ⋮ 𝑏  și citim „numărul a este divizibil (se divide) cu numărul natural b”. 
+Scriem 𝑏 𝑎 și citim „numărul b divide numărul a”. 
+Exemple: 
+ 15⋮3 deoarece 15 = 3∙5 
+ 27⋮9 deoarece 27 = 9∙3 
+ 7∕35 deoarece 35 = 7∙5 
+ 11∕99 deoarece 99 = 11∙9 
+Orice număr natural a se divide cu 1. Scriem 𝑎 ⋮ 1 (sau 1│a), oricare ar fi a număr natural. 
+Orice număr natural a se divide cu el însuși. Scriem a ⋮ a (sau a│a), oricare ar fi a număr 
+natural. 
+Numerele 1 și a sunt divizori improprii ai lui a. Toți ceilalți divizori sunt divizori proprii. 
+Numărul 0 se divide cu orice număr natural. 0 ⋮  a (sau a│0), oricare ar fi a număr natural. 
+Aplicații 
+1. Scrieți toți divizorii numărului natural 18. 
+Răspuns: 1, 2, 3, 6, 9, 18. 
+2. Scrieți toți divizorii numărului natural 50. 
+Răspuns: 1, 2, 5, 10, 25, 50. 
+3. Scrieți primii 5 multipli ai lui 7. 
+Răspuns: 0, 7, 14, 21, 28. 
+4. Scrieți toți multiplii lui 3 cuprinși între 20 și 40. 
+Răspuns: 21, 24, 27, 30, 33, 36, 39. 
+5. Stabiliți dacă următoarele numere naturale sunt multipli ai lui 9: 781, 225, 1000. 
+Rezolvare: 
+Efectuăm împărțirile:  
+781:9=86 rest 7, deci 781 nu este multiplu al lui 9. 
+225:9=25 rest 0, deci 225=925, deci 225 este multilu al lui 9. 
+1000:9=111 rest 1, deci 1000 nu este multiplu al lui 9. 
+6. Scrieți toți divizorii proprii ai lui 24. 
+Răspuns: 2, 3, 4, 6, 8, 12. 
+7. Scrieți 5 exemple de numere naturale care exact 2 divizori. 
+Răspuns: 2, 7, 11, 17, 23. 
+8. Scrieți 5 exemple de numere naturale care exact 3 divizori. 
+Răspuns: 4, 9, 25, 49, 121. 
+9. Scrieți 5 exemple de numere naturale care exact 4 divizori. 
+Răspuns: 6, 10, 15, 14, 21.
+
+
+Criteriile de divizibilitate cu 2, 5, 10n 
+1. Criteriul de divizibilitate cu 2 
+Dacă un număr are ultima cifră (cifra unităților) 0, 2, 4, 6 sau 8, atunci numărul este divizibil cu 2. 
+Dacă un număr este divizibil cu 2, atunci ultima sa cifră (cifra unităților) este 0, 2, 4, 6 sau 8. 
+Numerele divizibile cu 2 se numesc numere pare. 
+Numerele care nu se divid cu 2 se numesc numere impare. 
+Exemple de numere divizibile cu 2: 
+7812, 10996, 3334, 9980, 5518, 10000. 
+2. Criteriul de divizibilitate cu 5 
+Dacă un număr are ultima cifră (cifra unităților) 0 sau 5, atunci numărul este divizibil cu 5. Dacă un 
+număr este divizibil cu 5, atunci ultima sa cifră (cifra unităților) este 0 sau 5. 
+Exemple de numere divizibile cu 5: 
+235, 70910, 445, 79120, 6680, 5555, 990, 76505 
+3. Criteriul de divizibilitate cu 10n 
+Dacă un număr are ultimele n cifre egale cu 0, atunci numărul este divizibil cu 10n, unde n ≥ 1. 
+Dacă un număr este divizibil cu 10n, atunci el are ultimele n cifre egale cu 0, unde n ≥ 1. Pentru n = 1, 
+obținem criteriul de divizibilitate cu 10. 
+Exemple de numere divizibile cu 10: 
+70, 570, 2670, 999990, 2570, 39510. 
+Exemple de numere divizibile cu 100: 
+200, 7800, 20100, 57900, 257100. 
+Exemple de numere divizibile cu 1000: 
+7000, 45000, 102000, 799000, 5781000.
+
+
+Criteriile de divizibilitate cu 3 și 9 
+Dacă un număr are suma cifrelor divizibilă cu 3 (sau cu 9), atunci numărul se divide cu 3 (sau cu 9). 
+Dacă un număr se divide cu 3 (sau cu 9), atunci suma cifrelor sale se divide cu 3 (sau 9). 
+Exemple de numere divizibile cu 3: 
+ 111, deoarece 1+1+1=3 și 3⋮3. 
+ 7212 deoarece 7+2+1+2=12 și 12⋮3. 
+ 63414 deoarece 6+3+4+1+4=18 și 18⋮3. 
+Exemple de numere divizibile cu 9: 
+ 63414 deoarece 6+3+4+1+4=18 și 18⋮9. 
+ 9040527 deoarece 9+4+5+2+7=27 și 27⋮9. 
+ 99999 deoarece 9+9+9+9+9=45 și 45⋮9. 
+Aplicații 
+1. Determinați numerele naturale de forma 20𝑥1  divizibile cu 3, unde x este o cifră a sistemului 
+zecimal. 
+Rezolvare: (2+0+x+1) ⋮ 3, de unde x poate lua valorile 0, 3, 6, 9 deci numerele obținute sunt 
+2001, 2031, 2061, 2091. 
+2. Determinați numerele naturale de forma 𝑥4581  divizibile cu 9, unde x este o cifră a sistemului 
+zecimal. 
+Rezolvare: (x+4+5+8+1) ⋮ 9, adică (x+18) ⋮ 9  și cum x este prima cifră nu poate lua valoarea 0, 
+așadar avem doar x = 9 și soluția este 94581.
+
+
+Număr prim, număr compus 
+Oricare număr natural a, diferit de 1,  are cel puțin divizorii 1 și a. Un 
+număr natural mai mare decât 1, care are exact doi divizori (pe 1 și pe el însuși), 
+se numește număr prim. Dacă are cel puțin trei divizori  se numește număr 
+compus. 
+Singurul număr par prim este 2. 
+Numerele naturale 0 și 1 nu sunt nici prime, nici compuse. Numărul 
+natural 0 are o infinitate de divizori, toate numerele naturale nenule, iar numărul 
+natural 1 are un singur divizor, el însuși. 
+Pentru identificarea unui număr natural prim, procedăm astfel: 
+ împărțim numărul dat succesiv la toate numerele naturale prime, luate în 
+ordine crescătoare, până când obținem câtul mai mic decât împărțitorul; 
+ dacă niciuna dintre împărțirile efectuate nu are restul 0, atunci numărul 
+este prim; 
+ dacă la una dintre împărțiri restul este 0, atunci numărul este compus. 
+Ciurul lui Eratostene este un algoritm simplu și vechi de descoperire a 
+tuturor numerelor prime până la un număr specificat.  
+Pașii sunt următorii: 
+ Se scrie o listă a numerelor de la 2 la cel mai mare număr ce urmează a 
+fi testat pentru primalitate. 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+ Se taie toți multiplii lui 2 din lista. Rezultă o listă cu numere tăiate și 
+numere netăiate. 
+ Primul număr netăiat din listă este un număr prim.  Se taie din listă toți 
+multiplii acestuia. Rezultă o nouă listă. 
+ Se repetă pasul de mai sus până când noua listă nu mai conține numere 
+netăiate. 
+ În lista finală toate numerele netăiate dunt prime. 
+Exemple: 
+1. Șirul numerelor naturale prime, 
+2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, ... 
+2. Exemple de numere naturale compuse: 4, 6, 8, 9, 10, 12, 14, 15, 16, ... 
+3. Verificăm dacă numărul natural  491 este prim: 
+aplicând criteriile de divizibilitate observăm că nu se divide cu 2, 3, 
+sau 5. 
+491:7=70 rest 1, 707, împărțirea nu este cu rest 0 
+491:11=44 rest 7, 4411, împărțirea nu este cu rest 0 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+491:13=37 rest 10, 3713, împărțirea nu este cu rest 0 
+491:17=28 rest 15, 2817, împărțirea nu este cu rest 0 
+491:19=25 rest 16, 2519, împărțirea nu este cu rest 0 
+491:23=21 rest 8, 2123, împărțirea nu este cu rest 0 
+Ne oprim și concluzionăm că 491 este număr prim 
+4. Pentru a arăta că un număr este compus este suficient să găsim un 
+divizor propriu al acestuia. 
+Exemple:  
+a) 111 este număr compus deoarece 1+1+1=3  ⋮  3. 
+b) 707 este număr compus deoarece observăm ușor că 707   ⋮  7. 
+c) 131313 este număr compus deoarece observăm ușor că 131313 ⋮ 
+13. 
+Exerciții rezolvate 
+1. Scrieți următoarele numere naturale ca produs de două numere prime: 
+12, 21, 55, 49. 
+Rezolvare: 12=34, 21=37, 55=511, 49=77. 
+2. Scrieți următoarele numere naturale ca produs de trei numere prime: 30, 
+42, 18, 20. 
+Rezolvare: 30=235, 42=237, 18=332, 20=225. 
+3. Scrieți următoarele numere naturale ca sumă de două numere prime: 12, 
+14, 31, 64. 
+Rezolvare: 12=7+5, 14=11+3, 31=29+2, 64=61+3. 
+4. Determinați numerele prime a și b știind că 2a+21b=68. 
+Rezolvare:  
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+Observăm că 2a-par, 68-par, de unde avem că și 21b-par; cum 21 nu este 
+par rezultă că b este par. Singurul număr prim par este 2, deci b=2. 
+Înlocuim, 2a+212=68, de unde 2a=68-42, adică 2a=26, de unde a=13, 
+care este număr prim. 
+Soluție: a=13, b=2. 
+5. Determinați numerele prime m și n știind că 5m+12n=89. 
+Rezolvare:  
+Observăm că valoarea maximă pe care o poate lua n este 7, deoarece 
+127=84  89 iar  pentru n prim, n7 obținem 12n89. 
+Așadar analizăm cazurile n=7, n=5, n=3, n=2, adică toate posibilitățile de 
+numere prime mai mici sau egale cu 7. 
+ Dacă n=7, avem: 5m+84=89, de unde 5m=5, m=1, care nu convine, m 
+fiind prim. 
+ Dacă n=5, avem: 5m+60=89, de unde 5m=29, pentru care nu avem 
+soluție număr natural. 
+ Dacă n=3, avem: 5m+36=89, de unde 5m=53, pentru care nu avem 
+soluție număr natural. 
+ Dacă n=2, avem: 5m+24=89, de unde 5m=65, de unde m=13, care 
+convine, fiind număr prim. 
+Soluție: m=13, n=2 
+Prof. Ionela Turturean  
+Școala Gimnazială ”Grigore Moisil” Satu Mare 
+E-mail: ionelaturturean@gmail.com 
+Clasa a V-a 
+Fișa de lucru 
+Număr prim, număr compus 
+1. Scrieți toate numerele naturale prime cuprinse între 12 și 38. 
+2. Scrieți toate numerele naturale compuse cuprinse între 19 și 57. 
+3. Fie șirul de numere naturale: 
+0, 1, 6, 7, 11, 21, 31, 41, 51, 61, 77, 89. 
+Încercuiți numerele prime și subliniați numerele compuse. 
+4. Scrieți următoarele numere naturale ca sumă de două numere prime: 36, 68, 
+24, 21, 54. 
+5. Produsul a două numere prime este 57. Care sunt numerele? 
+6. Produsul a două numere prime este 143. Care sunt numerele? 
+7. Produsul a două numere prime este 95. Care sunt numerele? 
+8. Scrieți următoarele numere naturale ca produs de două sau mai multe numere 
+prime: 24, 35, 48, 66, 54, 90. 
+9. Numerele prime pot fi pătrate perfecte? Justificați. 
+10. Verificați dacă următoarele numere sunt prime:  
+a) 401 
+b) 289 
+c) 961 
+11. Aflați valoarea de adevăr a propozițiilor de mai jos și justificați răspunsul. 
+a) Orice număr natural de forma 𝑥𝑦2  este compus. 
+b) Orice număr natural de forma 𝑎𝑎𝑎  este compus. 
+c) Există două numere compuse a căror sumă este număr prim. 
+12.  Determinați numerele prime a și b știind că 3a+7b=72. 
+13. Determinați numerele prime a, b, c știind că 2a+7b+6c=78. 
+
+
+Fracții ordinare – desen, notație, clasificare, procent
+Orice obiect care urmează a fi împărțit în mai multe părți de mărimi egale
+se va numi întreg sau unitate și se va reprezenta prin segmente sau forme
+geometrice (dreptunghi, pătrat, triunghi, etc.).
+O parte dintr-un întreg care a fost împărțit în părți de
+mărimi egale se numește unitate fracționară.
+Una sau mai multe unități fracționare reprezintă o
+fracție.
+Exemplu: mai sus avem un întreg împărțit în nouă părți egale.
+Notație:
+Un întreg nu poate fi împărțit în 0 părți egale (nu are sens acțiunea), deci
+nu există fracții ordinare cu numitorul 0.
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+Exemple de reprezentare prin desen:
+Fracția
+𝒑
+𝟏𝟎𝟎
+, unde p este un număr se numește procent. Se notează p%.
+Se citește ”p la sută”.
+Exemple:
+ Când spunem că 50% din pomii unei livezi sunt meri înțelegem că
+din 100 de pomi, 50 sunt meri.
+ Când spunem că 20% din animalele dintr-o fermă sunt capre
+înțelegem că din 100 de animale, 20 sunt capre.
+Clasificarea fracțiilor ordinare
+1. Fracții subunitare – au valoare mai mică decât o unitate (un întreg); le
+recunoaștem prin faptul că numărătorul este mai mic ca numitorul.
+Exemple:
+2
+3
+1
+109
+12
+13
+1009
+1900
+999
+1000
+2. Fracții echiunitare – au valoare egală cu o unitate (un întreg); le
+recunoaștem prin faptul că numărătorul este egal cu numitorul.
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+Exemple:
+3
+3
+99
+99
+121
+121
+10
+10
+9099
+9099
+3. Fracții supraunitare – au valoare mai mare decât o unitate (un întreg); le
+recunoaștem prin faptul că numărătorul este mai mare ca numitorul.
+Exemple:
+63
+13
+9990
+5
+121
+120
+1087
+1078
+9099
+9009
+Exerciții rezolvate:
+1. Scrieți toate fracțiile subunitare care au numitorul egal cu 5.
+Soluție:
+1
+5
+,
+2
+5
+,
+3
+5
+,
+4
+5
+.
+2. Determinați numărul natural n pentru care fracția 2𝑛+1
+13
+este echiunitară.
+Soluție: 2n+1=13, de unde folosind metoda operației inverse avem
+2n=12, n=6.
+3. Determinați numerele naturale n pentru care fracția 21
+3𝑛+1
+este supraunitară.
+Soluție: 3n+121, de unde 3n20 iar numerele naturale care
+îndeplinesc condiția sunt: 0, 1, 2, 3, 4, 5, 6.
+4. Determinați numărul natural n pentru care fracția 7𝑛+2
+5𝑛+6
+este echiunitară.
+Soluție: 7n+2=5n+6, de unde 7n-5n=6-2, de unde 2n=4, adică n=2.
+
+
+
+Fracțiile care reprezintă aceeași parte din întreg se numesc fracții
+echivalente.
+Scriem,
+𝒂
+𝒃
+=
+𝒄
+𝒅
+Exemplu:
+𝟒
+𝟔
+=
+𝟐
+𝟑
+Cum le recunoaștem?
+𝒂
+𝒃
+=
+𝒄
+𝒅
+ dacă 𝒂 ∙ 𝒅 = 𝒃 ∙ 𝒄
+Exemple:
+1. 2
+5
+=
+6
+15
+ deoarece 2 ∙ 15 = 5 ∙ 6
+2. 1
+7
+=
+4
+28
+deoarece 1 ∙ 28 = 4 ∙ 7
+3. 4
+5
+≠
+5
+6
+deoarece 4 ∙ 6 ≠ 5 ∙ 5
+4. 11
+9
+≠
+6
+5
+deoarece 11 ∙ 5 ≠ 9 ∙ 6
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+Compararea fracțiilor ordinare cu același numitor sau numărător
+Reprezentarea pe axa numerelor a fracțiilor ordinare
+Dintre două fracții care au același numitor, mai mare este fracția care are
+numărătorul mai mare.
+Exemple:
+5
+6
+>
+1
+6
+11
+31 >
+9
+31
+165
+7
+>
+156
+7
+Dintre două fracții care au același numărător, mai mare este fracția care
+are numitorul mai mic.
+Exemple:
+15
+6
+>
+15
+7
+11
+909 <
+11
+9
+1
+17 >
+1
+71
+Orice fracție subunitară este cuprinsă între numerele naturale consecutive
+0 și 1.
+Exemple:
+0 <
+1
+6
+< 1
+0 <
+98
+99 < 1
+0 <
+156
+211 < 1
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+Fracțiile se pot reprezenta pe axa numerelor la fel ca numerele naturale.
+Pentru aceasta se ia mai întâi unitatea și se reprezintă apoi pe ea fracția. Dintre
+două fracții reprezentate pe axa numerelor este mai mare fracția din dreapta.
+Exemple:
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+CLASA A V-A
+FIȘĂ DE LUCRU
+Fracții echivalente
+Comparare, ordonare, așezare pe axă
+1. Scrieți patru fracții echivalente cu fracția 1
+2
+.
+2. Verificați dacă următoarele fracții sunt echivalente:
+a.
+6
+7
+ș𝑖
+8
+9
+b. 7
+5
+ș𝑖
+14
+10
+c.
+23
+51
+ș𝑖
+3
+7
+d. 2
+3
+ș𝑖
+24
+36
+3. Dacă 3∙𝑛+1
+4
+ș𝑖
+11
+2
+ sunt fracții echivalente, determinați numărul natural n.
+4. Determinați fracția echivalentă cu 9
+7
+care să aibă:
+a) numitorul egal cu 28.
+b) numărătorul egal cu 45.
+5. Comparați fracțiile:
+a.
+2
+3
+ș𝑖
+21
+3
+b. 234
+31
+ș𝑖
+243
+31
+c.
+109
+7
+ș𝑖
+19
+7
+d. 2
+312
+ș𝑖
+2
+3012
+e.
+98
+41
+ș𝑖
+98
+14
+f. 7
+5656
+ș𝑖
+7
+5665
+6. Ordonați descrescător fracțiile: 25
+2
+,
+52
+2
+,
+5
+2
+,
+11
+2
+,
+1
+2
+.
+7. Ordonați crescător fracțiile: 25
+12
+,
+25
+2
+,
+25
+112
+,
+25
+22
+,
+25
+202
+.
+8. Pentru fiecare din situațiile de mai jos scrieți coordonatele punctelor A, B, C,
+D.
+a)
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+b)
+9. Pentru fiecare din situațiile de mai jos scrieți coordonatele punctelor marcate
+în figură.
+a)
+b)
+Indicație: a) unitatea este împărțită în 6 părți egale, punctul A este situat la o
+șesime de punctul ce are coordonata 4 ( 4 întregi conțin 46=24 șesimi), deci
+coordonata lui A va fi 46+1
+6
+=
+25
+6
+.
+10.Determinați numerele naturale n pentru care au loc inegalitățile:
+a) 𝑛
+11
+<
+5
+11
+b) 7
+𝑛
+≥
+7
+3
+c) 3
+7
+<
+𝑛
+7
+<
+8
+7
+
+
+Scoaterea întregilor din fracție
+Introducerea întregilor în fracție
+O fracție supraunitară se poate scrie punând în evidență numărul întregilor
+folosiți integral și fracția luată din ultimul întreg. Spunem că am scos întregii
+din fracție.
+Fie fracția supraunitară
+𝑎
+𝑏
+. Cum procedăm?
+ Împărțim a la b.
+ Câtul obținut va fi numărul de întregi.
+ Restul obținut va fi numărul de unități fracționare din noua fracție
+(subunitară) rămasă.
+Exemplu:
+19
+3
+19: 3 = 6 𝑟𝑒𝑠𝑡 1
+19
+3
+= 6
+1
+3
+(citim ”6 întregi și 1 supra 3”)
+Se poate efectua și operația inversă. Spunem că am introdus întregii în
+fracție.
+Procedăm astfel:
+𝑛
+𝑎
+𝑏
+=
+𝑛 ∙ 𝑏 + 𝑎
+𝑏
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+Exemple:
+1. 4
+2
+3
+=
+4∙3+2
+3
+=
+14
+3
+2. 7
+1
+5
+=
+7∙5+1
+5
+=
+36
+5
+3. 9
+6
+11
+=
+9∙11+6
+11
+=
+105
+11
+Exerciții rezolvate
+1. După scoaterea întregilor din fracție, completați în fiecare caz enunțul:
+a) Numărul 89
+3
+ este format din _____ întregi și _____ treimi.
+b) Numărul 761
+100
+este format din _____ întregi și _____ sutimi.
+Rezolvare:
+a) 89:3=29 rest 2, deci, numărul 89
+3
+ este format din 29 întregi și 2 treimi.
+b) 761:100=7 rest 61, deci Numărul 761
+100
+este format din 7 întregi și 61 sutimi.
+2. Introduceți întregii în fracție:
+a) 6
+3
+11
+b) 12 2
+9
+Rezolvare:
+a) 6
+3
+11
+=
+6∙11+3
+11
+=
+69
+11
+
+Amplificarea și simplificarea fracțiilor ordinare
+A amplifica o fracție înseamnă să înmulțim atât numitorul, cât și
+numărătorul, cu același număr natural diferit de zero. Prin amplificare se obține
+o fracție echivalentă cu fracția dată.
+Exemple:
+A simplifica o fracție înseamnă să împărțim atât numitorul, cât și
+numărătorul, cu același număr natural diferit de zero. Prin simplificare se obține
+o fracție echivalentă cu fracția dată. Simplificarea se face numai printr-un
+divizor comun al numărătorului și al numitorului, diferit de 1.
+Exemple:
+
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+
+ Oricare două numere naturale nenule au cel puțin un divizor comun.
+Acesta este 1.
+ Dintre toți divizorii comuni ai unor numere naturale, există un divizor
+care se divide cu toți ceilalți divizori comuni. Acesta se numește cel mai
+mare divizor comun.
+ Cel mai mare divizor comun al numerelor a și b se notează c.m.m.d.c. al
+numerelor a și b sau (a, b).
+ Două numere naturale care au c.m.m.d.c egal cu 1 se numesc numere
+prime între ele.
+ O fracție ordinară pentru care numărătorul și numitorul sunt prime între
+ele se numește fracție ireductibilă. O astfel de fracție nu poate fi
+simplificată. În caz contrar se numește fracție reductibilă.
+Exemple de fracții ireductibile:
+7
+2
+,
+4
+25 ,
+87
+88 ,
+1
+412 ,
+11
+13 ,
+8
+15
+Exemple de fracții reductibile:
+2
+42 ,
+22
+55 ,
+35
+14 ,
+101
+707
+Aplicație: folosim amplificarea pentru a transforma o fracție ordinară în
+procent:
+3
+4
+, devine, după amplificare cu 25,
+3 ∙ 25
+4 ∙ 25 =
+75
+100 = 75%
+
+
+Cel mai mic multiplu comun
+pentru două sau mai multe numere naturale
+Oricare două numere naturale nenule au cel puțin un multiplu comun, acesta fiind produsul lor.
+Dintre toți multiplii comuni, diferiți de 0, ai două numere naturale, există un multiplu care este
+divizor pentru toți ceilalți multipli comuni. Acesta se numește cel mai mic multiplu comun.
+Cel mai mic multiplu comun al numerelor a și b se notează c.m.m.m.c. al numerelor a și b sau
+[a, b].
+Exemplu:
+M15=0, 15, 30, 45, 60, 75, ... - mulțimea multiplilor lui 15.
+M10=0, 10, 20, 30, 40, 50, 60, ... - mulțimea multiplilor lui 10.
+M10M15=0, 30, 60, 90, ... - mulțimea multiplilor comuni
+Cel mai mic, nenul, cu proprietatea că îi divide pe ceilalți este 30.
+15, 10=30
+Alte exemple (determinare orală)
+4, 6=12
+7, 8=56
+4, 9=36
+14, 7=14
+16, 4=16
+12, 5=60
+5, 20=20
+25, 4=100
+22, 33=66
+
+
+Cel mai mic multiplu comun
+pentru două sau mai multe numere naturale
+Oricare două numere naturale nenule au cel puțin un multiplu comun,
+acesta fiind produsul lor.
+Dintre toți multiplii comuni, diferiți de 0, ai două numere naturale, există
+un multiplu care este divizor pentru toți ceilalți multipli comuni. Acesta se
+numește cel mai mic multiplu comun.
+Cel mai mic multiplu comun al numerelor a și b se notează c.m.m.m.c. al
+numerelor a și b sau [a, b].
+Exemplu:
+0, 15, 30, 45, 60, 75, ... - multiplii lui 15.
+0, 10, 20, 30, 40, 50, 60, ... - mutiplii lui 10.
+0, 30, 60, 90, ... - multiplii comuni
+Cel mai mic, nenul, cu proprietatea că îi divide pe ceilalți este 30.
+15, 10=30
+Alte exemple (determinare orală)
+4, 6=12
+7, 8=56
+4, 9=36
+14, 7=14
+16, 4=16
+12, 5=60
+5, 20=20
+25, 4=100
+22, 33=66
+Prof. Ionela Turturean
+Școala Gimnazială ”Grigore Moisil” Satu Mare
+E-mail: ionelaturturean@gmail.com
+Aducerea fracțiilor la același numitor
+Pentru a le compara sau pentru a efectua adunarea și scăderea, este
+necesar să aducem fracțiile la același numitor. Pentru aceasta întâi determinăm
+un numitor comun, preferabil cel mai mic și apoi amplificăm corespunzător.
+Exemple:
+1. 5
+4
+și 1
+6
+n.c.=4, 6=12
+12:4=3, prima fracție o amplificăm cu 3
+12:2=6, a doua fracție o amplificăm cu 2
+
+2. 6
+7
+,
+1
+21
+ și 5
+42
+n.c.= 7, 21, 42=42
+42:7=6, prima fracție o amplificăm cu 6
+42:21=2, a doua fracție o amplificăm cu 2
+Ultima fracție nu se amplifică deoarece are
+numitorul 42.
+3. 5
+9
+,
+7
+12
+,
+13
+8
+ și 1
+36
+n.c.= 9, 12, 8, 36=72
+72:9=8, prima fracție o amplificăm cu 8
+72:12=6, a doua fracție o amplificăm cu 6
+72:8=9, a treia fracție o amplificăm cu 9
+72:36=2, a patra fracție o amplificăm cu 2
+
+
+Adunarea și scăderea fracțiilor care au același numitor
+𝑎
+𝑐
++
+𝑏
+𝑐
+=
+𝑎 + 𝑏
+𝑐
+𝑎
+𝑐
+−
+𝑏
+𝑐
+=
+𝑎 − 𝑏
+𝑐
+Exemple:
+1. 7
+2
++
+5
+2
+−
+1
+2
+=
+7+5−1
+2
+=
+11
+2
+2. 97
+5
+−
+13
+5
+=
+84
+5
+3. 47
+9
++
+1
+9
++
+2
+9
+−
+25
+9
+=
+25
+9
+4. 6
+11
++ 3
+2
+11
+=
+6
+11
++
+3∙11+2
+11
+=
+6
+11
++
+35
+11
+=
+41
+11
+sau
+6
+11
++ 3
+2
+11
+= 3
+6+2
+11
+= 3
+8
+11
+=
+3∙11+8
+11
+=
+41
+11
+5. 100
+97
+− 1 =
+100
+97
+−
+97
+97
+=
+3
+97
+1 =
+97
+97
+(fracție echiunitară)
+
+Adunarea și scăderea fracțiilor care nu au același numitor
+Pentru a efectua adunarea și scăderea fracțiilor care nu au același numitor procedăm astfel:
+ Găsim un numitor comun, adică un multiplu comun al numitorilor, preferabil cel mai mic (dar
+nu obligatoriu)
+ Amplificăm corespunzător pentru a aduce fracțiile la numitor comun
+ Aplicăm regulile învățate anterior,
+𝑎
+𝑐
++
+𝑏
+𝑐
+=
+𝑎 + 𝑏
+𝑐
+𝑎
+𝑐
+−
+𝑏
+𝑐
+=
+𝑎 − 𝑏
+𝑐
+Exemple:
+1. Pentru a efectua 7
+4
+−
+5
+6
+ determinăm numitorul comun; cel mai mic numitor comun este 12; prima
+fracție o amplificăm cu 12:4=3 iar a doua cu 12:6=2. Asfel obținem,
+7
+4
+−
+5
+6
+=
+21
+12 −
+10
+12 =
+11
+12
+2. Pentru a efectua 1
+9
++
+5
+3
+−
+5
+6
+determinăm numitorul comun; cel mai mic numitor comun este 18;
+prima fracție o amplificăm cu 18:9=2, a doua cu 18:3=6, iar a treia cu 18:6=3. Asfel obținem,
+1
+9
++
+5
+3
+−
+5
+6
+=
+2
+18 +
+30
+18 −
+15
+18 =
+17
+
+
+
+Înmulțirea fracțiilor ordinare.
+Aflarea unei fracții dintr-un număr.
+Înmulțirea unui număr natural cu o fracție ordinară:
+Pentru a înmulți un număr natural cu o fracție ordinară
+înmulțim numărul natural cu numărătorul fracției și păstrăm
+numitorul neschimbat:
+𝑛 ∙
+𝑎
+𝑏
+=
+𝑛∙𝑎
+𝑏
+ și
+𝑎
+𝑏
+∙ 𝑛 =
+𝑎∙𝑛
+𝑏
+pentru orice numere naturale n, a, b, unde b0
+Exemple:
+a)2 ∙
+3
+7
+=
+2∙3
+7
+=
+6
+7
+𝑏)
+2
+9
+∙ 4 =
+2∙4
+9
+Înmulțirea a două fracții ordinare:
+Pentru a înmulți două fracții ordinare se înmulțesc numărătorii
+între ei și numitorii între ei:
+𝑎
+𝑏
+∙
+𝑐
+𝑑
+=
+𝑎 ∙ 𝑐
+𝑏 ∙ 𝑑
+pentru orice numere naturale a, b, c, d, unde b, d0
+Exemplu:
+2
+3
+∙
+5
+7
+=
+2 ∙ 5
+3 ∙ 7
+=
+10
+21
+Observații:
+• Dacă este posibil, rezultatul se simplifică.
+Exemplu:
+5
+6
+∙
+3
+8
+=
+5 ∙ 3
+6 ∙ 8
+=
+15(3
+48 =
+5
+16
+Prof: Pleșca Csilla-Tünde
+Școala Gimnazială ”Gheorghe Bulgăr” Sanislău
+• Pentru calcule mai rapide, vom simplifica înainte de a calcula
+produsul numitorilor sau al numărătorilor.
+• Exemple:
+5
+62
+∙
+3
+1
+8
+=
+5∙1
+2∙8
+=
+5
+16
+
+9
+1
+5
+∙
+2
+273
+=
+1∙2
+5∙3
+=
+2
+15
+• Atunci când unul dintre factorii unui produs este o fracție scrisă
+sub forma unui număr mixt, mai întâi se introduc întregii în
+fracție, apoi se efectuează înmulțirea.
+• Exemple:
+6 ∙ 2
+5
+9
+= 6 ∙
+2 ∙ 9 + 5
+9
+= 6 ∙
+23
+21 =
+6
+2
+∙ 23
+93
+=
+2 ∙ 23
+3
+=
+46
+3
+= 15
+1
+3
+4
+2
+5
+∙
+7
+33 =
+4 ∙ 5 + 2
+5
+∙
+7
+33 =
+222
+5
+∙
+7
+333
+=
+2 ∙ 7
+5 ∙ 3
+=
+14
+15
+Aflarea unei fracții dintr-un număr natural:
+Pentru a afla valoarea unei fracții dintr-un număr natural se
+înmulțește fracția dată cu acel număr.
+𝑎
+𝑏
+𝑑𝑖𝑛 𝑛 =
+𝑎
+𝑏
+∙ 𝑛 =
+𝑎 ∙ 𝑛
+𝑏
+pentru orice numere naturale n, a, b, unde b0.
+Exemple:
+1
+4
+𝑑𝑖𝑛 28 =
+1
+4
+∙ 28 =
+1 ∙ 287
+41
+=
+1 ∙ 7
+1
+= 7
+3
+5
+𝑑𝑖𝑛 20 =
+3
+5
+∙ 20 =
+3 ∙ 204
+51
+=
+3 ∙ 4
+1
+= 12
+Aflarea unei fracții dintr-o fracție ordinară:
+Pentru a afla valoarea unei fracții dintr-o fracție se calculează
+produsul celor două fracții.
+𝑎
+𝑏
+𝑑𝑖𝑛
+𝑐
+𝑑
+=
+𝑎
+𝑏
+∙
+𝑐
+𝑑
+=
+𝑎 ∙ 𝑐
+𝑏 ∙ 𝑑
+pentru orice numere naturale a, b, c, d, unde b, d0.
+Prof: Pleșca Csilla-Tünde
+Școala Gimnazială ”Gheorghe Bulgăr” Sanislău
+Exemple:
+1
+4
+𝑑𝑖𝑛
+2
+3
+=
+1
+4
+∙
+2
+3
+=
+1 ∙ 2
+1
+42 ∙ 3
+=
+1 ∙ 1
+2 ∙ 3
+=
+1
+6
+4
+5
+𝑑𝑖𝑛
+15
+4
+=
+4
+1
+51
+∙
+153
+41
+=
+1 ∙ 3
+1 ∙ 1
+=
+3
+1
+= 3
+Aflarea unui procent dintr-un număr:
+Pentru a afla un procent p% dintr-un număr natural (sau dintr-o
+fracție) se înmulțește fracția 𝑝
+100
+cu numărul natural dat ( sau cu fracția
+dată).
+𝑝% 𝑑𝑖𝑛 𝑛 =
+𝑝
+100
+∙ 𝑛 și 𝑝% 𝑑𝑖𝑛 𝑎
+𝑏
+=
+𝑝
+100
+∙
+𝑎
+𝑏
+pentru orice numere naturale p,a,b,n unde b0.
+Exemple:
+ 5% 𝑑𝑖𝑛 20 =
+5
+100
+∙ 20 =
+5
+1
+∙201
+10051
+= 1
+150% 𝑑𝑖𝑛
+2
+3
+=
+15050
+10050
+∙
+2
+1
+31
+=
+501
+501
+= 1
+
+
+
+
+Ridicarea la putere a fracțiilor ordinare
+Fie 𝑎
+𝑏
+ o fracție ordinară ( unde 𝑎 și 𝑏 sunt numere naturale , cu 𝑏 ≠ 0 ) și
+𝑛 ≥ 2 un număr natural .
+Produsul a 𝑛 factori egali cu 𝑎
+𝑏
+ se numește puterea a 𝑛 -a a fracției 𝑎
+𝑏
+ și se
+notează (
+𝑎
+𝑏
+)
+𝑛
+.
+Avem : (
+𝑎
+𝑏
+)
+𝑛
+=
+𝑎
+𝑏
+∙
+𝑎
+𝑏
+∙ ⋯ ∙
+𝑎
+⏟ 𝑏
+𝑛 factori
+=
+𝑎
+𝑛
+𝑏
+𝑛
+
+Altfel spus, pentru a ridica o fracție la o putere, se ridică la acea putere atât
+numărătorul , cât și numitorul .
+În scrierea (
+𝑎
+𝑏
+)
+𝑛
+, fracția 𝑎
+𝑏
+se numește baza puterii , iar 𝑛 se numește
+exponentul puterii .
+Prin convenție , (
+𝑎
+𝑏
+)
+1
+=
+𝑎
+𝑏
+ și (
+𝑎
+𝑏
+)
+0
+= 1 , 𝑎 , 𝑏 sunt numere naturale nenule.
+Exemple :
+1) (
+1
+2
+)
+3
+=
+1
+3
+2
+3 =
+1
+8
+2) (
+2
+3
+)
+2
+=
+2
+2
+3
+2 =
+4
+9
+3) (
+3
+2
+)
+3
+=
+3
+3
+2
+3 =
+27
+8
+4) (
+3
+4
+)
+2
+=
+3
+2
+4
+2 =
+9
+16
+5) (
+10
+11)
+2
+=
+102
+112 =
+100
+121
+6) (
+7
+9
+)
+0
+= 1
+7) (
+31
+51)
+1
+=
+31
+51
+2
+Reguli de calcul cu puteri
+Pentru orice numere naturale nenule 𝑎, 𝑏, 𝑐, 𝑑, 𝑚, 𝑛 se verifică relațiile :
+1) Înmulțirea puterilor cu aceeași bază
+Pentru a înmulți două puteri cu aceeași bază , se păstrează baza și se adună
+exponenții :
+(
+𝑎
+𝑏
+)
+𝑚
+∙ (
+𝑎
+𝑏
+)
+𝑛
+= (
+𝑎
+𝑏
+)
+𝑚+𝑛
+Exemplu :
+(
+5
+2
+)
+3
+∙ (
+5
+2
+)
+4
+= (
+5
+2
+)
+3+4
+= (
+5
+2
+)
+7
+2) Împărțirea puterilor cu aceeași bază
+Pentru a împărți două puteri cu aceeași bază , se păstrează baza și se scad
+exponenții :
+(
+𝑎
+𝑏
+)
+𝑚
+: (
+𝑎
+𝑏
+)
+𝑛
+= (
+𝑎
+𝑏
+)
+𝑚−𝑛
+, 𝑚 ≥ 𝑛
+Exemplu :
+(
+4
+5
+)
+7
+: (
+4
+5
+)
+4
+= (
+4
+5
+)
+7−4
+= (
+4
+5
+)
+3
+3) Puterea unei puteri
+Pentru a ridica o putere la o altă putere , se păstrează baza și se înmulțesc
+exponenții :
+[(
+𝑎
+𝑏
+)
+𝑚
+]
+𝑛
+= (
+𝑎
+𝑏
+)
+𝑚∙𝑛
+Exemple ∶
+[(
+2
+5
+)
+2
+]
+5
+= (
+2
+5
+)
+2∙5
+= (
+2
+5
+)
+10
+[(
+11
+101)
+99]
+0
+= (
+11
+101)
+99∙0
+= (
+11
+101)
+0
+= 1
+4) Puterea unui produs
+Pentru a ridica un produs la o putere , se distribuie exponentul fiecărui factor
+al produsului :
+(
+𝑎
+𝑏
+∙
+𝑐
+𝑑
+)
+𝑛
+= (
+𝑎
+𝑏
+)
+𝑛
+∙ (
+𝑐
+𝑑
+)
+𝑛
+Exemplu :
+3
+(
+2
+3
+∙
+5
+7
+)
+3
+= (
+2
+3
+)
+3
+∙ (
+5
+7
+)
+3
+Produsul a două puteri cu același exponent
+Pentru a înmulți două puteri cu același exponent , se înmulțesc bazele și se
+păstrează exponentul :
+(
+𝑎
+𝑏
+)
+𝑛
+∙ (
+𝑐
+𝑑
+)
+𝑛
+= (
+𝑎
+𝑏
+∙
+𝑐
+𝑑
+)
+𝑛
+Exemplu :
+(
+1
+11)
+4
+∙ (
+11
+3
+)
+4
+= (
+1
+11 ∙
+11
+3
+)
+4
+= (
+1
+3
+)
+4
+5) Puterea unui cât
+Pentru a ridica un cât la o putere , se distribuie exponentul fiecărui factor al
+câtului :
+(
+𝑎
+𝑏
+:
+𝑐
+𝑑
+)
+𝑛
+= (
+𝑎
+𝑏
+)
+𝑛
+: (
+𝑐
+𝑑
+)
+𝑛
+Exemplu :
+(
+4
+9
+:
+2
+7
+)
+5
+= (
+4
+9
+)
+5
+: (
+2
+7
+)
+5
+Câtul a două puteri cu același exponent
+Pentru a împărți două puteri cu același exponent , se împart bazele și se
+păstrează exponentul :
+(
+𝑎
+𝑏
+)
+𝑛
+: (
+𝑐
+𝑑
+)
+𝑛
+= (
+𝑎
+𝑏
+:
+𝑐
+𝑑
+)
+𝑛
+Exemplu :
+(
+3
+13)
+6
+: (
+5
+13)
+6
+= (
+3
+13 :
+5
+13)
+6
+= (
+3
+13 ∙
+13
+5
+)
+6
+= (
+3
+5
+)
+6
+Aplicații rezolvate
+1) Aplicând regulile de calcul scrieți sub forma unei singure puteri :
+a) produsul fracțiilor : (
+144
+49 )
+6
+și (
+7
+9
+)
+12
+.
+b) câtul fracțiilor : (
+4
+5
+)
+12
+și (
+8
+25)
+4
+.
+4
+Rezolvare :
+a) (
+144
+49 )
+6
+∙ (
+7
+9
+)
+12
+=(
+122
+7
+2
+)
+6
+∙ (
+7
+9
+)
+12
+= [(
+12
+7
+)
+2
+]
+6
+∙ (
+7
+9
+)
+12
+= (
+12
+7
+)
+12
+∙ (
+7
+9
+)
+12
+=
+= (
+12
+7
+∙
+7
+9
+)
+6
+= (
+4
+3
+)
+12
+b) (
+4
+5
+)
+12
+: (
+8
+25)
+4
+= (
+4
+5
+)
+3∙4
+: (
+8
+25)
+4
+= [(
+4
+5
+)
+3
+]
+4
+: (
+8
+25)
+4
+= (
+64
+125)
+4
+: (
+8
+25)
+4
+=
+= (
+64
+125 :
+8
+25)
+4
+= (
+64
+125 ∙
+25
+8
+)
+4
+= (
+8
+5
+)
+4
+2) a) Scrieți fracția 1331
+729
+sub forma unei puteri cu baza 11
+9
+.
+b) Scrieți fracția 243
+1024
+sub forma unei puteri cu exponentul 5 .
+Rezolvare :
+a) Avem 112 = 11 ∙ 11 = 121 și 113 = 11 ∙ 121 = 1331
+Cum 9
+3 = 81 ∙ 9 = 729 , rezultă 1331
+729
+=
+113
+9
+3 = (
+11
+9
+)
+3
+b) Avem 3
+2 = 3 ∙ 3 = 9 , 3
+4 = 3
+2
+∙ 3
+2 = 81 și 3
+5 = 3 ∙ 81 = 243
+Cum 1024 = 2
+10 = 2
+2∙5 = (2
+2
+)
+5 = 4
+5
+, rezultă 243
+1024
+=
+3
+5
+4
+5 = (
+3
+4
+)
+5
+
+
+
+
+ÎMPĂRȚIREA FRACȚIILOR ORDINARE CLASA A V-A
+BREVIAR TEORETIC
+DEFINIȚIE: Inversa fracției ordinare 𝑎
+𝑏
+, 𝑎 ≠ 0, 𝑏 ≠ 0, este fracția ordinară 𝑏
+𝑎
+.
+Dacă
+𝑎
+𝑏
+,
+𝑐
+𝑑
+sunt două fracții ordinare, atunci
+𝑎
+𝑏
+:
+𝑐
+𝑑
+=
+𝑎
+𝑏
+∙
+𝑑
+𝑐
+.
+OBSERVAȚIE: Produsul a două fracţii inverse este 1.
+EXEMPLU: Efectuați
+6
+5
+:
+9
+7
+.
+REZOLVARE:
+6
+5
+:
+9
+7
+=
+6
+5
+∙
+7
+9
+=
+63
+45
+EXEMPLU: Efectuați
+30
+28
+:
+5
+7
+.
+REZOLVARE:
+30
+28
+:
+5
+7
+=
+6
+30
+28
+4
+∙
+1
+7
+5
+1
+=
+6
+4
+∙
+1
+1
+=
+6
+(2
+4
+=
+3
+2
+= 1
+1
+2
+.
+EXEMPLU: Efectuați
+2
+3
+:
+5
+9
+: 3
+1
+5
+.
+REZOLVARE:
+2
+3
+:
+5
+9
+: 3
+1
+5
+=
+2
+3
+:
+5
+9
+:
+16
+5
+=
+1
+2
+3
+1
+∙
+3
+9
+5
+1
+∙
+1
+5
+16
+8
+=
+1
+1
+∙
+3
+1
+∙
+1
+8
+=
+3
+8
+.
+
+
+
+
+Transformarea fracțiilor ordinare în fracții zecimale
+Orice fracție ordinară se transformă în fracție zecimală prin împărțirea numărătorului la numitor.
+Exemple:
+8
+5
+= 8:5 = 1,6;
+7
+9
+= 7:9 = 0,(7);
+5
+6
+= 5:6 = 0,8(3);
+2
+1000
+= 2:1000 = 0,002 etc.
+Aducând o fracție în formă ireductibilă, putem determina tipul fracției zecimale în care ea se va
+transforma. Dacă numitorul fracției:
+1. este divizibil doar cu 2 și/sau 5, obținem o fracție zecimală cu un număr finit de zecimale
+Exemple:
+7
+2
+= 7:5 = 3,5;
+2
+5
+= 2:5 =0,4;
+9
+20
+= 9:20 = 0,45;
+777
+100
+= 777:100 = 7,77 etc.
+2. nu se divide nici cu 2, nici cu 5, obținem o fracție zecimală periodică simplă
+Exemple:
+7
+3
+= 7:3 = 2,(3);
+4
+9
+= 4:9 = 0,(4);
+6
+7
+= 6:7 = 0,(857142);
+14
+13
+= 14:13 = 1,(076923) etc.
+3. este divizibil cu 2 și/sau 5 și un alt număr prim, obținem o fracție zecimală periodică mixtă
+Exemple:
+1
+6
+= 1:6 = 0,1(6);
+4
+15
+= 4:15 = 0,2(6);
+196
+90
+= 196:90 = 2,1(7);
+27
+14
+= 27:14 = 1,9(285714) etc.
+prof. Papp Czier Bernadette
+Școala Gimnazială „Tempfli Jozsef” Urziceni
+Transformarea fracțiilor zecimale în fracții ordinare
+Cele trei tipuri de fracții zecimale se transformă în fracții ordinare după reguli diferite.
+1. Fracția zecimală cu un număr finit de zecimale se transformă într-o fracție ordinară a cărei
+- numărător este format din numărul natural obținut din fracția zecimală prin eliminarea virgulei
+- numitor este o putere a lui 10 cu exponentul egal cu numărul de zecimale ale fracției.
+Exemple:
+2,5 =
+25
+10
+;
+0,3 = 3
+10;
+0,55 =
+55
+100
+;
+21,351 =
+21351
+1000
+etc.
+2. Fracția zecimală periodică simplă se transformă într-o fracție ordinară în fața căreia se trece
+partea întreagă a fracției zecimale (dacă ea diferă de 0) și a cărei
+- numărător este egal cu numărul natural obținut perioada fracției
+- numitor este numărul format din atâtea cifre de 9 câte cifre are perioada.
+Exemple:
+2,(6)= 2
+6
+9
+;
+0,(7)=
+7
+9
+;
+0,(857) =
+857
+999
+;
+21,(076) =21
+76
+999
+etc.
+3. Fracția zecimală periodică mixtă se transformă într-o fracție ordinară în fața căreia se trece
+partea întreagă a fracției zecimale (dacă ea diferă de 0) și a cărei
+- numărător este egal cu diferența dintre numărul fără paranteză situat după virgulă și numărul
+situat la partea zecimală neperiodică
+- numitor este numărul format din atâtea cifre de 9 câte cifre are partea periodică, urmate de
+atâtea zerouri câte cifre are partea zecimală neperiodică.
+Exemple:
+0,1(4) =
+14−1
+90
+=
+13
+90
+;
+2,11(3) = 2
+113−11
+900
+=
+102
+900
+3,2(61) = 3
+261−2
+990
+= 3
+259
+990
+;
+13,92(285) = 13
+92285−92
+99900
+=
+92193
+99900
+ etc.
+
+
+
+
+Aproximări
+1. În viața de zi cu zi de multe ori se va întâmpla să nu folosim valorile exacte ale
+unor mărimi, de cele mai multe ori fiind suficiente valorile lor aproximative.
+Ca și la numere naturale și la fracți zecimale există aproximări prin lipsă sau prin
+adaos. Pentru aproximare putem folosi simbolul „≈”.
+Exemplu: 3,12≈3 (citim 3,12 aproximativ egal cu 3).
+Să exersăm:
+Fracția
+zecimală
+finită
+Aproximări
+PRIN LIPSĂ la... PRIN ADAOS la...
+întreg zecime sutime întreg zecime sutime
+3,187 3 3,1 3,8 4 3,2 3,19
+15,6423 15 15,6 15,64 16 16,7 16,65
+7,304 7 7,3 7,3 8 7,4 7,31
+207,124 207 207,1 207,12 208 207,2 207,3
+0,012 0 0 0,01 1 0,1 0,02
+2. Ca și la numere naturale și fracțiile zecimale se pot rotunji, ținând cont de cifra din
+dreapta acesteia:
+- dacă cifra este 0, 1, 2, 3, 4, atunci rotunjim prin lipsă;
+- dacă cifra este 5, 6, 7, 8, 9, atunci rotunjim prin adaos.
+Exemplu: 15,264 rotunjit la sutime 15,26
+15,264 rotunjit la zecime 15,3
+ 15,264 rotunjit la unitate 15
+Să exersăm:
+Fracția
+zecimală
+finită
+Rotunjiri
+întreg zecime sutime miime
+3,187 3 3,2 3,19 3,187
+15,6482 16 15,6 15,65 15,648
+7,8047 8 7,8 7,8 7,805
+207,12609 207 207,1 207,13 207,126
+0,0129 0 0 0,01 0,013
+
+
+
+-Fracții zecimaleCompararea, ordonarea și reprezentarea pe axa numerelor
+a unor fracții zecimale cu număr finit de zecimale
+Ne propunem să comparăm două prețuri ale aceluiași produs, de la două magazine
+diferite. Să presupunem că, cele două prețuri sunt egale cu 34,5 lei și 34,45 lei.
+Cum vom proceda?
+La nivelul cunoștințelor acumulate până în prezent, știm să transformăm fracțiile
+zecimale în fracții ordinare și mai știm să comparăm fracțiile ordinare.
+34, 5 = 10
+345
+34, 45 = 100
+3445
+Ca să putem compara două fracții ordinare, ele trebuie să aibă același numitor (sau numărător).
+Amplificând cu 10 fracția obținem 10
+345
+100
+3450
+Comparăm numărătorii și observăm că 3450>3445, atunci > , deci 34,5>34,45. 100
+3450
+100
+3445
+Această metodă de comparare este greoaie, dar utilă pentru a observa unele lucruri.
+Cum 3450>3445, putem observa că 34,50>34,45 și avem 34,5=34,50. Așadar, dacă aducem
+numerele la același număr de zecimale, și comparăm numerele astfel obținute dar fără virgulă
+(două numere naturale), ne dăm seama care dintre ele este mai mare.
+Putem simplifica procedura, observând din exemplul nostru că cele două fracții zecimale
+au aceeași parte întreagă (egală cu 34), deci e suficient să comparăm părțile zecimale ale celor
+două numere.
+Cum 50>45, atunci 34,50>34,45 sau 34,5>34,45.
+Când cele două fracții zecimale au aceeași parte întreagă, această metodă de comparare
+funcționează dacă numerele au același număr de zecimale (sau sunt aduse la același număr de
+zecimale).
+Dacă părțile întregi a celor două numere sunt diferite, este mai mare fracția zecimală cu
+partea întreagă mai mare.
+De exemplu, 102,8>99,175 deoarece 102>99.
+Ne dorim o metodă și mai simplă de comparare a fracțiilor zecimale.
+Vom proceda astfel: comparăm mai întâi părțile întregi.
+1. Dacă acestea nu sunt egale, este mai mare numărul cu partea întreagă mai mare.
+De exemplu, dintre numerele 25,62 și 39,62 este mai mare 39,62 deoarece 39>25.
+2. Dacă părțile întregi sunt egale, comparăm de la stânga la dreapta zecimalele de același
+ordin; mai mare mare este numărul corespunzător zecimalei mai mari din prima pereche
+de zecimale diferite.
+Mărieș Dan
+Școala Gimnazială Vama
+Exemple:
+a). Comparând 84,1237 cu 84,14 observăm că: 84=84 (părțile întregi), 1=1 (zecimile) și 2<4
+(sutimile), deci 84,1237<84,14.
+b). Dacă avem de comparat 132,9815 cu 132,98 observăm că: 132=132 (părțile întregi), 9=9
+(zecimile), 8=8 (sutimile) și știind că 132,98=132,98000…, cum 1>0 (miimile), vom avea
+132,9815>132,98.
+Ordonarea fracțiilor zecimale se face ca și la numerele naturale, astfel:
+-crescător - de la mic la mare: 2,4<3,25<5<11,068<20,91;
+-descrescător - de la mare la mic: 300,7>299,89>56,314>8,70>0,007.
+Așezarea pe axa numerelor a fracțiilor zecimale. Și fracțiile zecimale sunt numere, ca și
+numerele naturale. Deci și ele vor ocupa un loc pe axa numerelor. Mai mult, orice număr natural
+poate fi scris sub formă de fracție zecimală. De exemplu 2=2,0=2,00=2,000 etc.
+Ne propunem să reprezentăm pe axa numerelor, numărul 1,64.
+Prima dată, încadrăm numărul 1,64 între două numere naturale.
+1<1,64<2.
+Împărțim segmentul cuprins între numerele 1 și 2 de pe axa numerelor în 10 segmente de lungimi
+egale, adică în zecimi. Identificăm numărul 1,64 între numerele 1,6 și 1,7 (1,6<1,64<1,7).
+Împărțim subdiviziunea cuprinsă între 1,6 și 1,7 în 10 segmente de lungimi egale (în sutimi) și
+așezăm numărul 1,64 la locul potrivit pe axa numerelor.
+
+
+
+Breviar teoretic
+Adunarea sau scăderea fracțiilor zecimale cu un număr finit de zecimale nenule se
+efectuează așezând fracțiile una sub alta, astfel încât virgula să se afle sub virgulă (pentru
+a aduna zecimi cu zecimi, sutimi cu sutimi etc.). Adunăm sau scădem așa cum procedăm
+la numere naturale având grijă ca atunci când ajungem la virgulă să o coborâm la rezultat.
+Dacă cele două fracții zecimale au număr diferit de zecimale, atunci adăugăm la final
+zerouri, până avem același număr de zecimale. Avem voie să facem acest lucru pentru că
+zerourile finale nu modifică valoarea fracției. De exemplu fracția 31,5 se poate scrie 31,50
+sau 31,500.
+Exemplu: 31,5 + 2,47 = 33,97 31,5 − 2,47 = 29,03
+
+Adunarea fracțiilor zecimale cu un număr finit de zecimale nenule are aceleași
+proprietăți ca adunarea fracțiilor ordinare, adică este: comutativă, asociativă și are
+element neutru pe 0.
+Exerciții rezolvate:
+1. Calculați:
+a. 7,4 + 5,3 = 12,7
+b. 7,4 − 5,3 = 2,1
+c. 21,5 − 9 + 3,18 = 15,68
+
+Mezei Csilla
+Școala Gimnazială Vetiș
+d. 73
+10
+− 0,2 +
+19
+100
+= 7,29
+73
+10
+= 7,3
+19
+100
+= 0,19
+e.
+1
+8
+−
+3
+25
++ 2,5 = 2,795
+3
+8
+= 0,375 2
+25
+= 0,08
+
+2. Alin cumpără mere la piață. Vânzătorul așează trei mere pe cântar și acesta indică
+0,893 kg, dacă așează încă un măr pe cântar acesta indică 1,037 kg. Cât cântărește
+al patrulea măr?
+Răspuns: Al patrulea măr cântărește 0,144 kg
+
+
+
+
+BREVIAR TEORETIC ȘI EXEMPLE
+Înmulțirea fracțiilor zecimale care au un număr finit de zecimale
+nenule. Aplicații - ridicarea la putere a unei fracții zecimale
+Teorie:
+Înmulțirea fracțiilor zecimale
+Înmulțirea unei fracții zecimale cu o putere a lui 10
+La înmulțirea unei fracții zecimale cu o putere a lui 10, se mută virgula spre dreapta
+peste atâtea cifre cât este exponentul lui 10.
+Exemple: 1,617∙10=16,17; 1,789∙100=178,9
+Înmulțirea unui număr zecimal cu un număr natural
+Pentru a înmulți un număr zecimal cu un număr natural, se înmulțesc numerele ca și
+când numerele ar fi naturale(fără a ține cont de virgulă), iar la produs se despart prin
+virgulă, numărând de la dreapta spre stânga, atâtea zecimale câte are numărul zecimal.
+Exemple:15,34∙3=46,02 sau 15,34 ∙ 3 =
+1534
+100
+∙
+3
+1
+=
+1534∙3
+100
+=
+4602
+100
+= 46,02
+25,06∙
+ 35
+ 12530
+ 7518
+ 8771,0
+Înmulțirea a două fracții zecimale care au un număr finit de zecimale nenule
+Două numere zecimale se înmulțesc astfel: se efectuează înmulțirea numerelor
+neținând seama de virgulă, iar la rezultat se desparte prin virgulă, de la dreapta spre stânga,
+atâtea cifre zecimale câte au cele două numere zecimale împreună.
+ INSPECTORATUL
+ ȘCOLAR
+JUDEȚEAN
+ SATU MARE
+Exemple:
+15,024∙
+2,0025
+ 75120
+ 30048
+ 3004800
+ 30,08556
+În scrierea a ∙ b = p ,unde a,b,p sunt fracții zecimale, p este produsul fracțiilor zecimale,
+iar a,b sunt factorii produsului, a este deînmulțit, iar b este înmulțitor.
+Operația prin care se obține produsul a două fracții zecimale se numește înmulțirea
+fracțiilor zecimale.
+Proprietățile înmulțirii
+Înmulțirea fracțiilor zecimale este: comutativă, asociativă, 1 este elementul neutru la
+înmulțire.De asemenea înmulțirea fracțiilor zecimale este distributivă față de adunare și scădere.
+Astfel, dacă a,b,c sunt fracții zecimale oarecare,atunci:
+a ∙ b = b ∙ a ( comutativitatea)
+(a ∙ b)∙ c = a ∙ (b ∙ c) ( asociativitatea)
+a ∙ 1 = 1 ∙ a =a ( 1 este elementul neutru la înmulțire )
+a ∙ (b+c) = a ∙ b + a ∙ c ( distributivitatea față de adunare)
+a ∙ (b-c) = a ∙ b - a ∙ c ( distributivitatea față de scădere)
+O aplicație a înmulțirii: Ridicarea la puterecu exponent număr natural a unei fracții
+zecimale care are un număr finit de zecimale nenule
+Dacă a este un număr și n este număr natural, n≥2, se definește ,,puterea a n-a a numărului a”
+sau ,,a la puterea n”.
+Regulă: 𝒂
+𝒏 = 𝒂⏟ ∙ 𝒂 ∙ 𝒂 ∙ … ∙ 𝒂
+𝒏 𝒇𝒂𝒄𝒕𝒐𝒓𝒊
+.
+𝑹𝒆𝒈𝒖𝒍𝒊: 𝒂
+𝟎 = 𝟏, 𝒂
+𝟏 = 𝒂, 𝟎
+𝒏 = 𝟎, unde a≠0
+În scrierea 𝒂
+𝒏
+,numărul a se numește bază, iar n se numește exponent.
+Exemplu: 0,53=0,5∙0,5∙0,5=0,125
+Observație. Numărul de zecimale al unei puteri este egal cu produsul dintre numărul de zecimale
+ale bazei și exponentul puterii.
+Exemplu: 0,013 are 2∙3=6 zecimale deci 0,013 =0,000001
+ INSPECTORATUL
+ ȘCOLAR
+JUDEȚEAN
+ SATU MARE
+Reguli de calcul cu puteri.
+1.Înmulțirea puterilor cu aceeași bază:
+Regulă: 𝒂
+𝒎 ∙ 𝒂
+𝒏 = 𝒂
+𝒎+𝒏
+; exemplu (0,6)
+4
+∙ (0,6)
+6
+∙ (0,6)
+10 = (0,6)
+4+6+10 = (0,6)
+20
+2.Împărțirea puterilor care au aceeași bază:
+Regulă: 𝒂
+𝒎: 𝒂
+𝒏 = 𝒂
+𝒎−𝒏
+; exemplu (0,5)
+54 ∙ (0,5)
+14 ∙ (0,5)
+10 = (0,5)
+54−14−10 = (0,5)
+30
+3.Puterea unei puteri:
+Regulă: (𝒂
+𝒎)
+𝒏 = 𝒂
+𝒎∙𝒏
+; exemplu [(1,34)
+5]
+6 = (1,34)
+5∙6 = (1,34)
+30
+4.Puterea unui produs:
+Regulă: (𝒂 ∙ 𝒃)
+𝒏 = 𝒂
+𝒏
+∙ 𝒃
+𝒏
+; exemplu (1,2 ∙ 2,3)
+3 = (1,2)
+3
+∙ (2,3)
+3
+5.Puterea unui cât::
+Regulă: (𝒂: 𝒃)
+𝒏 = 𝒂
+𝒏
+: 𝒃
+𝒏
+; exemplu (2,4: 0,5)
+3 = (2,4)
+3
+: (0,5)
+3
+Exemple:
+1.Cerință:Efectuați: 31,24∙100
+Variante de răspuns:
+3124 3234 3344 31240
+Răspuns final:3124
+2.Cerință:Efectuați: 421,24∙1000
+Variante de răspuns:
+423240 421241 421240 422400
+Răspuns final:421240
+3.Cerință:Măriți de 25,4 ori numărul: 1,25
+Variante de răspuns:
+31,24 31,75 33,44 31,57
+Răspuns final:31,75
+4.Cerință:Efectuați:34,2∙27,5∙11
+Variante de răspuns:
+10,3455 1034,55 103,455 10345,5
+Răspuns final:10345,5
+ INSPECTORATUL
+ ȘCOLAR
+JUDEȚEAN
+ SATU MARE
+5.Cerință:Scrieți sub forma unei singure puteri:
+1,4∙1,42
+∙1,43
+∙1,44
+∙…∙1,499
+Variante de răspuns:
+1,44900 1,44950 1,4100 1,44000
+Răspuns final: 1,44950
+6.Cerință:Dacă x+y=2,5 și y+z=6,4, calculați: 3x+4y+z.
+Variante de răspuns:
+13,9 13,2 13 8,9
+Răspuns final: 13,9
+
+
+
+Împărțirea fracțiilor zecimale
+Clasa a V- a
+I. Împărțirea unei fracții zecimale la 10𝒏
+, 𝒏 ≥ 1, 𝒏 ∈ 𝑵.
+REȚINEM: Pentru a împărții un număr natural la o putere a lui 10, vom muta
+virgula spre STÂNGA peste un număr de cifre egal cu exponentul puterii lui
+10.
+Exemple: 31,2: 10 = 3.12 ; 1254,17: 100 = 12,5417 ; 3001,5: 1000 =
+3,0015 ; 215,6: 103 = 0,2156 ; 4: 102 = 0,04.
+II. Împărțirea unei fracții zecimale cu un număr finit de
+zecimale nenule la un număr natural nenul.
+REȚINEM: Pentru împărțirea unei fracții zecimale cu un număr finit de
+zecimale nenule la un număr natural nenul vom împărții mai întâi partea
+întreagă la numărul dat , la câtul obținut vom pune virgula, apoi vom
+continua împărțirea , ca în cazul numerelor naturale, fără a ține cont de
+virgula de la deîmpărțit.
+III. Împărțire a două fracții zecimale cu un număr finit de
+zecimale nenule.
+REȚINEM: Pentru a împărți două fracții zecimale cu un număr finit de
+zecimale nenule vom respecta următorul algoritm:
+i) Înmulțim atât deîmpărțitul cât și împărțitorul cu o putere a lui 10,
+pentru ca împărțitorul să devină număr natural
+ii) Împărțim apoi numerele obținute după una din regulile de mai sus
+
+
+
+Ridicarea la putere cu exponent natural a unei fracții
+zecimale cu număr finit de zecimale
+Puterea a 𝑛𝑛-a, cu 𝑛𝑛 număr natural, a unei fracții zecimale finite este fracția
+obținută prin înmulțirea fracției zecimale date cu ea însăși de 𝑛𝑛 ori.
+• Dacă 𝑎𝑎 este o fracție zecimală finită și 𝑛𝑛 este un număr natural, atunci:
+ 
+𝑎𝑎𝑛𝑛 =  𝑎𝑎  ∙  𝑎𝑎 ∙ …  ∙ 𝑎𝑎
+𝑛𝑛 𝑜𝑜𝑜𝑜𝑜𝑜
+, 𝑛𝑛 ≥ 2
+𝑎𝑎1 = 𝑎𝑎
+𝑎𝑎0 = 1
+, unde 𝑎𝑎 este baza, 𝑛𝑛 este exponentul.
+Exemple: 1,254 =  1, 25  ∙  1 ,25  ∙ 1
+ ,
+ 25  ∙ 1 ,25 
+𝑑𝑑𝑑𝑑 4 𝑜𝑜𝑜𝑜𝑜𝑜
+ 1,22 = 1,2 ∙ 1,2 = 1,44
+ 0,33 = 0,3 ∙ 0,3 ∙ 0,3 = 0,027
+Observație: 00 nu are sens.
+• Proprietăți:
+1. 𝑎𝑎𝑚𝑚 ∙ 𝑎𝑎𝑛𝑛 = 𝑎𝑎𝑚𝑚+𝑛𝑛;
+2. 𝑎𝑎𝑚𝑚: 𝑎𝑎𝑛𝑛 = 𝑎𝑎𝑚𝑚−𝑛𝑛, 𝑚𝑚 ≥ 𝑛𝑛;
+3. (𝑎𝑎𝑚𝑚)𝑛𝑛 = 𝑎𝑎𝑚𝑚∙𝑛𝑛;
+4. 𝑎𝑎𝑛𝑛 ∙ 𝑏𝑏𝑛𝑛 = (𝑎𝑎 ∙ 𝑏𝑏)𝑛𝑛;
+5. 𝑎𝑎𝑛𝑛: 𝑏𝑏𝑛𝑛 = (𝑎𝑎: 𝑏𝑏)𝑛𝑛, unde 𝑎𝑎, 𝑏𝑏 sunt fracții zecimale finite, iar 𝑚𝑚 și 𝑛𝑛 sunt
+numere naturale.
+Exemple:
+1. (1,2)7 ∙ (1,2) ∙ (1,2)5 = (1,2)7+1+5 = (1,2)13;
+2. (0,2)12: (0,2)6: (0,2)5 = (0,2)12−6−5 = (0,2)1 = 0,2;
+3. [(0,3)2]6 = (0,3)2∙6 = (0,3)12;
+4. (4,5)8 ∙ 108: 98 = (4,5 ∙ 10: 9)8 = (45: 9)8 = 58.

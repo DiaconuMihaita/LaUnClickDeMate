@@ -5,11 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MateAI – Asistent educațional</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <meta name="theme-color" content="#4F6AF5">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
@@ -25,9 +28,12 @@
         <ul>
             <li><a href="#" class="nav-link" data-section="home">Acasă</a></li>
             <li><a href="#" class="nav-link" data-section="lectii">Lecții</a></li>
+            <li><a href="#" class="nav-link" data-section="competitie">⚔️ Competiție</a></li>
             <li><a href="#" class="nav-link" data-section="laborator">Laborator</a></li>
             <li><a href="#" class="nav-link" data-section="explica">Explicații</a></li>
+            <li><a href="#" class="nav-link" data-section="clasa">🏫 Clasă</a></li>
             <li><a href="#" class="nav-link" data-section="profil">Progres</a></li>
+            <li id="nav-auth"><a href="#" class="nav-link" data-section="login">Conectare</a></li>
         </ul>
     </nav>
 
@@ -46,6 +52,13 @@
                     <button id="btn-challenge-submit">Verifică</button>
                 </div>
                 <div id="challenge-feedback" style="margin-top: 15px; font-weight: 700;"></div>
+            </div>
+
+            <!-- Recomandare Adaptivă -->
+            <div id="adaptive-banner" class="welcome-card hidden" style="margin-top: 20px; border: 1px solid #F59E0B;">
+                <h3 style="color: #F59E0B;">📊 Recomandare personalizată</h3>
+                <p id="adaptive-text" style="color: white; margin: 10px 0;"></p>
+                <button id="btn-adaptive-quiz" onclick="startAdaptiveQuiz()">Exersează acum →</button>
             </div>
         </section>
 
@@ -116,6 +129,67 @@
             <div id="detail-content"></div>
         </section>
 
+        <!-- Secțiune Login / Register (V2 Glassmorphism) -->
+        <section id="login" class="view hidden"
+            style="display: flex; justify-content: center; align-items: center; min-height: 65vh; padding: 20px;">
+            <div class="auth-container">
+                <div class="auth-card" id="auth-card">
+                    <!-- Fața Conectare -->
+                    <div class="auth-face auth-login">
+                        <h2 class="auth-title">Conectare</h2>
+                        <p class="auth-subtitle">Bine ai revenit! 👋</p>
+
+                        <div class="auth-form">
+                            <div class="auth-input-wrapper">
+                                <span class="auth-icon">👤</span>
+                                <input type="text" id="login-username" class="auth-input" placeholder="Nume utilizator">
+                            </div>
+                            <div class="auth-input-wrapper">
+                                <span class="auth-icon">🔒</span>
+                                <input type="password" id="login-password" class="auth-input" placeholder="Parolă">
+                            </div>
+                            <button onclick="handleLogin()" class="btn-auth">Intră în cont</button>
+                        </div>
+                        <p class="auth-switch-text">Nu ai cont? <a href="#"
+                                onclick="switchAuth('register')">Înregistrează-te</a></p>
+                    </div>
+
+                    <!-- Fața Înregistrare -->
+                    <div class="auth-face auth-register">
+                        <h2 class="auth-title">Înregistrare</h2>
+                        <p class="auth-subtitle">Începe aventura educațională! 🚀</p>
+
+                        <div class="auth-form">
+                            <div class="auth-input-wrapper">
+                                <span class="auth-icon">👤</span>
+                                <input type="text" id="register-username" class="auth-input"
+                                    placeholder="Nume utilizator">
+                            </div>
+                            <div class="auth-input-wrapper">
+                                <span class="auth-icon">🔒</span>
+                                <input type="password" id="register-password" class="auth-input" placeholder="Parolă">
+                            </div>
+
+                            <div class="auth-role-group">
+                                <label class="auth-role-option">
+                                    <input type="radio" name="register-role" value="student" checked>
+                                    <div class="auth-role-box">🎓 Elev</div>
+                                </label>
+                                <label class="auth-role-option">
+                                    <input type="radio" name="register-role" value="teacher">
+                                    <div class="auth-role-box">👨‍🏫 Profesor</div>
+                                </label>
+                            </div>
+
+                            <button onclick="handleRegister()" class="btn-auth">Creează cont</button>
+                        </div>
+                        <p class="auth-switch-text">Ai deja cont? <a href="#"
+                                onclick="switchAuth('login')">Conectează-te</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Secțiune Profil / Progres -->
         <section id="profil" class="view hidden">
             <h2>🏆 Profilul Mev & Progres</h2>
@@ -135,6 +209,128 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Grafic Progres -->
+            <div class="welcome-card" style="padding: 25px; margin-top: 20px;">
+                <h3 style="margin-bottom: 15px; color: white;">📊 Evoluția Ta</h3>
+                <canvas id="progress-chart" height="200"></canvas>
+            </div>
+        </section>
+
+        <!-- Secțiune Clasă -->
+        <section id="clasa" class="view hidden">
+            <h2>🏫 Modul Clasă</h2>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button onclick="switchClassTab('ranking')" class="btn-tab active-tab"
+                    id="tab-ranking">Clasament</button>
+                <button onclick="switchClassTab('homework')" class="btn-tab" id="tab-homework">Teme Online</button>
+            </div>
+
+            <!-- Tab Clasament -->
+            <div id="class-tab-ranking">
+                <div id="class-teacher-zone" class="hidden welcome-card" style="padding: 25px;">
+                    <h3>👨‍🏫 Administrare Clasă</h3>
+                    <!-- Conținut dynamic din JS -->
+                </div>
+
+                <div id="class-student-zone" class="welcome-card">
+                    <h3>Înscrie-te într-o clasă</h3>
+                    <div class="input-group">
+                        <input type="text" id="join-class-code" placeholder="Codul clasei">
+                        <button onclick="joinClass()">Alătură-te</button>
+                    </div>
+                </div>
+
+                <div id="class-ranking-card" class="welcome-card hidden" style="margin-top: 20px; text-align: left;">
+                    <h3>🏆 Clasament: <span id="ranking-class-name">--</span> (Cod: <span
+                            id="ranking-class-code">--</span>)</h3>
+                    <div id="student-detail-view" class="hidden"
+                        style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid var(--primary-400);">
+                        <button onclick="hideStudentDetails()"
+                            style="float: right; padding: 5px 10px; font-size: 0.7rem;">Închide</button>
+                        <h4 id="detail-student-name">Detalii Elev</h4>
+                        <div id="detail-student-stats" style="margin-top: 10px; font-size: 0.9rem;"></div>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; color: white;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); text-align: left;">
+                                <th style="padding: 10px;">Loc</th>
+                                <th style="padding: 10px;">Elev</th>
+                                <th style="padding: 10px;">Exerc.</th>
+                                <th style="padding: 10px;">Corecte</th>
+                                <th style="padding: 10px;">Acțiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Teme -->
+            <div id="class-tab-homework" class="hidden">
+                <div id="teacher-homework-zone" class="welcome-card hidden" style="padding: 25px; text-align: left;">
+                    <h3 class="teacher-section-title">📝 Asignează Temă</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                        <select id="hw-chapter-select"></select>
+                        <input type="text" id="hw-description" placeholder="Descriere / instrucțiuni (opțional)"
+                            style="margin-top: 0;">
+                        <input type="file" id="hw-file" accept="image/*,.pdf,.doc,.docx"
+                            style="margin-top: 0; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: var(--bg-soft); color: white;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label style="color: var(--text-500); font-size: 0.85rem; white-space: nowrap;">Data
+                                limită:</label>
+                            <input type="date" id="hw-due-date" style="flex: 1; margin-top: 0; color-scheme: dark;">
+                            <button onclick="assignHomework()">Asignează Temă</button>
+                        </div>
+                    </div>
+
+                    <h3 class="teacher-section-title" style="margin-top: 28px;">📋 Teme Asignate</h3>
+                    <div id="teacher-homework-list" style="margin-top: 10px;"></div>
+
+                    <!-- Test creation section -->
+                    <h3 class="teacher-section-title" style="margin-top: 28px;">🧪 Creează Test</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                        <input type="text" id="test-title" placeholder="Titlu test (ex: Test Capitol 3)"
+                            style="margin-top: 0;">
+                        <select id="test-chapter-select">
+                            <option value="">(Opțional) Alege un capitol pentru întrebări generate automat</option>
+                        </select>
+                        <input type="file" id="test-file" accept="image/*,.pdf,.doc,.docx"
+                            style="margin-top: 0; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: var(--bg-soft); color: white;">
+                        <textarea id="test-custom-questions"
+                            placeholder='SAU Adaugă întrebări proprii (Format JSON: [{"question": "1+1=?", "answer": "2"}])'
+                            style="margin-top: 0; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: var(--bg-soft); color: white; resize: vertical; min-height: 60px;"></textarea>
+
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label style="color: var(--text-500); font-size: 0.85rem; white-space: nowrap;">Număr
+                                întrebări (dacă e automat):</label>
+                            <select id="test-num-questions" style="flex: 1; margin-top: 0;">
+                                <option value="3">3 întrebări</option>
+                                <option value="5" selected>5 întrebări</option>
+                                <option value="7">7 întrebări</option>
+                                <option value="10">10 întrebări</option>
+                            </select>
+                            <button onclick="assignTest()">Creează Test</button>
+                        </div>
+                    </div>
+
+                    <h3 class="teacher-section-title" style="margin-top: 28px;">� Teste Asignate</h3>
+                    <div id="teacher-test-list" style="margin-top: 10px;"></div>
+                </div>
+
+                <div id="student-homework-zone" class="welcome-card" style="padding: 25px; text-align: left;">
+                    <h3>📚 Temele Mele</h3>
+                    <div id="student-homework-list" style="margin-top: 10px;">
+                        <p style="opacity: 0.5;">Înscrie-te într-o clasă pentru a vedea temele.</p>
+                    </div>
+                    <h3 style="margin-top: 25px;">🧪 Testele Mele</h3>
+                    <div id="student-test-list" style="margin-top: 10px;">
+                        <p style="opacity: 0.5;">Înscrie-te într-o clasă pentru a vedea testele.</p>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <!-- Secțiune Laborator Geometrie -->
@@ -184,6 +380,100 @@
                 </div>
             </div>
         </section>
+
+        <!-- Secțiune Competiție Online -->
+        <section id="competitie" class="view hidden">
+            <div class="welcome-card" style="text-align: center; padding: 40px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 10px;">⚔️ Competiție Online</h2>
+                <p style="color: var(--text-500); margin-bottom: 30px;">Luptă matematică în timp real cu prietenii tăi!
+                </p>
+
+                <!-- Lobby View -->
+                <div id="mp-lobby">
+                    <div
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 600px; margin: 0 auto;">
+                        <div class="glass-btn-card" onclick="createRoom()"
+                            style="padding: 30px; cursor: pointer; transition: all 0.3s ease;">
+                            <div style="font-size: 3rem; margin-bottom: 15px;">🏠</div>
+                            <h3 style="color: white;">Creează Cameră</h3>
+                            <p style="font-size: 0.85rem; opacity: 0.7;">Vei primi un cod pe care să-l trimiți unui
+                                prieten.</p>
+                        </div>
+                        <div class="glass-btn-card" style="padding: 30px; background: rgba(255,255,255,0.03);">
+                            <div style="font-size: 3rem; margin-bottom: 15px;">🔑</div>
+                            <h3 style="color: white;">Alătură-te</h3>
+                            <input type="text" id="join-room-code" placeholder="Cod Cameră (Ex: B4F9L1)"
+                                style="width: 100%; margin: 15px 0; text-transform: uppercase; text-align: center; letter-spacing: 2px;">
+                            <button onclick="joinRoom()"
+                                style="width: 100%; background: var(--accent-green);">Conectează-te</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Waiting View -->
+                <div id="mp-waiting" class="hidden">
+                    <div class="loading-spinner" style="margin: 30px auto;"></div>
+                    <h3>Se așteptă adversarul...</h3>
+                    <p style="margin-top: 15px;">Codul tău este:</p>
+                    <div id="mp-room-code-display"
+                        style="font-size: 3rem; font-weight: 900; color: var(--primary-400); letter-spacing: 5px; margin: 10px 0;">
+                        ------</div>
+                    <p style="font-size: 0.9rem; opacity: 0.6;">Trimite acest cod prietenului tău!</p>
+                </div>
+
+                <!-- Game View -->
+                <div id="mp-game" class="hidden">
+                    <div
+                        style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 25px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px;">
+                        <div style="text-align: center;">
+                            <div id="mp-host-name" style="color: var(--primary-400); font-weight: 700;">Host</div>
+                            <div id="mp-host-score" style="font-size: 2.5rem; font-weight: 900;">0</div>
+                        </div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-500);">VS</div>
+                        <div style="text-align: center;">
+                            <div id="mp-guest-name" style="color: #FF6B6B; font-weight: 700;">Adversar</div>
+                            <div id="mp-guest-score" style="font-size: 2.5rem; font-weight: 900;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="welcome-card"
+                        style="padding: 30px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden;">
+                        <!-- Timer Bar -->
+                        <div id="mp-timer-bar-container"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1);">
+                            <div id="mp-timer-bar"
+                                style="width: 100%; height: 100%; background: var(--accent-orange); transition: width 0.5s linear;">
+                            </div>
+                        </div>
+
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div id="mp-round-info" style="font-size: 0.9rem; color: var(--accent-orange);">Runda 1/10
+                            </div>
+                            <div id="mp-timer-display" style="font-size: 1.5rem; font-weight: 800; color: #F59E0B;">20s
+                            </div>
+                        </div>
+
+                        <h3 id="mp-question-text" style="font-size: 1.6rem; margin-bottom: 25px; line-height: 1.4;">Se
+                            încarcă întrebarea...</h3>
+                        <div style="max-width: 400px; margin: 0 auto;">
+                            <input type="text" id="mp-answer-input" placeholder="Scrie răspunsul și apasă Enter..."
+                                style="width: 100%; font-size: 1.2rem; padding: 15px; text-align: center;"
+                                autocomplete="off">
+                        </div>
+                        <p id="mp-feedback-msg" style="margin-top: 20px; font-weight: 600; min-height: 24px;"></p>
+                    </div>
+                </div>
+
+                <!-- Results View -->
+                <div id="mp-results" class="hidden">
+                    <div id="mp-winner-icon" style="font-size: 5rem; margin-bottom: 10px;">🏆</div>
+                    <h2 id="mp-result-title">Ești Câștigător!</h2>
+                    <p id="mp-result-score" style="font-size: 1.2rem; margin-bottom: 30px;">Scor Final: 50 - 30</p>
+                    <button onclick="location.reload()" class="btn-primary">Ieși din Cameră</button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -194,7 +484,7 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <!-- Logica Principală -->
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 
 </html>

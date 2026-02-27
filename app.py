@@ -6,8 +6,15 @@ import re
 import ast
 import operator
 from difflib import SequenceMatcher
+from werkzeug.utils import secure_filename
+import database
 
 app = Flask(__name__, static_folder='.')
+database.init_db()
+
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'data', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Încarcă datele curiculei
 def load_data():
@@ -739,33 +746,264 @@ def get_help_message():
 def index(): return send_from_directory('.', 'index.html')
 
 @app.route('/<path:path>')
-def static_proxy(path): return send_from_directory('.', path)
+def static_proxy(path): 
+    # If path points directly to uploads folder, serve it securely
+    if path.startswith('uploads/'):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], path.replace('uploads/', ''))
+    return send_from_directory('.', path)
 
 @app.route('/api/chapters', methods=['GET'])
 def get_chapters(): return jsonify(CHAPTERS)
 
-# F1/F6 — Verificare răspuns quiz/test
-@app.route('/api/check', methods=['POST'])
-def check_answer():
+# --- AUTH ROUTES ---
+@app.route('/api/register', methods=['POST'])
+def register():
     data = request.json
-    user_answer = normalize(str(data.get('userAnswer', '')))
-    correct_answer = normalize(str(data.get('correctAnswer', '')))
-    chapter_id = str(data.get('chapterId', '')).strip()
+    username = data.get('username')
+    password = data.get('password')
+    role = data.get('role', 'student')
+    
+    if not username or not password:
+        return jsonify({'success': False, 'error': 'Numele și parola sunt obligatorii.'}), 400
+        
+    res = database.create_user(username, password, role)
+    return jsonify(res)
 
-    # Verificare flexibilă
-    is_correct = answers_match(user_answer, correct_answer)
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    
+    user_data = database.login_user(username, password)
+    if not user_data:
+        return jsonify({'success': False, 'error': 'Nume sau parolă incorectă.'}), 401
+        
+    return jsonify({'success': True, 'user': user_data})
 
-    if is_correct:
-        feedback = random.choice([
-            "✅ <strong>Corect!</strong> Felicitări, ai înțeles bine!",
-            "✅ <strong>Bravo!</strong> Răspuns perfect!",
-            "✅ <strong>Excelent!</strong> Ești pe drumul cel bun! 🎉"
-        ])
-    else:
-        hint = build_wrong_answer_hint(chapter_id)
-        feedback = f"❌ <strong>Nu tocmai...</strong> Răspunsul corect era: <em>{data.get('correctAnswer', '')}</em>. Nu te descuraja, mai încearcă!{hint}"
+@app.route('/api/user', methods=['GET'])
+def get_current_user():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False}), 401
+    return jsonify({'success': True, 'user': user})
 
-    return jsonify({"isCorrect": is_correct, "feedback": feedback})
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    token = request.headers.get('Authorization')
+    database.logout_user(token)
+    return jsonify({'success': True})
+
+@app.route('/api/stats/daily', methods=['GET'])
+def get_daily_stats():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False}), 401
+    
+    activity = database.get_daily_activity(user['id'])
+    return jsonify({'success': True, 'activity': activity})
+
+# --- CLASSROOM ROUTES ---
+@app.route('/api/class/create', methods=['POST'])
+def create_class():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user or user['role'] != 'teacher':
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
+        
+    data = request.json
+    res = database.create_class(user['id'], data.get('name'))
+    return jsonify(res)
+
+@app.route('/api/class/join', methods=['POST'])
+def join_class():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
+        
+    data = request.json
+    res = database.join_class(user['id'], data.get('code'))
+    return jsonify(res)
+
+@app.route('/api/class/rankings/<code>', methods=['GET'])
+def get_rankings(code):
+    res = database.get_class_rankings(code)
+    if not res:
+        return jsonify({'success': False, 'error': 'Clasa nu există.'}), 404
+    return jsonify({'success': True, 'data': res})
+
+@app.route('/api/progress/update', methods=['POST'])
+def update_user_progress():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False}), 401
+        
+    data = request.json
+    database.update_progress(user['id'], data.get('chapterId'), data.get('isCorrect'))
+    return jsonify({'success': True})
+
+
+@app.route('/api/student/details/<int:user_id>', methods=['GET'])
+def get_student_detail(user_id):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user or user['role'] != 'teacher':
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
+    
+    details = database.get_student_details(user_id)
+    return jsonify({'success': True, 'details': details})
+
+
+@app.route('/api/homework/create', methods=['POST'])
+def add_homework():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user or user['role'] != 'teacher':
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
+    
+    # Handle possible multipart/form-data or JSON
+    req_json = request.get_json(silent=True) or {}
+    chapter_id = request.form.get('chapterId') or req_json.get('chapterId')
+    description = request.form.get('description') or req_json.get('description')
+    due_date = request.form.get('dueDate') or req_json.get('dueDate')
+
+    file_path = None
+    if 'file' in request.files:
+        file = request.files['file']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_path = f'/uploads/{filename}'
+            
+    database.create_homework(
+        user['class_code'],
+        chapter_id,
+        description,
+        file_path,
+        due_date
+    )
+    return jsonify({'success': True})
+
+
+@app.route('/api/homework/class/<code>', methods=['GET'])
+def get_homework_list(code):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    
+    # Students get completion status
+    user_id = user['id'] if user and user['role'] == 'student' else None
+    homework = database.get_class_homework(code, user_id)
+    return jsonify({'success': True, 'homework': homework})
+
+
+@app.route('/api/homework/complete', methods=['POST'])
+def mark_homework_done():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False}), 401
+    
+    req_json = request.get_json(silent=True) or {}
+    homework_id = request.form.get('homeworkId') or req_json.get('homeworkId')
+    
+    file_path = None
+    if 'file' in request.files:
+        file = request.files['file']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_path = f'/uploads/{filename}'
+
+    database.complete_homework(user['id'], homework_id, file_path)
+    return jsonify({'success': True})
+
+
+@app.route('/api/homework/<int:hw_id>/completions', methods=['GET'])
+def get_hw_completions(hw_id):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user or user['role'] != 'teacher':
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
+    if not user.get('class_code'):
+        return jsonify({'success': False, 'error': 'Nu ai o clasă activă.'}), 400
+    completions = database.get_homework_completions(hw_id, user['class_code'])
+    return jsonify({'success': True, 'completions': completions})
+
+
+# --- TEST ROUTES ---
+@app.route('/api/test/create', methods=['POST'])
+def create_test_route():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user or user['role'] != 'teacher':
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
+        
+    req_json = request.get_json(silent=True) or {}
+    title = request.form.get('title', 'Test') or req_json.get('title', 'Test')
+    chapter_id = request.form.get('chapterId') or req_json.get('chapterId')
+    num_questions = int(request.form.get('numQuestions', 5) or req_json.get('numQuestions', 5))
+    custom_questions = request.form.get('customQuestions') or req_json.get('customQuestions')
+
+    file_path = None
+    if 'file' in request.files:
+        file = request.files['file']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_path = f'/uploads/{filename}'
+
+    res = database.create_test(
+        user['class_code'],
+        title,
+        chapter_id,
+        num_questions,
+        file_path,
+        custom_questions
+    )
+    return jsonify(res)
+
+
+@app.route('/api/test/class/<code>', methods=['GET'])
+def get_tests_for_class(code):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False}), 401
+    user_id = user['id'] if user['role'] == 'student' else None
+    tests = database.get_class_tests(code, user_id)
+    return jsonify({'success': True, 'tests': tests})
+
+
+@app.route('/api/test/submit', methods=['POST'])
+def submit_test():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False}), 401
+    data = request.json
+    ok = database.submit_test_result(
+        data.get('testId'),
+        user['id'],
+        data.get('score', 0),
+        data.get('total', 0)
+    )
+    return jsonify({'success': ok})
+
+
+@app.route('/api/test/<int:test_id>/results', methods=['GET'])
+def get_test_results_route(test_id):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user or user['role'] != 'teacher':
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
+    if not user.get('class_code'):
+        return jsonify({'success': False}), 400
+    results = database.get_test_results(test_id, user['class_code'])
+    return jsonify({'success': True, 'results': results})
 
 # --- PROVOCAREA ZILEI ---
 DAILY_CHALLENGES = [
@@ -1099,6 +1337,199 @@ def chat():
     except Exception as e:
         print(f"Chat error: {e}")
         return jsonify({"message": "Am întâmpinat o mică problemă tehnică. Poți repeta întrebarea?"}), 500
+
+# --- NIVEL ADAPTIV: Sugestie capitol slab ---
+@app.route('/api/suggest-weak', methods=['POST'])
+def suggest_weak():
+    data = request.json
+    chapter_scores = data.get('chapterScores', {})
+    if not chapter_scores:
+        return jsonify({"suggestion": None})
+
+    worst_id = None
+    worst_ratio = 1.0
+    for ch_id, scores in chapter_scores.items():
+        total = scores.get('total', 0)
+        correct = scores.get('correct', 0)
+        if total >= 2:  # Minim 2 răspunsuri pentru a fi relevant
+            ratio = correct / total
+            if ratio < worst_ratio:
+                worst_ratio = ratio
+                worst_id = ch_id
+
+    if worst_id and worst_ratio < 0.7:
+        ch = next((c for c in CHAPTERS if c['id'] == worst_id), None)
+        if ch:
+            pct = int(worst_ratio * 100)
+            return jsonify({
+                "suggestion": {
+                    "id": ch['id'],
+                    "title": ch['title'],
+                    "icon": ch.get('icon', '📖'),
+                    "score": pct
+                }
+            })
+    return jsonify({"suggestion": None})
+
+
+# --- MOD COMPETIȚIE: 5 întrebări pentru 2 jucători ---
+@app.route('/api/competition', methods=['GET'])
+def get_competition():
+    chapters_with_ex = [c for c in CHAPTERS if c.get('exercises')]
+    if len(chapters_with_ex) < 5:
+        selected = chapters_with_ex
+    else:
+        selected = random.sample(chapters_with_ex, 5)
+
+    questions = []
+    for ch in selected:
+        ex = random.choice(ch['exercises'])
+        questions.append({
+            "chapterId": ch['id'],
+            "chapterTitle": ch['title'],
+            "question": ex['question'],
+            "answer": ex['answer']
+        })
+    return jsonify({"questions": questions})
+
+
+@app.route('/api/check', methods=['POST'])
+def check_answer():
+    data = request.json
+    user_answer = data.get('userAnswer')
+    correct_answer = data.get('correctAnswer')
+    chapter_id = data.get('chapterId')
+
+    is_correct = answers_match(user_answer, correct_answer)
+    hint = ""
+    if not is_correct:
+        hint = build_wrong_answer_hint(chapter_id)
+
+    feedback = "🎉 Excelent! Ai răspuns corect." if is_correct else f"Opa! Nu e chiar așa. {hint}<br>Răspunsul corect era: <strong>{correct_answer}</strong>"
+    
+    return jsonify({
+        "isCorrect": is_correct,
+        "feedback": feedback
+    })
+
+
+# --- API MULTIPLAYER (ONLINE) ---
+
+@app.route('/api/multiplayer/create', methods=['POST'])
+def mp_create():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
+    
+    # Generăm setul de 10 întrebări (din toate capitolele)
+    chapters_with_ex = [c for c in CHAPTERS if c.get('exercises')]
+    selected_chapters = random.sample(chapters_with_ex, min(10, len(chapters_with_ex)))
+    questions = []
+    for ch in selected_chapters:
+        ex = random.choice(ch['exercises'])
+        questions.append({
+            "question": ex['question'],
+            "answer": ex['answer'],
+            "chapterTitle": ch['title']
+        })
+
+    import time
+    initial_state = {
+        "questions": questions,
+        "currentQ": 0,
+        "scores": [0, 0], 
+        "roundStartTime": time.time(),
+        "lastFeedback": "",
+        "roundActive": True
+    }
+    
+    import json
+    code = database.create_multiplayer_session(user['id'], json.dumps(initial_state))
+    return jsonify({'success': True, 'code': code})
+
+@app.route('/api/multiplayer/join/<code>', methods=['POST'])
+def mp_join(code):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
+    
+    success = database.join_multiplayer_session(user['id'], code)
+    if success:
+        return jsonify({'success': True})
+    return jsonify({'success': False, 'error': 'Cod invalid sau cameră plină.'}), 400
+
+@app.route('/api/multiplayer/status/<code>', methods=['GET'])
+def mp_status(code):
+    session = database.get_multiplayer_session(code)
+    if not session:
+        return jsonify({'success': False, 'error': 'Sesiune inexistentă.'}), 404
+    
+    import json
+    import time
+    state = json.loads(session['state_json'])
+    
+    # Check if timer expired (20 seconds)
+    if session['status'] == 'playing' and state['roundActive']:
+        elapsed = time.time() - state['roundStartTime']
+        if elapsed > 20:
+            state['lastFeedback'] = "⏰ Timpul a expirat pentru această rundă!"
+            state['currentQ'] += 1
+            state['roundStartTime'] = time.time() # Reset timer for next Q
+            
+            if state['currentQ'] >= len(state['questions']):
+                database.update_multiplayer_state(code, json.dumps(state), status='finished')
+            else:
+                database.update_multiplayer_state(code, json.dumps(state))
+
+    return jsonify({
+        'success': True,
+        'status': session['status'],
+        'host_name': session['host_name'],
+        'guest_name': session['guest_name'],
+        'state': state,
+        'server_time': time.time()
+    })
+
+@app.route('/api/multiplayer/action/<code>', methods=['POST'])
+def mp_action(code):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    session = database.get_multiplayer_session(code)
+    if not user or not session:
+        return jsonify({'success': False}), 403
+
+    import json
+    import time
+    data = request.json
+    answer = data.get('answer', '').strip()
+    
+    state = json.loads(session['state_json'])
+    
+    # Verificăm dacă timpul a expirat deja între timp
+    if time.time() - state['roundStartTime'] > 20:
+        return jsonify({'success': True, 'timeout': True})
+
+    curr_q = state['questions'][state['currentQ']]
+    p_idx = 0 if user['id'] == session['host_id'] else 1
+    
+    is_correct = answers_match(answer, curr_q['answer'])
+    
+    if is_correct and state['roundActive']:
+        state['scores'][p_idx] += 10
+        state['currentQ'] += 1
+        state['roundStartTime'] = time.time() # Reset timer for next Q
+        state['lastFeedback'] = f"🎉 {user['username']} a răspuns corect!"
+        
+        if state['currentQ'] >= len(state['questions']):
+            database.update_multiplayer_state(code, json.dumps(state), status='finished')
+        else:
+            database.update_multiplayer_state(code, json.dumps(state))
+        
+        return jsonify({'success': True, 'isCorrect': True})
+    
+    return jsonify({'success': True, 'isCorrect': False})
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

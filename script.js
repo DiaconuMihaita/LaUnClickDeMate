@@ -3,17 +3,57 @@ let localChapters = [];
 let lastChapterId = null;
 let visitedChapters = [];
 let sessionScore = { correct: 0, total: 0 };
+let currentUser = JSON.parse(localStorage.getItem('mateai_user')) || null;
+let authMode = 'login'; // login sau register
 
-// --- PERSISTENT PROGRESS (LocalStorage) ---
+// --- PERSISTENT PROGRESS (LocalStorage - Fallback) ---
 let userProgress = JSON.parse(localStorage.getItem('mateai_progress')) || {
     chaptersExplored: [],
     exercisesCorrect: 0,
     badges: [],
-    lastChallengeDate: null
+    lastChallengeDate: null,
+    dailyLog: [],
+    chapterScores: {}
 };
 
 function saveProgress() {
     localStorage.setItem('mateai_progress', JSON.stringify(userProgress));
+}
+
+// --- DAILY PROGRESS LOGGING ---
+function logDailyProgress(isCorrect, chapterId) {
+    const today = new Date().toISOString().slice(0, 10);
+    if (!userProgress.dailyLog) userProgress.dailyLog = [];
+    let entry = userProgress.dailyLog.find(e => e.date === today);
+    if (!entry) {
+        entry = { date: today, correct: 0, total: 0 };
+        userProgress.dailyLog.push(entry);
+    }
+    entry.total++;
+    if (isCorrect) entry.correct++;
+
+    // Track per-chapter scores for adaptive difficulty
+    if (chapterId) {
+        if (!userProgress.chapterScores) userProgress.chapterScores = {};
+        if (!userProgress.chapterScores[chapterId]) {
+            userProgress.chapterScores[chapterId] = { correct: 0, total: 0 };
+        }
+        userProgress.chapterScores[chapterId].total++;
+        if (isCorrect) userProgress.chapterScores[chapterId].correct++;
+    }
+    saveProgress();
+}
+
+// --- CONFETTI ANIMATION ---
+function launchConfetti() {
+    if (typeof confetti === 'function') {
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
+        });
+    }
 }
 
 // F1/F6 — Starea quiz/test activ
@@ -207,6 +247,7 @@ document.getElementById('btn-challenge-submit').addEventListener('click', () => 
         userProgress.exercisesCorrect += 1;
         checkBadges();
         saveProgress();
+        launchConfetti();
         setTimeout(() => fetchDailyChallenge(), 2000);
     } else {
         feedback.innerHTML = `❌ Mai încearcă! Indiciu: ${currentDailyChallenge.hint}`;
@@ -281,6 +322,65 @@ function renderProfile() {
     badgeList.innerHTML = userProgress.badges.length > 0
         ? userProgress.badges.map(b => `<div class="badge" style="background: var(--grad-primary); padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">${b}</div>`).join('')
         : "<p style='color: var(--text-500); font-size: 0.9rem;'>Nu ai încă insigne. Începe să înveți!</p>";
+
+    renderProgressChart();
+}
+
+// --- PROGRESS CHART (Chart.js) ---
+let progressChartInstance = null;
+
+async function renderProgressChart() {
+    const ctx = document.getElementById('progress-chart');
+    if (!ctx) return;
+
+    let labels = ['Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă', 'Duminică'];
+    let data = [0, 0, 0, 0, 0, 0, 0];
+
+    // Dacă utilizatorul e logat, luăm datele de pe server
+    if (currentUser && currentUser.token) {
+        try {
+            const res = await fetch('/api/stats/daily', {
+                headers: { 'Authorization': currentUser.token }
+            });
+            const resData = await res.json();
+            if (resData.success && resData.activity.length > 0) {
+                // Mapăm ultimele 7 zile
+                labels = resData.activity.map(a => a.date.split('-').slice(1).reverse().join('.'));
+                data = resData.activity.map(a => a.count);
+            }
+        } catch (e) {
+            console.error("Eroare chart:", e);
+        }
+    }
+
+    if (progressChartInstance) progressChartInstance.destroy();
+
+    progressChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Exerciții rezolvate',
+                data: data,
+                borderColor: '#6366F1',
+                backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#6366F1',
+                pointBorderWidth: 2,
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
 }
 
 // 4. LABORATOR GEOMETRIE (Geometry Lab)
@@ -490,19 +590,27 @@ var geoLab = {
 function changeView(viewId) {
     document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
     const target = document.getElementById(viewId);
-    if (target) target.classList.remove('hidden');
+    if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo(0, 0);
+    }
+
+    if (viewId === 'profil') renderProfile();
+    if (viewId === 'clasa') updateClassroomUI();
+    if (viewId === 'login') updateAuthUI();
 
     // Update nav active state
     document.querySelectorAll('.nav-link').forEach(link => {
         if (link.getAttribute('data-section') === viewId) {
-            link.setAttribute('data-active', 'true');
+            link.style.color = 'var(--primary-400)';
+            link.style.borderBottom = '2px solid var(--primary-400)';
         } else {
-            link.removeAttribute('data-active');
+            link.style.color = '';
+            link.style.borderBottom = '';
         }
     });
 
     if (viewId === 'lectii') renderChapters();
-    if (viewId === 'profil') renderProfile();
     if (viewId === 'laborator') geoLab.init();
     if (viewId === 'home') fetchDailyChallenge();
 }
@@ -694,7 +802,8 @@ async function submitQuizAnswer() {
         });
         const data = await res.json();
 
-        if (data.isCorrect) sessionScore.correct++;
+        if (data.isCorrect) { sessionScore.correct++; launchConfetti(); }
+        logDailyProgress(data.isCorrect, quizState.chapterId);
         updateScoreUI();
 
         const cls = data.isCorrect ? 'feedback-correct' : 'feedback-wrong';
@@ -762,7 +871,8 @@ async function submitTestAnswer() {
             body: JSON.stringify({ userAnswer, correctAnswer: q.answer, chapterId: q.chapterId })
         });
         const data = await res.json();
-        if (data.isCorrect) testState.correct++;
+        if (data.isCorrect) { testState.correct++; launchConfetti(); }
+        logDailyProgress(data.isCorrect, q.chapterId);
         const cls = data.isCorrect ? 'feedback-correct' : 'feedback-wrong';
         addMessage(data.feedback, 'ai', cls);
     } catch (e) {
@@ -883,3 +993,1049 @@ loadChapters();
 initBackground();
 initVoiceAssistant();
 fetchDailyChallenge();
+fetchAdaptiveSuggestion();
+
+// --- ADAPTIVE DIFFICULTY ---
+async function fetchAdaptiveSuggestion() {
+    const scores = userProgress.chapterScores || {};
+    if (Object.keys(scores).length < 2) return; // Minim 2 capitole testate
+
+    try {
+        const res = await fetch('/api/suggest-weak', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chapterScores: scores })
+        });
+        const data = await res.json();
+        if (data.suggestion) {
+            const banner = document.getElementById('adaptive-banner');
+            const text = document.getElementById('adaptive-text');
+            if (banner && text) {
+                window._adaptiveChapterId = data.suggestion.id;
+                text.innerHTML = `${data.suggestion.icon} Ai un scor de doar <strong>${data.suggestion.score}%</strong> la <strong>${data.suggestion.title}</strong>. Exersează pentru a te îmbunătăți!`;
+                banner.classList.remove('hidden');
+            }
+        }
+    } catch (e) {
+        console.error("Eroare adaptiv:", e);
+    }
+}
+
+function startAdaptiveQuiz() {
+    if (!window._adaptiveChapterId) return;
+    changeView('explica');
+    const chatInput = document.getElementById('chat-input');
+    const ch = localChapters.find(c => c.id === window._adaptiveChapterId);
+    if (ch) {
+        chatInput.value = `quiz ${ch.title}`;
+        handleChat();
+    }
+}
+
+// --- MOD COMPETIȚIE REFINED (Race Style) ---
+let compState = {
+    players: ['Jucător 1', 'Jucător 2'],
+    scores: [0, 0],
+    questions: [],
+    currentQ: 0,
+    timer: null,
+    timeLeft: 30,
+    roundActive: false
+};
+
+async function startCompetition() {
+    const p1 = document.getElementById('player1-name').value.trim() || 'Jucător 1';
+    const p2 = document.getElementById('player2-name').value.trim() || 'Jucător 2';
+    compState.players = [p1, p2];
+    compState.scores = [0, 0];
+    compState.currentQ = 0;
+    compState.roundActive = true;
+
+    try {
+        const res = await fetch('/api/competition');
+        const data = await res.json();
+        compState.questions = data.questions;
+    } catch (e) {
+        alert('Eroare la încărcarea întrebărilor!');
+        return;
+    }
+
+    document.getElementById('comp-setup').classList.add('hidden');
+    document.getElementById('comp-results').classList.add('hidden');
+    document.getElementById('comp-game').classList.remove('hidden');
+
+    // Update labels for race mode
+    document.getElementById('comp-p1-label').textContent = '🔵 ' + p1;
+    document.getElementById('comp-p2-label').textContent = '🔴 ' + p2;
+    document.getElementById('comp-p1-score').textContent = '0';
+    document.getElementById('comp-p2-score').textContent = '0';
+
+    // Show shared race UI
+    const compGame = document.getElementById('comp-game');
+    compGame.innerHTML = `
+        <div id="comp-scoreboard" class="welcome-card" style="padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-around; align-items: center;">
+            <div style="text-align: center;">
+                <div style="color: #4ECDC4; font-weight: 700;">🔵 ${p1}</div>
+                <div style="font-size: 2rem; font-weight: 800;" id="mp-score-0">0</div>
+            </div>
+            <div style="font-size: 1.5rem; color: var(--text-500);">VS</div>
+            <div style="text-align: center;">
+                <div style="color: #FF6B6B; font-weight: 700;">🔴 ${p2}</div>
+                <div style="font-size: 2rem; font-weight: 800;" id="mp-score-1">0</div>
+            </div>
+        </div>
+        <div class="welcome-card" style="padding: 25px;">
+            <div id="comp-timer" style="font-size: 1.5rem; font-weight: 800; color: #F59E0B; margin-bottom: 10px;">30s</div>
+            <h3 id="comp-question" style="color: white; margin-bottom: 15px; font-size: 1.4rem;"></h3>
+            
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+                <div style="flex: 1;">
+                    <label style="color: #4ECDC4; font-size: 0.8rem;">${p1} (Tastează aici)</label>
+                    <input type="text" id="mp-input-0" placeholder="Răspuns..." style="width: 100%;" autocomplete="off">
+                </div>
+                <div style="flex: 1;">
+                    <label style="color: #FF6B6B; font-size: 0.8rem;">${p2} (Tastează aici)</label>
+                    <input type="text" id="mp-input-1" placeholder="Răspuns..." style="width: 100%;" autocomplete="off">
+                </div>
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.7;">Primul care apasă ENTER în box-ul său cu răspunsul corect câștigă runda!</p>
+            <div id="comp-feedback" style="margin-top: 15px; font-weight: 700; min-height: 24px;"></div>
+        </div>
+    `;
+
+    // Add listeners
+    document.getElementById('mp-input-0').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkRaceAnswer(0); });
+    document.getElementById('mp-input-1').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkRaceAnswer(1); });
+
+    showNextRaceQuestion();
+}
+
+function showNextRaceQuestion() {
+    if (compState.currentQ >= compState.questions.length) {
+        endCompetition();
+        return;
+    }
+
+    compState.roundActive = true;
+    const q = compState.questions[compState.currentQ];
+    document.getElementById('comp-question').innerHTML = `Runda ${compState.currentQ + 1}/5:<br><em>${q.question}</em>`;
+    document.getElementById('mp-input-0').value = '';
+    document.getElementById('mp-input-1').value = '';
+    document.getElementById('mp-input-0').disabled = false;
+    document.getElementById('mp-input-1').disabled = false;
+    document.getElementById('comp-feedback').innerHTML = '';
+    document.getElementById('mp-input-0').focus();
+
+    compState.timeLeft = 30;
+    if (compState.timer) clearInterval(compState.timer);
+    compState.timer = setInterval(() => {
+        compState.timeLeft--;
+        const timerEl = document.getElementById('comp-timer');
+        if (timerEl) {
+            timerEl.textContent = compState.timeLeft + 's';
+            if (compState.timeLeft <= 5) timerEl.style.color = '#FF4757';
+        }
+        if (compState.timeLeft <= 0) {
+            clearInterval(compState.timer);
+            document.getElementById('comp-feedback').innerHTML = "⌛ Timp expirat! Trecem la următoarea.";
+            compState.roundActive = false;
+            setTimeout(showNextRaceQuestion, 2000);
+            compState.currentQ++;
+        }
+    }, 1000);
+}
+
+async function checkRaceAnswer(playerIdx) {
+    if (!compState.roundActive) return;
+
+    const input = document.getElementById(`mp-input-${playerIdx}`);
+    const userAnswer = input.value.trim();
+    if (!userAnswer) return;
+
+    const q = compState.questions[compState.currentQ];
+
+    try {
+        const res = await fetch('/api/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userAnswer, correctAnswer: q.answer, chapterId: q.chapterId })
+        });
+        const data = await res.json();
+
+        if (data.isCorrect) {
+            compState.roundActive = false;
+            clearInterval(compState.timer);
+            const bonus = Math.max(0, compState.timeLeft);
+            const totalPoints = 10 + bonus;
+            compState.scores[playerIdx] += totalPoints;
+
+            document.getElementById(`mp-score-${playerIdx}`).textContent = compState.scores[playerIdx];
+            document.getElementById('comp-feedback').innerHTML = `🎉 ${compState.players[playerIdx]} a câștigat runda! (+${totalPoints})`;
+            document.getElementById('comp-feedback').style.color = playerIdx === 0 ? '#4ECDC4' : '#FF6B6B';
+
+            launchConfetti();
+
+            document.getElementById('mp-input-0').disabled = true;
+            document.getElementById('mp-input-1').disabled = true;
+
+            compState.currentQ++;
+            setTimeout(showNextRaceQuestion, 2000);
+        } else {
+            // Hint optional: visual shake or red border
+            input.style.border = '2px solid #FF4757';
+            setTimeout(() => input.style.border = '', 500);
+        }
+    } catch (e) { console.error(e); }
+}
+
+// --- MULTIPLAYER ONLINE LOGIC ---
+let mpRoomCode = null;
+let mpPollingInterval = null;
+
+async function createRoom() {
+    if (!currentUser) { alert("Trebuie să fii conectat!"); changeView('login'); return; }
+    try {
+        const res = await fetch('/api/multiplayer/create', {
+            method: 'POST',
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            mpRoomCode = data.code;
+            document.getElementById('mp-lobby').classList.add('hidden');
+            document.getElementById('mp-waiting').classList.remove('hidden');
+            document.getElementById('mp-room-code-display').textContent = mpRoomCode;
+            startPolling();
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function joinRoom() {
+    if (!currentUser) { alert("Trebuie să fii conectat!"); changeView('login'); return; }
+    const code = document.getElementById('join-room-code').value.trim().toUpperCase();
+    if (!code) return;
+
+    try {
+        const res = await fetch(`/api/multiplayer/join/${code}`, {
+            method: 'POST',
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            mpRoomCode = code;
+            document.getElementById('mp-lobby').classList.add('hidden');
+            document.getElementById('mp-game').classList.remove('hidden');
+            startPolling();
+        } else {
+            alert(data.error || "Cod invalid.");
+        }
+    } catch (e) { console.error(e); }
+}
+
+function startPolling() {
+    if (mpPollingInterval) clearInterval(mpPollingInterval);
+    mpPollingInterval = setInterval(async () => {
+        if (!mpRoomCode) return;
+        try {
+            const res = await fetch(`/api/multiplayer/status/${mpRoomCode}`);
+            const data = await res.json();
+            if (data.success) {
+                updateMPUI(data);
+                if (data.status === 'finished') {
+                    stopPolling();
+                    showMPResults(data);
+                }
+            }
+        } catch (e) { console.error(e); }
+    }, 1500);
+}
+
+function stopPolling() {
+    if (mpPollingInterval) {
+        clearInterval(mpPollingInterval);
+        mpPollingInterval = null;
+    }
+}
+
+function updateMPUI(data) {
+    const { status, state, host_name, guest_name, server_time } = data;
+
+    if (status === 'playing') {
+        document.getElementById('mp-waiting').classList.add('hidden');
+        document.getElementById('mp-game').classList.remove('hidden');
+
+        document.getElementById('mp-host-name').textContent = host_name || "Host";
+        document.getElementById('mp-guest-name').textContent = guest_name || "Adversar";
+        document.getElementById('mp-host-score').textContent = state.scores[0];
+        document.getElementById('mp-guest-score').textContent = state.scores[1];
+
+        const qCount = 10;
+        document.getElementById('mp-round-info').textContent = `Runda ${state.currentQ + 1}/${qCount}`;
+
+        const q = state.questions[state.currentQ];
+        if (q) {
+            document.getElementById('mp-question-text').textContent = q.question;
+            if (q.chapterTitle) {
+                document.getElementById('mp-round-info').innerHTML = `Runda ${state.currentQ + 1}/${qCount} <span style="opacity:0.6">(${q.chapterTitle})</span>`;
+            }
+        }
+
+        // Timer Logic
+        if (server_time && state.roundStartTime) {
+            const elapsed = server_time - state.roundStartTime;
+            const remaining = Math.max(0, 20 - Math.floor(elapsed));
+            const timerEl = document.getElementById('mp-timer-display');
+            if (timerEl) {
+                timerEl.textContent = `${remaining}s`;
+                timerEl.style.color = remaining <= 5 ? '#FF4757' : '#F59E0B';
+
+                const bar = document.getElementById('mp-timer-bar');
+                if (bar) {
+                    const pct = (remaining / 20) * 100;
+                    bar.style.width = pct + "%";
+                    bar.style.background = remaining <= 5 ? '#FF4757' : '#F59E0B';
+                }
+            }
+        }
+
+        const feedback = document.getElementById('mp-feedback-msg');
+        feedback.innerHTML = state.lastFeedback || "";
+        if (state.lastFeedback && state.lastFeedback.includes("corect")) {
+            feedback.style.color = "#4ECDC4";
+        } else if (state.lastFeedback && state.lastFeedback.includes("expirat")) {
+            feedback.style.color = "#FF4757";
+        }
+    }
+}
+
+async function submitMPAnswer() {
+    const input = document.getElementById('mp-answer-input');
+    const answer = input.value.trim();
+    if (!answer || !mpRoomCode) return;
+
+    try {
+        const res = await fetch(`/api/multiplayer/action/${mpRoomCode}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': currentUser.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ answer })
+        });
+        const data = await res.json();
+        if (data.success) {
+            if (data.isCorrect) {
+                input.value = '';
+                launchConfetti();
+            } else if (data.timeout) {
+                input.value = '';
+            } else {
+                input.style.border = '2px solid #FF4757';
+                setTimeout(() => input.style.border = '', 500);
+            }
+        }
+    } catch (e) { console.error(e); }
+}
+
+function showMPResults(data) {
+    document.getElementById('mp-game').classList.add('hidden');
+    document.getElementById('mp-results').classList.remove('hidden');
+
+    const { state, host_name, guest_name } = data;
+    const s1 = state.scores[0];
+    const s2 = state.scores[1];
+
+    let winnerText = "";
+    if (s1 > s2) winnerText = `${host_name} a Câștigat!`;
+    else if (s2 > s1) winnerText = `${guest_name} a Câștigat!`;
+    else winnerText = "Egalitate!";
+
+    document.getElementById('mp-result-title').textContent = winnerText;
+    document.getElementById('mp-result-score').textContent = `Scor Final: ${s1} - ${s2} (din 10 runde)`;
+    document.getElementById('mp-winner-icon').textContent = s1 === s2 ? "🤝" : "🏆";
+}
+
+// Event delegation pentru input enter
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && e.target.id === 'mp-answer-input') {
+        submitMPAnswer();
+    }
+});
+
+// --- AUTH LOGIC ---
+function switchAuth(mode) {
+    const card = document.getElementById('auth-card');
+    if (!card) return;
+    authMode = mode;
+    if (mode === 'register') {
+        card.classList.add('show-register');
+    } else {
+        card.classList.remove('show-register');
+    }
+}
+
+function updateAuthUI() {
+    const navAuth = document.getElementById('nav-auth');
+    if (!navAuth) return;
+
+    if (currentUser) {
+        navAuth.innerHTML = `<a href="#" class="nav-link" onclick="handleLogout()">${currentUser.username} (Logout)</a>`;
+        if (!document.getElementById('login').classList.contains('hidden')) {
+            changeView('home');
+        }
+    } else {
+        navAuth.innerHTML = `<a href="#" class="nav-link" data-section="login">Conectare</a>`;
+        navAuth.querySelector('a').addEventListener('click', (e) => {
+            e.preventDefault();
+            changeView('login');
+        });
+        switchAuth('login');
+    }
+}
+
+async function handleLogin() {
+    const userEl = document.getElementById('login-username');
+    const passEl = document.getElementById('login-password');
+    if (!userEl || !passEl) return;
+
+    const username = userEl.value.trim();
+    const password = passEl.value.trim();
+    if (!username || !password) {
+        alert("Introdu numele și parola!");
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            currentUser = data.user;
+            localStorage.setItem('mateai_user', JSON.stringify(currentUser));
+            updateAuthUI();
+            launchConfetti();
+            changeView('home');
+        } else {
+            alert(data.error || "Eroare la conectare.");
+        }
+    } catch (e) { alert("Eroare de conexiune."); }
+}
+
+async function handleRegister() {
+    const userEl = document.getElementById('register-username');
+    const passEl = document.getElementById('register-password');
+    const roleEl = document.querySelector('input[name="register-role"]:checked');
+    if (!userEl || !passEl || !roleEl) return;
+
+    const username = userEl.value.trim();
+    const password = passEl.value.trim();
+    const role = roleEl.value;
+
+    if (!username || !password) {
+        alert("Introdu numele și parola!");
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, role })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            alert("Cont creat cu succes! Acum te poți conecta.");
+            launchConfetti();
+            userEl.value = '';
+            passEl.value = '';
+            switchAuth('login');
+        } else {
+            alert(data.error || "Eroare la înregistrare.");
+        }
+    } catch (e) { alert("Eroare de conexiune."); }
+}
+
+function handleLogout() {
+    currentUser = null;
+    localStorage.removeItem('mateai_user');
+    location.reload();
+}
+
+// --- CLASSROOM LOGIC ---
+function switchClassTab(tab) {
+    document.getElementById('class-tab-ranking').classList.add('hidden');
+    document.getElementById('class-tab-homework').classList.add('hidden');
+    document.getElementById('tab-ranking').classList.remove('active-tab');
+    document.getElementById('tab-homework').classList.remove('active-tab');
+
+    document.getElementById(`class-tab-${tab}`).classList.remove('hidden');
+    document.getElementById(`tab-${tab}`).classList.add('active-tab');
+
+    if (tab === 'homework') loadHomework();
+}
+
+async function showStudentDetails(userId, username) {
+    const view = document.getElementById('student-detail-view');
+    const statsArea = document.getElementById('detail-student-stats');
+    document.getElementById('detail-student-name').textContent = `Analiză Progres: ${username}`;
+    view.classList.remove('hidden');
+    statsArea.innerHTML = 'Se încarcă datele...';
+
+    try {
+        const res = await fetch(`/api/student/details/${userId}`, {
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            if (data.details.length === 0) {
+                statsArea.innerHTML = '<p>Elevul nu a început încă nicio lecție.</p>';
+                return;
+            }
+
+            let html = '<ul style="list-style: none;">';
+            data.details.forEach(p => {
+                const ratio = p.total > 0 ? (p.correct / p.total) * 100 : 0;
+                const statusColor = ratio >= 80 ? '#4ECDC4' : ratio >= 50 ? '#FFD93D' : '#FF6B6B';
+                const statusText = ratio >= 80 ? 'Stăpânește' : ratio >= 50 ? 'În lucru' : 'Se poticnește';
+
+                html += `
+                    <li style="margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 4px solid ${statusColor};">
+                        <strong>${p.chapter_id}</strong>: ${p.correct}/${p.total} corecte (${Math.round(ratio)}%)
+                        <br><span style="font-size: 0.8rem; color: ${statusColor};">${statusText}</span>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+            statsArea.innerHTML = html;
+        }
+    } catch (e) {
+        statsArea.innerHTML = 'Eroare la încărcarea datelor.';
+    }
+}
+
+function switchClassTab(tabName) {
+    document.getElementById('class-tab-ranking').classList.add('hidden');
+    document.getElementById('class-tab-homework').classList.add('hidden');
+    document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active-tab'));
+
+    document.getElementById(`class-tab-${tabName}`).classList.remove('hidden');
+    const activeBtn = document.getElementById(`tab-${tabName}`);
+    if (activeBtn) activeBtn.classList.add('active-tab');
+
+    if (tabName === 'homework') {
+        loadHomework();
+        loadTests();
+    } else {
+        if (currentUser && currentUser.class_code) {
+            loadRankings(currentUser.class_code);
+        }
+    }
+}
+
+function hideStudentDetails() {
+    document.getElementById('student-detail-view').classList.add('hidden');
+}
+
+async function updateClassroomUI() {
+    if (!currentUser) {
+        document.getElementById('class-tab-ranking').classList.remove('hidden');
+        document.getElementById('class-tab-homework').classList.add('hidden');
+        document.getElementById('class-student-zone').classList.remove('hidden');
+        document.getElementById('class-ranking-card').classList.add('hidden');
+        return;
+    }
+
+    const teacherZone = document.getElementById('class-teacher-zone');
+    const studentZone = document.getElementById('class-student-zone');
+    const teacherHwZone = document.getElementById('teacher-homework-zone');
+    const studentHwZone = document.getElementById('student-homework-zone');
+
+    if (currentUser.role === 'teacher') {
+        teacherZone.classList.remove('hidden');
+        teacherHwZone.classList.remove('hidden');
+        studentZone.classList.add('hidden');
+        studentHwZone.classList.add('hidden');
+
+        if (currentUser.class_code) {
+            teacherZone.innerHTML = `
+                <p>Clasă activă: <strong>${currentUser.class_code}</strong></p>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button onclick="location.reload()" style="background: var(--bg-soft); color: white; font-size: 0.8rem;">🔄 Refresh</button>
+                    <button onclick="handleLogout()" style="background: rgba(255,71,87,0.2); color: #FF4757; font-size: 0.8rem;">Ieșire Cont</button>
+                </div>
+            `;
+            // Populate chapter select for homework
+            const selectHw = document.getElementById('hw-chapter-select');
+            if (selectHw && selectHw.innerHTML === '') {
+                selectHw.innerHTML = localChapters.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+            }
+            // Populate chapter select for tests
+            const selectTest = document.getElementById('test-chapter-select');
+            if (selectTest && selectTest.options.length <= 1) {
+                const optionsHTML = localChapters.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+                selectTest.innerHTML = `<option value="">(Opțional) Alege un capitol pentru întrebări generate automat</option>` + optionsHTML;
+            }
+        } else {
+            teacherZone.innerHTML = `
+                <p>Nu ai nicio clasă creată încă.</p>
+                <div class="input-group" style="margin-top: 10px;">
+                    <input type="text" id="new-class-name" placeholder="Numele clasei (ex: 5A)">
+                    <button onclick="createClass()">Creează Clasă</button>
+                </div>
+            `;
+        }
+    } else {
+        teacherZone.classList.add('hidden');
+        teacherHwZone.classList.add('hidden');
+        studentZone.classList.remove('hidden');
+        studentHwZone.classList.remove('hidden');
+    }
+
+    if (currentUser.class_code) {
+        loadRankings(currentUser.class_code);
+    }
+}
+
+async function createClass() {
+    const nameEl = document.getElementById('new-class-name');
+    if (!nameEl) return;
+    const name = nameEl.value.trim();
+    if (!name) return;
+
+    try {
+        const res = await fetch('/api/class/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': currentUser.token
+            },
+            body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert(`Clasă creată! Cod: ${data.code}`);
+            currentUser.class_code = data.code;
+            localStorage.setItem('mateai_user', JSON.stringify(currentUser));
+            updateClassroomUI();
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function joinClass() {
+    const codeEl = document.getElementById('join-class-code');
+    if (!codeEl) return;
+    const code = codeEl.value.trim();
+    if (!code) return;
+
+    try {
+        const res = await fetch('/api/class/join', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': currentUser.token
+            },
+            body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert(`Te-ai alăturat clasei ${data.className}!`);
+            currentUser.class_code = code.toUpperCase();
+            localStorage.setItem('mateai_user', JSON.stringify(currentUser));
+            updateClassroomUI();
+        } else {
+            alert(data.error);
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function loadRankings(code) {
+    try {
+        const res = await fetch(`/api/class/rankings/${code}`);
+        const result = await res.json();
+        if (result.success) {
+            const data = result.data;
+            document.getElementById('ranking-class-name').textContent = data.className;
+            document.getElementById('ranking-class-code').textContent = data.code;
+            document.getElementById('class-ranking-card').classList.remove('hidden');
+
+            const tbody = document.getElementById('ranking-body');
+            tbody.innerHTML = '';
+            data.students.forEach((s, idx) => {
+                const tr = document.createElement('tr');
+                tr.style.background = s.username === currentUser.username.toLowerCase() ? 'rgba(99, 102, 241, 0.2)' : 'transparent';
+
+                let actionBtn = '';
+                if (currentUser.role === 'teacher') {
+                    actionBtn = `<button onclick="showStudentDetails(${s.id}, '${s.username}')" style="padding: 4px 8px; font-size: 0.7rem;">🔍 Detalii</button>`;
+                }
+
+                tr.innerHTML = `
+                    <td style="padding: 10px;">${idx + 1}</td>
+                    <td style="padding: 10px;"><strong>${s.username}</strong></td>
+                    <td style="padding: 10px;">${s.total_answers}</td>
+                    <td style="padding: 10px; color: #4ECDC4;">${s.total_correct}</td>
+                    <td style="padding: 10px;">${actionBtn}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function assignHomework() {
+    const chapterId = document.getElementById('hw-chapter-select').value;
+    const desc = document.getElementById('hw-description').value.trim();
+    const date = document.getElementById('hw-due-date').value;
+    const fileInput = document.getElementById('hw-file');
+
+    if (!chapterId && !desc && (!fileInput || !fileInput.files.length)) {
+        alert("Selectează măcar un capitol, o descriere sau încarcă un fișier.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('chapterId', chapterId);
+    if (desc) formData.append('description', desc);
+    if (date) formData.append('dueDate', date);
+    if (fileInput && fileInput.files.length > 0) {
+        formData.append('file', fileInput.files[0]);
+    }
+
+    try {
+        const res = await fetch('/api/homework/create', {
+            method: 'POST',
+            headers: {
+                'Authorization': currentUser.token
+            },
+            body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert("Temă asignată cu succes!");
+            document.getElementById('hw-description').value = '';
+            document.getElementById('hw-due-date').value = '';
+            if (fileInput) fileInput.value = '';
+            loadHomework();
+        } else {
+            alert(data.error || "Eroare la crearea temei.");
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function loadHomework() {
+    if (!currentUser || !currentUser.class_code) return;
+
+    try {
+        const res = await fetch(`/api/homework/class/${currentUser.class_code}`, {
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            const list = currentUser.role === 'teacher' ? 'teacher-homework-list' : 'student-homework-list';
+            const container = document.getElementById(list);
+            if (!container) return;
+
+            if (data.homework.length === 0) {
+                container.innerHTML = '<p style="opacity: 0.5;">Nicio temă activă.</p>';
+                return;
+            }
+
+            container.innerHTML = data.homework.map(hw => {
+                const chapter = localChapters.find(c => c.id === hw.chapter_id);
+                const title = chapter ? chapter.title : (hw.chapter_id || 'Temă Generală');
+                const descStr = hw.description ? `<div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">${hw.description}</div>` : '';
+                const fileStr = hw.file_path ? `<div style="margin-top: 10px;"><a href="${hw.file_path}" target="_blank" style="color: #4ECDC4; text-decoration: none; font-size: 0.9rem;">📎 Vezi Fișier Atașat</a></div>` : '';
+                const dueStr = hw.due_date ? `<div style="font-size: 0.8rem; color: #ff6b6b; margin-top: 5px;">Scadentă: ${hw.due_date}</div>` : '';
+
+                let content = `
+                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary-400);">
+                        <strong>${title}</strong>
+                        ${descStr}
+                        ${fileStr}
+                        <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Data: ${new Date(hw.created_at).toLocaleDateString()}</div>
+                        ${dueStr}
+                `;
+
+                if (currentUser.role === 'teacher') {
+                    content += `<button onclick="loadHomeworkCompletions(${hw.id})" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 6px; margin-top: 10px; border: 1px solid var(--primary-400); background: transparent; color: white;">📊 Vezi completări</button>`;
+                    content += `<div id="hw-completions-${hw.id}" style="margin-top: 10px;" class="hidden"></div>`;
+                } else if (currentUser.role === 'student') {
+                    const status = hw.completed_at ? '✅ Trimisă' : '⏳ În așteptare';
+                    content += `<div style="font-size: 0.85rem; color: ${hw.completed_at ? '#4ECDC4' : '#feca57'}; margin-top: 10px; font-weight: bold;">Stare: ${status}</div>`;
+
+                    if (!hw.completed_at) {
+                        content += `
+                            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+                                <label style="font-size: 0.8rem; color: var(--text-500);">Încarcă rezolvarea (poză / fișier):</label>
+                                <input type="file" id="submit-file-${hw.id}" accept="image/*,.pdf,.doc,.docx" style="font-size: 0.8rem;">
+                                <button onclick="trimiteRezolvare(${hw.id})" style="padding: 6px 12px; font-size: 0.8rem; margin-top: 5px;">Trimite Rezolvare</button>
+                            </div>
+                        `;
+                    }
+                }
+
+                content += `</div>`;
+                return content;
+            }).join('');
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function trimiteRezolvare(homeworkId) {
+    const fileInput = document.getElementById(`submit-file-${homeworkId}`);
+    if (!fileInput || !fileInput.files.length) {
+        alert("Te rog să încarci un fișier cu rezolvarea!");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('homeworkId', homeworkId);
+    formData.append('file', fileInput.files[0]);
+
+    try {
+        const res = await fetch('/api/homework/complete', {
+            method: 'POST',
+            headers: {
+                'Authorization': currentUser.token
+            },
+            body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert("Rezoluția ta a fost trimisă cu succes!");
+            loadHomework();
+        } else {
+            alert(data.error || "A apărut o eroare la trimitere.");
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function loadHomeworkCompletions(hwId) {
+    const container = document.getElementById(`hw-completions-${hwId}`);
+    if (!container) return;
+
+    // Toggle
+    if (!container.classList.contains('hidden')) {
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.innerHTML = '<em>Se încarcă...</em>';
+    container.classList.remove('hidden');
+
+    try {
+        const res = await fetch(`/api/homework/${hwId}/completions`, {
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            if (data.completions.length === 0) {
+                container.innerHTML = '<span style="opacity:0.5; font-size: 0.8rem;">Niciun elev în clasă.</span>';
+                return;
+            }
+
+            let html = '<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-top: 5px;">';
+            data.completions.forEach(c => {
+                const badge = c.completed_at ? '<span style="color:#4ECDC4;">✅</span>' : '❌';
+                const fileLink = c.file_path ? `<a href="${c.file_path}" target="_blank" style="color: #feca57; font-size: 0.8rem; margin-left: 10px; text-decoration: underline;">[Vezi Rezolvare]</a>` : '';
+                html += `<div style="font-size: 0.85rem; padding: 4px 0;">
+                    ${badge} <strong>${c.username}</strong>
+                    ${c.completed_at ? `<span style="font-size:0.75rem; opacity:0.7; margin-left:5px;">(${new Date(c.completed_at).toLocaleDateString()})</span>` : ''}
+                    ${fileLink}
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<span style="color:red; font-size: 0.8rem;">Eroare la încărcare.</span>';
+        }
+    } catch (e) {
+        container.innerHTML = '<span style="color:red; font-size: 0.8rem;">Eroare.</span>';
+        console.error(e);
+    }
+}
+
+// --- SYNC PROGRESS WITH SERVER ---
+async function syncProgressWithServer(isCorrect, chapterId) {
+    if (!currentUser || !currentUser.token) return;
+
+    try {
+        await fetch('/api/progress/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': currentUser.token
+            },
+            body: JSON.stringify({ isCorrect, chapterId })
+        });
+    } catch (e) { console.error("Sync error:", e); }
+}
+
+// --- TESTS MANAGEMENT ---
+async function assignTest() {
+    const title = document.getElementById('test-title').value.trim();
+    const chapterId = document.getElementById('test-chapter-select').value;
+    const numQuestions = document.getElementById('test-num-questions').value;
+    const fileInput = document.getElementById('test-file');
+    const customQuestions = document.getElementById('test-custom-questions').value.trim();
+
+    if (!title) {
+        alert("Introdu un titlu pentru test.");
+        return;
+    }
+    if (!chapterId && !customQuestions && (!fileInput || !fileInput.files.length)) {
+        alert("Alege un capitol, adaugă întrebări proprii sau un fișier de test.");
+        return;
+    }
+
+    if (customQuestions) {
+        try { JSON.parse(customQuestions); }
+        catch (e) { alert("Formatul JSON pentru întrebări este invalid!"); return; }
+    }
+
+    const formData = new FormData();
+    formData.append('title', title);
+    if (chapterId) formData.append('chapterId', chapterId);
+    formData.append('numQuestions', numQuestions);
+    if (customQuestions) formData.append('customQuestions', customQuestions);
+    if (fileInput && fileInput.files.length > 0) formData.append('file', fileInput.files[0]);
+
+    try {
+        const res = await fetch('/api/test/create', {
+            method: 'POST',
+            headers: { 'Authorization': currentUser.token },
+            body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert("Test creat cu succes!");
+            document.getElementById('test-title').value = '';
+            document.getElementById('test-custom-questions').value = '';
+            if (fileInput) fileInput.value = '';
+            loadTests();
+        } else {
+            alert(data.error || "Eroare la crearea testului.");
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function loadTests() {
+    if (!currentUser || !currentUser.class_code) return;
+    try {
+        const res = await fetch(`/api/test/class/${currentUser.class_code}`, {
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            const list = currentUser.role === 'teacher' ? 'teacher-test-list' : 'student-test-list';
+            const container = document.getElementById(list);
+            if (!container) return;
+
+            if (data.tests.length === 0) {
+                container.innerHTML = '<p style="opacity: 0.5;">Niciun test activ.</p>';
+                return;
+            }
+
+            container.innerHTML = data.tests.map(t => {
+                let content = `
+                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; border-left: 4px solid #feca57;">
+                        <strong>${t.title}</strong>
+                        <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Data: ${new Date(t.created_at).toLocaleDateString()}</div>
+                `;
+
+                if (t.file_path) {
+                    content += `<div style="margin-top: 10px;"><a href="${t.file_path}" target="_blank" style="color: #feca57; text-decoration: none; font-size: 0.9rem;">📎 Deschide Fișier Test</a></div>`;
+                }
+
+                if (currentUser.role === 'teacher') {
+                    content += `<button onclick="loadTestCompletions(${t.id})" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 6px; margin-top: 10px; border: 1px solid #feca57; background: transparent; color: white;">📊 Vezi rezultate</button>`;
+                    content += `<div id="test-results-${t.id}" style="margin-top: 10px;" class="hidden"></div>`;
+                } else if (currentUser.role === 'student') {
+                    if (t.result_at) {
+                        content += `<div style="font-size: 0.85rem; color: #4ECDC4; margin-top: 10px; font-weight: bold;">✅ Scos: ${t.score}/${t.total} puncte</div>`;
+                    } else {
+                        // If it has custom queries or chapter, it's interactive.
+                        if (t.custom_questions || t.chapter_id) {
+                            content += `<button onclick="startAssignedTest(${t.id}, '${t.chapter_id}', ${t.num_questions})" style="padding: 5px 10px; font-size: 0.8rem; margin-top: 10px;">🚀 Începe Testul Interactiv</button>`;
+                        } else if (t.file_path) {
+                            content += `<div style="font-size: 0.85rem; color: #feca57; margin-top: 10px;">Testul necesită trimitere offline la profesor (fișier atașat).</div>`;
+                        }
+                    }
+                }
+                content += `</div>`;
+                return content;
+            }).join('');
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function loadTestCompletions(testId) {
+    const container = document.getElementById(`test-results-${testId}`);
+    if (!container) return;
+
+    if (!container.classList.contains('hidden')) {
+        container.classList.add('hidden');
+        return;
+    }
+    container.innerHTML = '<em>Se încarcă...</em>';
+    container.classList.remove('hidden');
+
+    try {
+        const res = await fetch(`/api/test/${testId}/results`, {
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            if (data.results.length === 0) {
+                container.innerHTML = '<span style="opacity:0.5; font-size: 0.8rem;">Niciun elev în clasă.</span>';
+                return;
+            }
+            let html = '<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-top: 5px;">';
+            data.results.forEach(r => {
+                const scoreStr = r.completed_at ? `<span style="color:#4ECDC4; margin-left:10px;">${r.score}/${r.total} pct</span>` : '<span style="color:#ff6b6b; margin-left:10px;">Nu a rezolvat</span>';
+                html += `<div style="font-size: 0.85rem; padding: 4px 0;">
+                    <strong>${r.username}</strong> ${scoreStr}
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    } catch (e) { console.error(e); }
+}
+
+function startAssignedTest(testId, chapterId, numQuestions) {
+    // Începem un test personalizat din baza de date
+    // (Ar trebui să facem un fetch pentru a aduce custom_questions,
+    // dar deocamdată testul general ia din capitole)
+    changeView('lectii');
+    showChapterDetail(chapterId);
+
+    // Test mode simulat
+    // Pentru o implementare completă, testul folosește `testMode` din backend.
+    // Marcăm direct la final sau backend va cere submit_test_result prin /api/chat.
+}
+
+// Override original logging to include server sync
+const originalLogDailyProgress = logDailyProgress;
+logDailyProgress = function (isCorrect, chapterId) {
+    originalLogDailyProgress(isCorrect, chapterId);
+    syncProgressWithServer(isCorrect, chapterId);
+};
+
+// Auto-login check on boot
+if (currentUser) {
+    updateAuthUI();
+}
+
+// Ensure login and classroom are initialized on load
+window.addEventListener('load', () => {
+    if (currentUser) {
+        updateAuthUI();
+        updateClassroomUI();
+    }
+});
