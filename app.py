@@ -562,11 +562,8 @@ def get_targeted_snippet(ch, query):
             best_hits = hits
             best_lesson = lesson
 
-    if best_lesson and best_hits > 0:
+    if best_lesson and best_hits >= 2:
         return f"📌 <strong>{ch['title']}</strong><br><br>{best_lesson}<br><br>Vrei și un exemplu rapid?"
-
-    if lessons:
-        return f"📌 <strong>{ch['title']}</strong><br><br>{lessons[0]}<br><br>Spune-mi exact ce punct vrei: definiție, exemplu sau exercițiu."
     return None
 
 def get_top_matches(query, count=3):
@@ -617,12 +614,12 @@ def get_definition_from_chapter(ch, query):
         if lesson_norm.startswith("definitie") or " definitie:" in lesson_norm or " definitie " in lesson_norm:
             return lesson
 
-    # 4. Returnează prima lecție relevantă sau prima lecție
+    # 4. Returnează prima lecție relevantă
     for lesson in lessons:
         if any(w in normalize(lesson) for w in words):
             return lesson
 
-    return lessons[0] if lessons else ""
+    return ""
 
 def get_global_definition(query):
     """Caută definiție în toate capitolele, chiar fără capitol curent."""
@@ -724,7 +721,7 @@ def find_best_chapter_for_definition(query):
             best_score = score
             best_ch = ch
 
-    if best_score >= 7:
+    if best_score >= 10:
         return best_ch
     return None
 
@@ -1127,10 +1124,20 @@ def chat():
             if symbol_def:
                 return jsonify({"message": symbol_def, "lastChapterId": last_id})
 
+            if current_ch:
+                focused_current = get_targeted_snippet(current_ch, user_input)
+                if focused_current:
+                    return jsonify({
+                        "message": focused_current,
+                        "lastChapterId": current_ch['id'],
+                        "suggestion": get_suggestion(current_ch['id'])
+                    })
+
             concept_ch = find_best_chapter_for_definition(user_input)
             if concept_ch:
                 definition = get_definition_from_chapter(concept_ch, user_input)
-                msg = f"📘 <strong>{concept_ch['title']}</strong><br><br>{definition}"
+                focused = get_targeted_snippet(concept_ch, user_input)
+                msg = focused if focused else f"📘 <strong>{concept_ch['title']}</strong><br><br>{definition}"
                 msg += "<br><br>Scrie <em>exemplu</em> dacă vrei și un model de rezolvare."
                 return jsonify({
                     "message": msg,
