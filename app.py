@@ -36,20 +36,23 @@ INTENTS = {
         "lectiile", "lectie", "teoria", "teorie", "spune tot", "detalii complete",
         "toata materia", "ce trebuie sa stiu", "invata-ma", "preda-mi",
         "tot ce stii", "rezumat complet", "materia", "cursul", "lectia completa",
-        "aprofundeaza", "dezvolta", "elaboreaza"
+        "aprofundeaza", "dezvolta", "elaboreaza", "dezvolta ideea",
+        "explica mai amplu", "explica mai pe larg", "mai multe detalii"
     ],
     "example": [
         "exemplu", "da-mi un exemplu", "poti sa-mi dai un exemplu",
         "pune un exemplu", "poti sa exemplifici", "arata-mi",
         "un caz", "sa vad", "demonstreaza", "cum se face", "cum se rezolva",
         "model", "rezolvare", "cum se calculeaza", "arata un model",
-        "da-mi un model", "cum fac", "cum rezolv", "pas cu pas"
+        "da-mi un model", "cum fac", "cum rezolv", "pas cu pas",
+        "exemplificare", "un exemplu concret", "da un exemplu"
     ],
     "exercise": [
         "exercitiu", "da-mi ceva de rezolvat", "vreau sa exersez", "provocare",
         "vreau sa lucrez", "da-mi o problema", "test rapid", "antrenament",
         "problema", "da-mi de lucru", "pune-mi ceva", "vreau exercitii",
-        "da-mi de rezolvat", "lucru", "practica"
+        "da-mi de rezolvat", "lucru", "practica", "exersam",
+        "vreau practica", "probleme de antrenament"
     ],
     "define": [
         "ce inseamna", "ce este", "ce sunt", "defineste", "spune-mi despre",
@@ -59,7 +62,8 @@ INTENTS = {
         "la ce se refera", "ce-i ala", "ce-i aia", "ce inseamna asta",
         "ce e ala", "ce e aia", "ce-i", "ce e", "despre ce e vorba",
         "ce presupune", "la ce ajuta", "ce reprezinta concret",
-        "definitie simpla", "definitie pe inteles"
+        "definitie simpla", "definitie pe inteles", "adica",
+        "care-i", "care i", "cum adica", "ce vrea sa zica"
     ],
     "fact": [
         "curiozitati", "stiai ca", "ceva interesant", "spune-mi ceva nou",
@@ -97,7 +101,8 @@ INTENTS = {
     "help": [
         "ajutor", "help", "ce poti face", "comenzi", "cum functionezi",
         "ce stii sa faci", "optiuni", "instructiuni", "ghid", "meniu",
-        "ce poti", "cum te folosesc", "ce pot intreba", "cum te pot folosi"
+        "ce poti", "cum te folosesc", "ce pot intreba", "cum te pot folosi",
+        "cum te folosim", "ce stii", "ce intrebari pot pune"
     ],
     "next": [
         "urmatorul", "urmatorul capitol", "alt capitol", "mergi mai departe",
@@ -114,7 +119,8 @@ INTENTS = {
     ],
     "summary": [
         "pe scurt", "scurt", "rezumat rapid", "in 3 idei",
-        "esential", "concluzie", "rezumat pe scurt", "explica pe scurt"
+        "esential", "concluzie", "rezumat pe scurt", "explica pe scurt",
+        "scurt si clar", "foarte pe scurt"
     ]
 }
 
@@ -189,7 +195,10 @@ def score_intent(input_text, intent_type):
     if not norm_input:
         return 0.0
 
-    tokens = tokenize(norm_input)
+    tokens = expand_query_words(norm_input)
+    if not tokens:
+        tokens = tokenize(norm_input)
+
     score = 0.0
     for syn in INTENTS.get(intent_type, []):
         syn_norm = normalize(syn)
@@ -202,10 +211,22 @@ def score_intent(input_text, intent_type):
 
         syn_tokens = syn_norm.split()
         if len(syn_tokens) == 1:
-            if any(_fuzzy_similar(syn_tokens[0], tok) >= 0.84 for tok in tokens):
+            syn_variants = concept_variants(syn_tokens[0])
+            if any(
+                (_fuzzy_similar(variant, tok) >= 0.84) or partial_match(variant, tok)
+                for variant in syn_variants for tok in tokens
+            ):
                 score += 1.0
         else:
-            overlap = sum(1 for tok in syn_tokens if tok in tokens)
+            overlap = 0
+            for syn_tok in syn_tokens:
+                syn_tok_variants = concept_variants(syn_tok)
+                if any(
+                    (variant in tokens) or any(_fuzzy_similar(variant, tok) >= 0.9 for tok in tokens)
+                    for variant in syn_tok_variants
+                ):
+                    overlap += 1
+
             # Evităm false positive de tip "ce ..." pe intenții nepotrivite.
             # Pentru expresii de 2+ cuvinte cerem potrivire aproape completă.
             if overlap == len(syn_tokens):
@@ -220,8 +241,16 @@ def check_intent(input_text, intent_type, threshold=1.5):
 def detect_best_intent(input_text):
     ranked = [(intent, score_intent(input_text, intent)) for intent in INTENTS.keys()]
     ranked.sort(key=lambda item: item[1], reverse=True)
-    if not ranked or ranked[0][1] < 1.5:
+    if not ranked or ranked[0][1] < 1.6:
         return None
+
+    if len(ranked) > 1:
+        top_score = ranked[0][1]
+        second_score = ranked[1][1]
+        # Dacă două intenții sunt foarte apropiate, evităm să alegem greșit.
+        if (top_score - second_score) < 0.22 and top_score < 2.6:
+            return None
+
     return ranked[0][0]
 
 def is_identity_query(input_text):
