@@ -471,6 +471,104 @@ def deep_search(query):
         return best[0]
     return None
 
+def rank_chapters(query):
+    """Returnează capitole candidate cu scor pentru dezambiguizare."""
+    norm_q = normalize(query)
+    words = [w for w in expand_query_words(norm_q) if len(w) >= 3]
+    if not words:
+        return []
+
+    stopwords = {"ce", "care", "este", "sunt", "pentru", "din", "lui", "unde", "cum", "cand", "mai", "imi",
+                 "poti", "vreau", "spune", "despre", "arata", "zici", "asta", "aia", "cele", "te", "rog"}
+    content_words = [w for w in words if w not in stopwords]
+    if not content_words:
+        content_words = words
+
+    ranked = []
+    for ch in CHAPTERS:
+        score = 0
+        title_norm = normalize(ch.get('title', ''))
+        title_words = title_norm.split()
+
+        for w in content_words:
+            if w in title_norm:
+                score += 15
+            elif any(partial_match(w, tw) for tw in title_words):
+                score += 10
+
+        for kw in ch.get('keywords', []):
+            kw_norm = normalize(kw)
+            for w in content_words:
+                if w == kw_norm:
+                    score += 12
+                elif partial_match(w, kw_norm):
+                    score += 8
+
+        dictionary = ch.get('dictionary', {})
+        for term in dictionary:
+            term_norm = normalize(term)
+            for w in content_words:
+                if w == term_norm or partial_match(w, term_norm):
+                    score += 7
+
+        if score > 0:
+            ranked.append((ch, score))
+
+    ranked.sort(key=lambda item: item[1], reverse=True)
+    return ranked
+
+def is_explicit_chapter_reference(ch, query):
+    if not ch:
+        return False
+    norm_q = normalize(query)
+    if not norm_q:
+        return False
+
+    title_norm = normalize(ch.get('title', ''))
+    if title_norm and title_norm in norm_q:
+        return True
+
+    for kw in ch.get('keywords', []):
+        kw_norm = normalize(kw)
+        if kw_norm and kw_norm in norm_q:
+            return True
+    return False
+
+def get_targeted_snippet(ch, query):
+    """Răspuns scurt pe subiectul întrebat, fără recapitulare completă."""
+    if not ch:
+        return None
+
+    norm_q = normalize(query)
+    words = [w for w in expand_query_words(norm_q) if len(w) >= 3]
+    stopwords = {"ce", "care", "este", "sunt", "pentru", "din", "cum", "despre", "vreau", "spune", "arata", "te", "rog"}
+    content_words = [w for w in words if w not in stopwords]
+    if not content_words:
+        content_words = words
+
+    dictionary = ch.get('dictionary', {})
+    for term, definition in dictionary.items():
+        term_norm = normalize(term)
+        if any(w == term_norm or partial_match(w, term_norm) for w in content_words):
+            return f"📌 <strong>{ch['title']}</strong><br><br><strong>{term}</strong>: {definition}<br><br>Scrie <em>detaliază</em> dacă vrei mai mult."
+
+    lessons = ch.get('lessons', [])
+    best_lesson = None
+    best_hits = 0
+    for lesson in lessons:
+        lesson_norm = normalize(lesson)
+        hits = sum(1 for w in content_words if w in lesson_norm)
+        if hits > best_hits:
+            best_hits = hits
+            best_lesson = lesson
+
+    if best_lesson and best_hits > 0:
+        return f"📌 <strong>{ch['title']}</strong><br><br>{best_lesson}<br><br>Vrei și un exemplu rapid?"
+
+    if lessons:
+        return f"📌 <strong>{ch['title']}</strong><br><br>{lessons[0]}<br><br>Spune-mi exact ce punct vrei: definiție, exemplu sau exercițiu."
+    return None
+
 def get_top_matches(query, count=3):
     """Returnează cele mai relevante capitole (pentru fallback)."""
     norm_q = normalize(query)
@@ -1032,10 +1130,8 @@ def chat():
             concept_ch = find_best_chapter_for_definition(user_input)
             if concept_ch:
                 definition = get_definition_from_chapter(concept_ch, user_input)
-                examples = concept_ch.get('examples', [])
                 msg = f"📘 <strong>{concept_ch['title']}</strong><br><br>{definition}"
-                if examples:
-                    msg += f"<br><br><strong>Exemplu:</strong> <em>{examples[0]}</em>"
+                msg += "<br><br>Scrie <em>exemplu</em> dacă vrei și un model de rezolvare."
                 return jsonify({
                     "message": msg,
                     "lastChapterId": concept_ch['id'],
@@ -1101,20 +1197,40 @@ def chat():
                 "message": "Am eliminat modul de test. Îți pot oferi în schimb quiz-uri rapide și exerciții pe capitol. Scrie <strong>quiz</strong> sau <strong>vreau exerciții</strong>."
             })
 
-        # 2. Detecție capitol
-        found_ch = deep_search(user_input)
+        # 2. Detecție capitol + dezambiguizare
+        ranked_chapters = rank_chapters(user_input)
+        found_ch = ranked_chapters[0][0] if ranked_chapters else deep_search(user_input)
         if check_intent(user_input, "compare"):
             found_ch = next((c for c in CHAPTERS if c['id'] == "comparare_ordonare"), found_ch)
+
+        if ranked_chapters and len(ranked_chapters) >= 2 and not current_ch:
+            top_score = ranked_chapters[0][1]
+            second_score = ranked_chapters[1][1]
+            if top_score < 8 or (second_score >= top_score * 0.82 and (top_score - second_score) <= 4):
+                a = ranked_chapters[0][0]
+                b = ranked_chapters[1][0]
+                return jsonify({
+                    "message": (
+                        "Întrebarea poate fi din mai multe capitole. Alege exact:<br><br>"
+                        f"• <strong>{a['title']}</strong><br>"
+                        f"• <strong>{b['title']}</strong>"
+                    ),
+                    "lastChapterId": last_id
+                })
+
+        if current_ch and found_ch and current_ch['id'] != found_ch['id']:
+            if not is_explicit_chapter_reference(found_ch, user_input):
+                found_ch = current_ch
 
         if found_ch:
             if found_ch['id'] != last_id:
                 current_ch = found_ch
                 last_id = found_ch['id']
                 if not any(check_intent(user_input, i) for i in ["elaborate", "example", "exercise", "define", "quiz", "fact", "step_by_step", "summary"]):
-                    msg = get_structured_intro_by_level(found_ch, user_input, level)
+                    msg = get_targeted_snippet(found_ch, user_input) or get_structured_intro_by_level(found_ch, user_input, level)
                     suggestion = get_suggestion(last_id)
                     return jsonify({
-                        "message": f"{msg}<br><br>Vrei să aprofundăm subiectul? 💡 Poți cere: detalii, exemple, exerciții, quiz sau curiozități!",
+                        "message": msg,
                         "lastChapterId": last_id,
                         "suggestion": suggestion
                     })
@@ -1122,6 +1238,16 @@ def chat():
         # 3. Interacțiuni specifice
         target = found_ch if found_ch else current_ch
         if target:
+            neutral_intents = {"elaborate", "example", "exercise", "define", "quiz", "fact", "step_by_step", "summary", "plan", "next", "recap", "help", "greeting", "identity", "test"}
+            if primary_intent not in neutral_intents:
+                focused = get_targeted_snippet(target, user_input)
+                if focused:
+                    return jsonify({
+                        "message": focused,
+                        "lastChapterId": target['id'],
+                        "suggestion": get_suggestion(target['id'])
+                    })
+
             # F1 — QUIZ
             if primary_intent == "quiz" or check_intent(user_input, "quiz"):
                 exercises = target.get('exercises', [])
@@ -1158,21 +1284,13 @@ def chat():
 
             # DEFINIȚIE + F7 prefix
             if primary_intent == "define" or check_intent(user_input, "define"):
-                definition = get_definition_from_chapter(target, user_input)
-                lessons = target.get('lessons', [])
-                examples = target.get('examples', [])
                 prefix = random_prefix()
-                msg = f"{prefix}📖 <strong>{target['title']}</strong><br><br>"
-                if definition:
-                    msg += f"{definition}<br><br>"
-                if lessons:
-                    msg += "<strong>Ce trebuie să știi:</strong><br><ul style='text-align: left;'>"
-                    for l in lessons:
-                        if l != definition:
-                            msg += f"<li>{l}</li>"
-                    msg += "</ul>"
-                if examples:
-                    msg += f"<br><strong>Exemplu:</strong><br><em>{random.choice(examples)}</em>"
+                focused = get_targeted_snippet(target, user_input)
+                if focused:
+                    msg = f"{prefix}{focused}"
+                else:
+                    definition = get_definition_from_chapter(target, user_input)
+                    msg = f"{prefix}📖 <strong>{target['title']}</strong><br><br>{definition}<br><br>Spune-mi exact termenul dacă vrei răspuns punctual."
                 suggestion = get_suggestion(target['id'])
                 return jsonify({"message": msg, "lastChapterId": target['id'], "suggestion": suggestion})
 
