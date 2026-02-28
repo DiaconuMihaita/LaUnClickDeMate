@@ -267,7 +267,7 @@ def _save_uploaded_file(file_storage):
     unique_name = f"{uuid.uuid4().hex}{ext}"
     full_path = os.path.join(UPLOAD_DIR, unique_name)
     file_storage.save(full_path)
-    return f"/uploads/{unique_name}"
+    return f"/api/uploads/{unique_name}"
 
 # --- POTRIVIRE FUZZY ---
 def partial_match(word, target):
@@ -649,6 +649,18 @@ def get_structured_intro_by_level(ch, query, level):
     summary_limit = 2 if level == 'simple' else 5
 
     msg = f"Sigur! Te ajut cu <strong>{ch['title']}</strong>.<br><br>"
+    if level == 'simple':
+        if definition:
+            msg += f"<strong>Ideea-cheie:</strong> {definition}<br><br>"
+        elif lessons:
+            msg += f"<strong>Ideea-cheie:</strong> {lessons[0]}<br><br>"
+
+        if examples:
+            msg += f"<strong>Exemplu scurt:</strong> <em>{examples[0]}</em><br><br>"
+
+        msg += "Dacă vrei, continui cu detalii, pași sau exerciții."
+        return msg
+
     if definition:
         msg += f"<strong>Ideea-cheie:</strong> {definition}<br><br>"
 
@@ -767,10 +779,18 @@ def get_help_message():
 def index(): return send_from_directory('.', 'index.html')
 
 @app.route('/<path:path>')
-def static_proxy(path): return send_from_directory('.', path)
+def static_proxy(path):
+    if path.startswith('uploads/'):
+        filename = path[len('uploads/'):]
+        return send_from_directory(UPLOAD_DIR, filename)
+    return send_from_directory('.', path)
 
 @app.route('/uploads/<path:filename>')
 def serve_upload(filename):
+    return send_from_directory(UPLOAD_DIR, filename)
+
+@app.route('/api/uploads/<path:filename>')
+def serve_upload_api(filename):
     return send_from_directory(UPLOAD_DIR, filename)
 
 @app.route('/api/chapters', methods=['GET'])
