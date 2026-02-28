@@ -58,7 +58,7 @@ function launchConfetti() {
 
 // F1/F6 — Starea quiz/test activ
 let quizState = { active: false, exercise: '', correctAnswer: '', chapterId: '' };
-let testState = { active: false, questions: [], current: 0, correct: 0 };
+let testState = { active: false, questions: [], current: 0, correct: 0, assignedTestId: null };
 let currentDailyChallenge = null;
 
 // --- FUNDAL INTERACTIV (Math Neural Background) ---
@@ -829,7 +829,13 @@ function renderTestQuestion(questions, currentIdx) {
             `${emoji} <strong>Test finalizat!</strong><br><br>Ai răspuns corect la <strong>${testState.correct}/${questions.length}</strong> întrebări.<br>Nota estimată: <strong>${nota}/10</strong><br><br>${nota >= 7 ? 'Felicitări, ai înțeles bine materia!' : 'Continuă să studiezi, poți mai mult!'}`,
             'ai', nota >= 7 ? 'feedback-correct' : 'feedback-wrong'
         );
+
+        if (testState.assignedTestId) {
+            submitAssignedTestResult(testState.assignedTestId, testState.correct, questions.length);
+        }
+
         testState.correct = 0;
+        testState.assignedTestId = null;
         return;
     }
 
@@ -1470,13 +1476,17 @@ function handleLogout() {
 function switchClassTab(tab) {
     document.getElementById('class-tab-ranking').classList.add('hidden');
     document.getElementById('class-tab-homework').classList.add('hidden');
+    document.getElementById('class-tab-test').classList.add('hidden');
+
     document.getElementById('tab-ranking').classList.remove('active-tab');
     document.getElementById('tab-homework').classList.remove('active-tab');
+    document.getElementById('tab-test').classList.remove('active-tab');
 
     document.getElementById(`class-tab-${tab}`).classList.remove('hidden');
     document.getElementById(`tab-${tab}`).classList.add('active-tab');
 
     if (tab === 'homework') loadHomework();
+    if (tab === 'test') loadTests();
 }
 
 async function showStudentDetails(userId, username) {
@@ -1554,12 +1564,16 @@ async function updateClassroomUI() {
     const studentZone = document.getElementById('class-student-zone');
     const teacherHwZone = document.getElementById('teacher-homework-zone');
     const studentHwZone = document.getElementById('student-homework-zone');
+    const teacherTestZone = document.getElementById('teacher-test-zone');
+    const studentTestZone = document.getElementById('student-test-zone');
 
     if (currentUser.role === 'teacher') {
         teacherZone.classList.remove('hidden');
         teacherHwZone.classList.remove('hidden');
+        teacherTestZone.classList.remove('hidden');
         studentZone.classList.add('hidden');
         studentHwZone.classList.add('hidden');
+        studentTestZone.classList.add('hidden');
 
         if (currentUser.class_code) {
             teacherZone.innerHTML = `
@@ -1592,8 +1606,10 @@ async function updateClassroomUI() {
     } else {
         teacherZone.classList.add('hidden');
         teacherHwZone.classList.add('hidden');
+        teacherTestZone.classList.add('hidden');
         studentZone.classList.remove('hidden');
         studentHwZone.classList.remove('hidden');
+        studentTestZone.classList.remove('hidden');
     }
 
     if (currentUser.class_code) {
@@ -2008,16 +2024,73 @@ async function loadTestCompletions(testId) {
     } catch (e) { console.error(e); }
 }
 
-function startAssignedTest(testId, chapterId, numQuestions) {
-    // Începem un test personalizat din baza de date
-    // (Ar trebui să facem un fetch pentru a aduce custom_questions,
-    // dar deocamdată testul general ia din capitole)
-    changeView('lectii');
-    showChapterDetail(chapterId);
+async function startAssignedTest(testId, chapterId, numQuestions) {
+    try {
+        const res = await fetch(`/api/test/details/${testId}`, {
+            headers: { 'Authorization': currentUser.token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            const test = data.test;
+            let questions = [];
 
-    // Test mode simulat
-    // Pentru o implementare completă, testul folosește `testMode` din backend.
-    // Marcăm direct la final sau backend va cere submit_test_result prin /api/chat.
+            if (test.custom_questions) {
+                try {
+                    questions = JSON.parse(test.custom_questions);
+                    // Standardize questions format if needed (AI expectations)
+                    questions = questions.map(q => ({
+                        ...q,
+                        chapterTitle: test.title || 'Test Personalizat'
+                    }));
+                } catch (e) {
+                    console.error("Invalid custom questions JSON", e);
+                }
+            } else if (test.chapter_id) {
+                // Fetch random questions from localChapters
+                const ch = localChapters.find(c => c.id === test.chapter_id);
+                if (ch && ch.exercises) {
+                    const pool = ch.exercises.map(ex => typeof ex === 'object' ? ex : { question: ex, answer: '?' });
+                    const shuffled = pool.sort(() => 0.5 - Math.random());
+                    questions = shuffled.slice(0, test.num_questions || 5).map(q => ({
+                        ...q,
+                        chapterTitle: ch.title
+                    }));
+                }
+            }
+
+            if (questions.length === 0) {
+                alert("Acest test nu conține întrebări valide.");
+                return;
+            }
+
+            // Start interactive test
+            changeView('explica'); // Go to chat where quiz-answer-area is
+            testState = { active: true, questions, current: 0, correct: 0, assignedTestId: testId };
+            renderTestQuestion(questions, 0);
+
+        } else {
+            alert(data.error || "Eroare la încărcarea testului.");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Eroare de rețea.");
+    }
+}
+
+async function submitAssignedTestResult(testId, score, total) {
+    try {
+        await fetch('/api/test/submit', {
+            method: 'POST',
+            headers: {
+                'Authorization': currentUser.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ testId, score, total })
+        });
+        loadTests(); // Refresh the list to show score
+    } catch (e) {
+        console.error("Eroare la salvarea rezultatului testului", e);
+    }
 }
 
 // Override original logging to include server sync

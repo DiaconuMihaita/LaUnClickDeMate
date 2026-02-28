@@ -21,6 +21,10 @@ else:
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 # Încarcă datele curiculei
 def load_data():
     try:
@@ -917,7 +921,10 @@ def mark_homework_done():
         return jsonify({'success': False}), 401
     
     req_json = request.get_json(silent=True) or {}
-    homework_id = request.form.get('homeworkId') or req_json.get('homeworkId')
+    try:
+        homework_id = int(request.form.get('homeworkId') or req_json.get('homeworkId'))
+    except (TypeError, ValueError):
+        return jsonify({'success': False, 'error': 'ID temă invalid.'}), 400
     
     file_path = None
     if 'file' in request.files:
@@ -928,8 +935,10 @@ def mark_homework_done():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             file_path = f'/uploads/{filename}'
 
-    database.complete_homework(user['id'], homework_id, file_path)
-    return jsonify({'success': True})
+    if database.complete_homework(user['id'], homework_id, file_path):
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'error': 'Ai trimis deja această temă sau tema nu există.'}), 400
 
 
 @app.route('/api/homework/<int:hw_id>/completions', methods=['GET'])
@@ -980,6 +989,37 @@ def create_test_route():
     )
     return jsonify(res)
 
+
+@app.route('/api/test/details/<int:test_id>', methods=['GET'])
+def get_test_details_route(test_id):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
+    
+    test = database.get_test_details(test_id)
+    if not test:
+        return jsonify({'success': False, 'error': 'Testul nu există.'}), 404
+        
+    return jsonify({'success': True, 'test': test})
+
+@app.route('/api/test/submit', methods=['POST'])
+def submit_test_route():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user or user['role'] != 'student':
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
+        
+    data = request.json
+    test_id = data.get('testId')
+    score = data.get('score')
+    total = data.get('total')
+    
+    if test_id is None or score is None or total is None:
+        return jsonify({'success': False, 'error': 'Date incomplete.'}), 400
+        
+    success = database.submit_test_result(test_id, user['id'], score, total)
+    return jsonify({'success': success})
 
 @app.route('/api/test/class/<code>', methods=['GET'])
 def get_tests_for_class(code):

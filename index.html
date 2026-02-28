@@ -224,7 +224,8 @@
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button onclick="switchClassTab('ranking')" class="btn-tab active-tab"
                     id="tab-ranking">Clasament</button>
-                <button onclick="switchClassTab('homework')" class="btn-tab" id="tab-homework">Teme Online</button>
+                <button onclick="switchClassTab('homework')" class="btn-tab" id="tab-homework">Teme</button>
+                <button onclick="switchClassTab('test')" class="btn-tab" id="tab-test">Teste Online</button>
             </div>
 
             <!-- Tab Clasament -->
@@ -287,9 +288,21 @@
 
                     <h3 class="teacher-section-title" style="margin-top: 28px;">📋 Teme Asignate</h3>
                     <div id="teacher-homework-list" style="margin-top: 10px;"></div>
+                </div>
 
+                <div id="student-homework-zone" class="welcome-card" style="padding: 25px; text-align: left;">
+                    <h3>📚 Temele Mele</h3>
+                    <div id="student-homework-list" style="margin-top: 10px;">
+                        <p style="opacity: 0.5;">Înscrie-te într-o clasă pentru a vedea temele.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Teste -->
+            <div id="class-tab-test" class="hidden">
+                <div id="teacher-test-zone" class="welcome-card hidden" style="padding: 25px; text-align: left;">
                     <!-- Test creation section -->
-                    <h3 class="teacher-section-title" style="margin-top: 28px;">🧪 Creează Test</h3>
+                    <h3 class="teacher-section-title">🧪 Creează Test</h3>
                     <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
                         <input type="text" id="test-title" placeholder="Titlu test (ex: Test Capitol 3)"
                             style="margin-top: 0;">
@@ -315,16 +328,12 @@
                         </div>
                     </div>
 
-                    <h3 class="teacher-section-title" style="margin-top: 28px;">� Teste Asignate</h3>
+                    <h3 class="teacher-section-title" style="margin-top: 28px;">🧪 Teste Asignate</h3>
                     <div id="teacher-test-list" style="margin-top: 10px;"></div>
                 </div>
 
-                <div id="student-homework-zone" class="welcome-card" style="padding: 25px; text-align: left;">
-                    <h3>📚 Temele Mele</h3>
-                    <div id="student-homework-list" style="margin-top: 10px;">
-                        <p style="opacity: 0.5;">Înscrie-te într-o clasă pentru a vedea temele.</p>
-                    </div>
-                    <h3 style="margin-top: 25px;">🧪 Testele Mele</h3>
+                <div id="student-test-zone" class="welcome-card hidden" style="padding: 25px; text-align: left;">
+                    <h3>🧪 Testele Mele</h3>
                     <div id="student-test-list" style="margin-top: 10px;">
                         <p style="opacity: 0.5;">Înscrie-te într-o clasă pentru a vedea testele.</p>
                     </div>

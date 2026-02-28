@@ -1,5 +1,5 @@
-import sqlite3
-import os
+import sqlite3  #baza de date
+import os 
 import secrets
 import hashlib
 from datetime import datetime, timedelta
@@ -528,3 +528,11 @@ def update_multiplayer_state(code, new_state_json, status=None):
         conn.execute('UPDATE multiplayer_sessions SET state_json = ? WHERE code = ?', (new_state_json, code.upper().strip()))
     conn.commit()
     conn.close()
+
+def get_test_details(test_id):
+    conn = get_db()
+    row = conn.execute('SELECT * FROM tests WHERE id = ?', (test_id,)).fetchone()
+    conn.close()
+    if row:
+        return dict(row)
+    return None
