@@ -141,6 +141,11 @@ RESPONSE_PREFIXES = [
 
 VAGUE_TERMS = ["asta", "aia", "acesta", "aceasta", "termenul", "cuvantul", "conceptul", "lucrul asta"]
 GENERIC_VARIABLES = {"x", "y", "z", "n", "m"}
+FILLER_TERMS = {
+    "te", "rog", "pls", "please", "gen", "adica", "deci", "na", "chestia", "chestie",
+    "asta", "aia", "acela", "aceea", "acel", "aceasta", "alea", "de", "din", "despre",
+    "la", "cu", "si", "sau", "in", "pe", "ce", "cum", "care", "cat", "este", "sunt"
+}
 
 def normalize(text):
     if not text: return ""
@@ -184,6 +189,10 @@ def expand_query_words(query):
         if word not in result:
             result.append(word)
     return result
+
+def significant_terms(query, min_len=3):
+    words = [w for w in expand_query_words(query) if len(w) >= min_len]
+    return [w for w in words if w not in FILLER_TERMS]
 
 def _fuzzy_similar(a, b):
     if not a or not b:
@@ -496,7 +505,7 @@ def deep_search(query):
 
     # Returnăm doar dacă scorul e suficient de mare
     best = matches[0]
-    if best[1] >= 3:
+    if best[1] >= 7:
         return best[0]
     return None
 
@@ -568,12 +577,9 @@ def get_targeted_snippet(ch, query):
     if not ch:
         return None
 
-    norm_q = normalize(query)
-    words = [w for w in expand_query_words(norm_q) if len(w) >= 3]
-    stopwords = {"ce", "care", "este", "sunt", "pentru", "din", "cum", "despre", "vreau", "spune", "arata", "te", "rog"}
-    content_words = [w for w in words if w not in stopwords]
+    content_words = significant_terms(query)
     if not content_words:
-        content_words = words
+        return None
 
     dictionary = ch.get('dictionary', {})
     for term, definition in dictionary.items():
@@ -1274,6 +1280,24 @@ def chat():
         # 3. Interacțiuni specifice
         target = found_ch if found_ch else current_ch
         if target:
+            # Calibrare strictă: întrebări normale primesc doar secvența relevantă.
+            if primary_intent is None:
+                focused = get_targeted_snippet(target, user_input)
+                if focused:
+                    return jsonify({
+                        "message": focused,
+                        "lastChapterId": target['id'],
+                        "suggestion": get_suggestion(target['id'])
+                    })
+                return jsonify({
+                    "message": (
+                        f"Sunt pe capitolul <strong>{target['title']}</strong>, dar nu am identificat termenul exact din întrebare.<br><br>"
+                        "Scrie exact noțiunea (ex: <em>criteriul de divizibilitate cu 3</em>, <em>fracție ireductibilă</em>)."
+                    ),
+                    "lastChapterId": target['id'],
+                    "suggestion": get_suggestion(target['id'])
+                })
+
             neutral_intents = {"elaborate", "example", "exercise", "define", "quiz", "fact", "step_by_step", "summary", "plan", "next", "recap", "help", "greeting", "identity", "test"}
             if primary_intent not in neutral_intents:
                 focused = get_targeted_snippet(target, user_input)
