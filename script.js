@@ -5,6 +5,7 @@ let visitedChapters = [];
 let sessionScore = { correct: 0, total: 0 };
 let currentUser = JSON.parse(localStorage.getItem('mateai_user')) || null;
 let authMode = 'login'; // login sau register
+let ttsEnabled = localStorage.getItem('mateai_tts_enabled') !== 'false';
 
 // --- PERSISTENT PROGRESS (LocalStorage - Fallback) ---
 let userProgress = JSON.parse(localStorage.getItem('mateai_progress')) || {
@@ -56,9 +57,8 @@ function launchConfetti() {
     }
 }
 
-// F1/F6 — Starea quiz/test activ
+// F1 — Starea quiz activ
 let quizState = { active: false, exercise: '', correctAnswer: '', chapterId: '' };
-let testState = { active: false, questions: [], current: 0, correct: 0, assignedTestId: null };
 let currentDailyChallenge = null;
 
 // --- FUNDAL INTERACTIV (Math Neural Background) ---
@@ -292,9 +292,47 @@ function initVoiceAssistant() {
 
 // Funcție pentru TTS (Text-to-Speech)
 function speak(text) {
-    const utterance = new SpeechSynthesisUtterance(text.replace(/<[^>]*>/g, '')); // Scoatem HTML-ul
+    if (!ttsEnabled || !('speechSynthesis' in window)) return;
+
+    const cleanText = (text || '').replace(/<[^>]*>/g, '').trim();
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'ro-RO';
+
+    const voices = speechSynthesis.getVoices();
+    const roVoice = voices.find(v => (v.lang || '').toLowerCase().startsWith('ro'));
+    if (roVoice) utterance.voice = roVoice;
+
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
+}
+
+function initTtsControls() {
+    const toggleBtn = document.getElementById('btn-tts-toggle');
+    const stopBtn = document.getElementById('btn-tts-stop');
+    if (!toggleBtn || !stopBtn) return;
+
+    const refreshToggleLabel = () => {
+        toggleBtn.textContent = ttsEnabled ? '🔊 ON' : '🔇 OFF';
+    };
+
+    refreshToggleLabel();
+
+    toggleBtn.addEventListener('click', () => {
+        ttsEnabled = !ttsEnabled;
+        localStorage.setItem('mateai_tts_enabled', String(ttsEnabled));
+        if (!ttsEnabled && 'speechSynthesis' in window) {
+            speechSynthesis.cancel();
+        }
+        refreshToggleLabel();
+    });
+
+    stopBtn.addEventListener('click', () => {
+        if ('speechSynthesis' in window) {
+            speechSynthesis.cancel();
+        }
+    });
 }
 
 // 3. GAMIFICATION & DASHBOARD
@@ -813,82 +851,6 @@ async function submitQuizAnswer() {
     }
 }
 
-// F6 — Mod Test: avansare la întrebarea următoare
-function renderTestQuestion(questions, currentIdx) {
-    testState = { active: true, questions, current: currentIdx, correct: testState.correct };
-    const area = document.getElementById('quiz-answer-area');
-    if (!area) return;
-
-    if (currentIdx >= questions.length) {
-        // Test finalizat - calculăm nota
-        testState.active = false;
-        const nota = Math.round((testState.correct / questions.length) * 9) + 1;
-        const emoji = nota >= 9 ? "🏆" : nota >= 7 ? "😊" : nota >= 5 ? "📚" : "💪";
-        area.innerHTML = '';
-        addMessage(
-            `${emoji} <strong>Test finalizat!</strong><br><br>Ai răspuns corect la <strong>${testState.correct}/${questions.length}</strong> întrebări.<br>Nota estimată: <strong>${nota}/10</strong><br><br>${nota >= 7 ? 'Felicitări, ai înțeles bine materia!' : 'Continuă să studiezi, poți mai mult!'}`,
-            'ai', nota >= 7 ? 'feedback-correct' : 'feedback-wrong'
-        );
-
-        if (testState.assignedTestId) {
-            submitAssignedTestResult(testState.assignedTestId, testState.correct, questions.length);
-        }
-
-        testState.correct = 0;
-        testState.assignedTestId = null;
-        return;
-    }
-
-    const q = questions[currentIdx];
-    // Afișează întrebarea curentă ca mesaj AI
-    addMessage(
-        `<strong>Întrebarea ${currentIdx + 1}/${questions.length}</strong> — ${q.chapterTitle}:<br><em>${q.question}</em>`,
-        'ai'
-    );
-    area.innerHTML = `
-        <div class="quiz-input-box test-box">
-            <span class="test-progress-label">Întrebarea ${currentIdx + 1}/${questions.length}</span>
-            <div class="test-progress-bar"><div class="test-progress-fill" style="width:${((currentIdx) / questions.length) * 100}%"></div></div>
-            <input type="text" id="quiz-answer-input" placeholder="Răspunsul tău..." autocomplete="off">
-            <button onclick="submitTestAnswer()">✔ Răspunde</button>
-        </div>
-    `;
-    const inp = document.getElementById('quiz-answer-input');
-    if (inp) {
-        inp.focus();
-        inp.addEventListener('keypress', e => { if (e.key === 'Enter') submitTestAnswer(); });
-    }
-}
-
-async function submitTestAnswer() {
-    if (!testState.active) return;
-    const answerInput = document.getElementById('quiz-answer-input');
-    if (!answerInput) return;
-    const userAnswer = answerInput.value.trim();
-    if (!userAnswer) return;
-
-    const q = testState.questions[testState.current];
-    addMessage(userAnswer, 'user');
-
-    try {
-        const res = await fetch('/api/check', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userAnswer, correctAnswer: q.answer, chapterId: q.chapterId })
-        });
-        const data = await res.json();
-        if (data.isCorrect) { testState.correct++; launchConfetti(); }
-        logDailyProgress(data.isCorrect, q.chapterId);
-        const cls = data.isCorrect ? 'feedback-correct' : 'feedback-wrong';
-        addMessage(data.feedback, 'ai', cls);
-    } catch (e) {
-        addMessage("Eroare la verificare.", 'ai');
-    }
-
-    testState.current++;
-    setTimeout(() => renderTestQuestion(testState.questions, testState.current), 800);
-}
-
 async function handleChat() {
     const input = chatInput.value.trim();
     const level = document.querySelector('input[name="level"]:checked')?.value || 'simple';
@@ -947,14 +909,6 @@ async function handleChat() {
         // F1 — Quiz activ
         if (data.quizMode) renderQuizInput(data.exercise, data.correctAnswer, data.chapterId);
 
-        // F6 — Mod test
-        if (data.testMode) {
-            testState.correct = 0;
-            testState.questions = data.testQuestions;
-            testState.current = 0;
-            renderTestQuestion(data.testQuestions, 0); // pornește de la prima întrebare
-        }
-
     } catch (e) {
         aiTyping.classList.add('hidden');
         addMessage("Sunt ocupat acum, te rog revino!", 'ai');
@@ -998,6 +952,7 @@ document.getElementById('btn-solve').addEventListener('click', async () => {
 loadChapters();
 initBackground();
 initVoiceAssistant();
+initTtsControls();
 fetchDailyChallenge();
 fetchAdaptiveSuggestion();
 
@@ -1473,21 +1428,6 @@ function handleLogout() {
 }
 
 // --- CLASSROOM LOGIC ---
-function switchClassTab(tab) {
-    document.getElementById('class-tab-ranking').classList.add('hidden');
-    document.getElementById('class-tab-homework').classList.add('hidden');
-    document.getElementById('class-tab-test').classList.add('hidden');
-
-    document.getElementById('tab-ranking').classList.remove('active-tab');
-    document.getElementById('tab-homework').classList.remove('active-tab');
-    document.getElementById('tab-test').classList.remove('active-tab');
-
-    document.getElementById(`class-tab-${tab}`).classList.remove('hidden');
-    document.getElementById(`tab-${tab}`).classList.add('active-tab');
-
-    if (tab === 'homework') loadHomework();
-    if (tab === 'test') loadTests();
-}
 
 async function showStudentDetails(userId, username) {
     const view = document.getElementById('student-detail-view');
@@ -1539,7 +1479,6 @@ function switchClassTab(tabName) {
 
     if (tabName === 'homework') {
         loadHomework();
-        loadTests();
     } else {
         if (currentUser && currentUser.class_code) {
             loadRankings(currentUser.class_code);
@@ -1564,16 +1503,12 @@ async function updateClassroomUI() {
     const studentZone = document.getElementById('class-student-zone');
     const teacherHwZone = document.getElementById('teacher-homework-zone');
     const studentHwZone = document.getElementById('student-homework-zone');
-    const teacherTestZone = document.getElementById('teacher-test-zone');
-    const studentTestZone = document.getElementById('student-test-zone');
 
     if (currentUser.role === 'teacher') {
         teacherZone.classList.remove('hidden');
         teacherHwZone.classList.remove('hidden');
-        teacherTestZone.classList.remove('hidden');
         studentZone.classList.add('hidden');
         studentHwZone.classList.add('hidden');
-        studentTestZone.classList.add('hidden');
 
         if (currentUser.class_code) {
             teacherZone.innerHTML = `
@@ -1588,12 +1523,6 @@ async function updateClassroomUI() {
             if (selectHw && selectHw.innerHTML === '') {
                 selectHw.innerHTML = localChapters.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
             }
-            // Populate chapter select for tests
-            const selectTest = document.getElementById('test-chapter-select');
-            if (selectTest && selectTest.options.length <= 1) {
-                const optionsHTML = localChapters.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
-                selectTest.innerHTML = `<option value="">(Opțional) Alege un capitol pentru întrebări generate automat</option>` + optionsHTML;
-            }
         } else {
             teacherZone.innerHTML = `
                 <p>Nu ai nicio clasă creată încă.</p>
@@ -1606,10 +1535,8 @@ async function updateClassroomUI() {
     } else {
         teacherZone.classList.add('hidden');
         teacherHwZone.classList.add('hidden');
-        teacherTestZone.classList.add('hidden');
         studentZone.classList.remove('hidden');
         studentHwZone.classList.remove('hidden');
-        studentTestZone.classList.remove('hidden');
     }
 
     if (currentUser.class_code) {
@@ -1890,207 +1817,6 @@ async function syncProgressWithServer(isCorrect, chapterId) {
             body: JSON.stringify({ isCorrect, chapterId })
         });
     } catch (e) { console.error("Sync error:", e); }
-}
-
-// --- TESTS MANAGEMENT ---
-async function assignTest() {
-    const title = document.getElementById('test-title').value.trim();
-    const chapterId = document.getElementById('test-chapter-select').value;
-    const numQuestions = document.getElementById('test-num-questions').value;
-    const fileInput = document.getElementById('test-file');
-    const customQuestions = document.getElementById('test-custom-questions').value.trim();
-
-    if (!title) {
-        alert("Introdu un titlu pentru test.");
-        return;
-    }
-    if (!chapterId && !customQuestions && (!fileInput || !fileInput.files.length)) {
-        alert("Alege un capitol, adaugă întrebări proprii sau un fișier de test.");
-        return;
-    }
-
-    if (customQuestions) {
-        try { JSON.parse(customQuestions); }
-        catch (e) { alert("Formatul JSON pentru întrebări este invalid!"); return; }
-    }
-
-    const formData = new FormData();
-    formData.append('title', title);
-    if (chapterId) formData.append('chapterId', chapterId);
-    formData.append('numQuestions', numQuestions);
-    if (customQuestions) formData.append('customQuestions', customQuestions);
-    if (fileInput && fileInput.files.length > 0) formData.append('file', fileInput.files[0]);
-
-    try {
-        const res = await fetch('/api/test/create', {
-            method: 'POST',
-            headers: { 'Authorization': currentUser.token },
-            body: formData
-        });
-        const data = await res.json();
-        if (data.success) {
-            alert("Test creat cu succes!");
-            document.getElementById('test-title').value = '';
-            document.getElementById('test-custom-questions').value = '';
-            if (fileInput) fileInput.value = '';
-            loadTests();
-        } else {
-            alert(data.error || "Eroare la crearea testului.");
-        }
-    } catch (e) { console.error(e); }
-}
-
-async function loadTests() {
-    if (!currentUser || !currentUser.class_code) return;
-    try {
-        const res = await fetch(`/api/test/class/${currentUser.class_code}`, {
-            headers: { 'Authorization': currentUser.token }
-        });
-        const data = await res.json();
-        if (data.success) {
-            const list = currentUser.role === 'teacher' ? 'teacher-test-list' : 'student-test-list';
-            const container = document.getElementById(list);
-            if (!container) return;
-
-            if (data.tests.length === 0) {
-                container.innerHTML = '<p style="opacity: 0.5;">Niciun test activ.</p>';
-                return;
-            }
-
-            container.innerHTML = data.tests.map(t => {
-                let content = `
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; border-left: 4px solid #feca57;">
-                        <strong>${t.title}</strong>
-                        <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Data: ${new Date(t.created_at).toLocaleDateString()}</div>
-                `;
-
-                if (t.file_path) {
-                    content += `<div style="margin-top: 10px;"><a href="${t.file_path}" target="_blank" style="color: #feca57; text-decoration: none; font-size: 0.9rem;">📎 Deschide Fișier Test</a></div>`;
-                }
-
-                if (currentUser.role === 'teacher') {
-                    content += `<button onclick="loadTestCompletions(${t.id})" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 6px; margin-top: 10px; border: 1px solid #feca57; background: transparent; color: white;">📊 Vezi rezultate</button>`;
-                    content += `<div id="test-results-${t.id}" style="margin-top: 10px;" class="hidden"></div>`;
-                } else if (currentUser.role === 'student') {
-                    if (t.result_at) {
-                        content += `<div style="font-size: 0.85rem; color: #4ECDC4; margin-top: 10px; font-weight: bold;">✅ Scos: ${t.score}/${t.total} puncte</div>`;
-                    } else {
-                        // If it has custom queries or chapter, it's interactive.
-                        if (t.custom_questions || t.chapter_id) {
-                            content += `<button onclick="startAssignedTest(${t.id}, '${t.chapter_id}', ${t.num_questions})" style="padding: 5px 10px; font-size: 0.8rem; margin-top: 10px;">🚀 Începe Testul Interactiv</button>`;
-                        } else if (t.file_path) {
-                            content += `<div style="font-size: 0.85rem; color: #feca57; margin-top: 10px;">Testul necesită trimitere offline la profesor (fișier atașat).</div>`;
-                        }
-                    }
-                }
-                content += `</div>`;
-                return content;
-            }).join('');
-        }
-    } catch (e) { console.error(e); }
-}
-
-async function loadTestCompletions(testId) {
-    const container = document.getElementById(`test-results-${testId}`);
-    if (!container) return;
-
-    if (!container.classList.contains('hidden')) {
-        container.classList.add('hidden');
-        return;
-    }
-    container.innerHTML = '<em>Se încarcă...</em>';
-    container.classList.remove('hidden');
-
-    try {
-        const res = await fetch(`/api/test/${testId}/results`, {
-            headers: { 'Authorization': currentUser.token }
-        });
-        const data = await res.json();
-        if (data.success) {
-            if (data.results.length === 0) {
-                container.innerHTML = '<span style="opacity:0.5; font-size: 0.8rem;">Niciun elev în clasă.</span>';
-                return;
-            }
-            let html = '<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-top: 5px;">';
-            data.results.forEach(r => {
-                const scoreStr = r.completed_at ? `<span style="color:#4ECDC4; margin-left:10px;">${r.score}/${r.total} pct</span>` : '<span style="color:#ff6b6b; margin-left:10px;">Nu a rezolvat</span>';
-                html += `<div style="font-size: 0.85rem; padding: 4px 0;">
-                    <strong>${r.username}</strong> ${scoreStr}
-                </div>`;
-            });
-            html += '</div>';
-            container.innerHTML = html;
-        }
-    } catch (e) { console.error(e); }
-}
-
-async function startAssignedTest(testId, chapterId, numQuestions) {
-    try {
-        const res = await fetch(`/api/test/details/${testId}`, {
-            headers: { 'Authorization': currentUser.token }
-        });
-        const data = await res.json();
-        if (data.success) {
-            const test = data.test;
-            let questions = [];
-
-            if (test.custom_questions) {
-                try {
-                    questions = JSON.parse(test.custom_questions);
-                    // Standardize questions format if needed (AI expectations)
-                    questions = questions.map(q => ({
-                        ...q,
-                        chapterTitle: test.title || 'Test Personalizat'
-                    }));
-                } catch (e) {
-                    console.error("Invalid custom questions JSON", e);
-                }
-            } else if (test.chapter_id) {
-                // Fetch random questions from localChapters
-                const ch = localChapters.find(c => c.id === test.chapter_id);
-                if (ch && ch.exercises) {
-                    const pool = ch.exercises.map(ex => typeof ex === 'object' ? ex : { question: ex, answer: '?' });
-                    const shuffled = pool.sort(() => 0.5 - Math.random());
-                    questions = shuffled.slice(0, test.num_questions || 5).map(q => ({
-                        ...q,
-                        chapterTitle: ch.title
-                    }));
-                }
-            }
-
-            if (questions.length === 0) {
-                alert("Acest test nu conține întrebări valide.");
-                return;
-            }
-
-            // Start interactive test
-            changeView('explica'); // Go to chat where quiz-answer-area is
-            testState = { active: true, questions, current: 0, correct: 0, assignedTestId: testId };
-            renderTestQuestion(questions, 0);
-
-        } else {
-            alert(data.error || "Eroare la încărcarea testului.");
-        }
-    } catch (e) {
-        console.error(e);
-        alert("Eroare de rețea.");
-    }
-}
-
-async function submitAssignedTestResult(testId, score, total) {
-    try {
-        await fetch('/api/test/submit', {
-            method: 'POST',
-            headers: {
-                'Authorization': currentUser.token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ testId, score, total })
-        });
-        loadTests(); // Refresh the list to show score
-    } catch (e) {
-        console.error("Eroare la salvarea rezultatului testului", e);
-    }
 }
 
 // Override original logging to include server sync

@@ -111,6 +111,10 @@
                         <input type="text" id="chat-input" placeholder="Scrie aici întrebarea ta...">
                         <button id="btn-chat-mic" title="Vorbește cu MateAI"
                             style="padding: 12px; min-width: 45px; background: var(--bg-glass-heavy);">🎤</button>
+                        <button id="btn-tts-toggle" title="Pornește/Oprește citirea cu voce"
+                            style="padding: 12px; min-width: 70px; background: var(--bg-glass-heavy);">🔊 ON</button>
+                        <button id="btn-tts-stop" title="Oprește vocea acum"
+                            style="padding: 12px; min-width: 60px; background: var(--bg-glass-heavy);">⏹</button>
                         <button id="btn-chat-send">Trimite</button>
                     </div>
                 </div>
@@ -225,7 +229,6 @@
                 <button onclick="switchClassTab('ranking')" class="btn-tab active-tab"
                     id="tab-ranking">Clasament</button>
                 <button onclick="switchClassTab('homework')" class="btn-tab" id="tab-homework">Teme</button>
-                <button onclick="switchClassTab('test')" class="btn-tab" id="tab-test">Teste Online</button>
             </div>
 
             <!-- Tab Clasament -->
@@ -294,48 +297,6 @@
                     <h3>📚 Temele Mele</h3>
                     <div id="student-homework-list" style="margin-top: 10px;">
                         <p style="opacity: 0.5;">Înscrie-te într-o clasă pentru a vedea temele.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab Teste -->
-            <div id="class-tab-test" class="hidden">
-                <div id="teacher-test-zone" class="welcome-card hidden" style="padding: 25px; text-align: left;">
-                    <!-- Test creation section -->
-                    <h3 class="teacher-section-title">🧪 Creează Test</h3>
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                        <input type="text" id="test-title" placeholder="Titlu test (ex: Test Capitol 3)"
-                            style="margin-top: 0;">
-                        <select id="test-chapter-select">
-                            <option value="">(Opțional) Alege un capitol pentru întrebări generate automat</option>
-                        </select>
-                        <input type="file" id="test-file" accept="image/*,.pdf,.doc,.docx"
-                            style="margin-top: 0; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: var(--bg-soft); color: white;">
-                        <textarea id="test-custom-questions"
-                            placeholder='SAU Adaugă întrebări proprii (Format JSON: [{"question": "1+1=?", "answer": "2"}])'
-                            style="margin-top: 0; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: var(--bg-soft); color: white; resize: vertical; min-height: 60px;"></textarea>
-
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <label style="color: var(--text-500); font-size: 0.85rem; white-space: nowrap;">Număr
-                                întrebări (dacă e automat):</label>
-                            <select id="test-num-questions" style="flex: 1; margin-top: 0;">
-                                <option value="3">3 întrebări</option>
-                                <option value="5" selected>5 întrebări</option>
-                                <option value="7">7 întrebări</option>
-                                <option value="10">10 întrebări</option>
-                            </select>
-                            <button onclick="assignTest()">Creează Test</button>
-                        </div>
-                    </div>
-
-                    <h3 class="teacher-section-title" style="margin-top: 28px;">🧪 Teste Asignate</h3>
-                    <div id="teacher-test-list" style="margin-top: 10px;"></div>
-                </div>
-
-                <div id="student-test-zone" class="welcome-card hidden" style="padding: 25px; text-align: left;">
-                    <h3>🧪 Testele Mele</h3>
-                    <div id="student-test-list" style="margin-top: 10px;">
-                        <p style="opacity: 0.5;">Înscrie-te într-o clasă pentru a vedea testele.</p>
                     </div>
                 </div>
             </div>

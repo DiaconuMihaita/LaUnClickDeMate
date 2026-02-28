@@ -5,25 +5,17 @@ import random
 import re
 import ast
 import operator
+import uuid
 from difflib import SequenceMatcher
 from werkzeug.utils import secure_filename
 import database
 
 app = Flask(__name__, static_folder='.')
-application = app # Pentru compatibilitate Vercel
 database.init_db()
 
-if os.environ.get('VERCEL'):
-    UPLOAD_FOLDER = '/tmp/uploads'
-else:
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'data', 'uploads')
-
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-@app.route('/uploads/<path:filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+UPLOAD_DIR = os.path.join('data', 'uploads')
+ALLOWED_UPLOAD_EXTENSIONS = {'.pdf', '.doc', '.docx', '.png', '.jpg', '.jpeg', '.webp', '.gif'}
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Încarcă datele curiculei
 def load_data():
@@ -66,7 +58,8 @@ INTENTS = {
         "explica", "explicati", "explica-mi", "care este", "care e", "cum e",
         "la ce se refera", "ce-i ala", "ce-i aia", "ce inseamna asta",
         "ce e ala", "ce e aia", "ce-i", "ce e", "despre ce e vorba",
-        "ce presupune", "la ce ajuta"
+        "ce presupune", "la ce ajuta", "ce reprezinta concret",
+        "definitie simpla", "definitie pe inteles"
     ],
     "fact": [
         "curiozitati", "stiai ca", "ceva interesant", "spune-mi ceva nou",
@@ -121,7 +114,7 @@ INTENTS = {
     ],
     "summary": [
         "pe scurt", "scurt", "rezumat rapid", "in 3 idei",
-        "esential", "concluzie"
+        "esential", "concluzie", "rezumat pe scurt", "explica pe scurt"
     ]
 }
 
@@ -255,6 +248,26 @@ def is_identity_query(input_text):
 def random_prefix():
     """F7 — Returnează un prefix aleatoriu pentru variante de răspuns."""
     return random.choice(RESPONSE_PREFIXES)
+
+def _allowed_file(filename):
+    if not filename:
+        return False
+    ext = os.path.splitext(filename)[1].lower()
+    return ext in ALLOWED_UPLOAD_EXTENSIONS
+
+def _save_uploaded_file(file_storage):
+    if not file_storage or not getattr(file_storage, 'filename', ''):
+        return None
+
+    filename = secure_filename(file_storage.filename)
+    if not filename or not _allowed_file(filename):
+        return None
+
+    ext = os.path.splitext(filename)[1].lower()
+    unique_name = f"{uuid.uuid4().hex}{ext}"
+    full_path = os.path.join(UPLOAD_DIR, unique_name)
+    file_storage.save(full_path)
+    return f"/uploads/{unique_name}"
 
 # --- POTRIVIRE FUZZY ---
 def partial_match(word, target):
@@ -718,7 +731,7 @@ def get_learning_plan_message():
         ("Ziua 4", topics[3] if len(topics) > 3 else topics[0]),
         ("Ziua 5", topics[4] if len(topics) > 4 else topics[0]),
         ("Ziua 6", topics[5] if len(topics) > 5 else topics[0]),
-        ("Ziua 7", "Recapitulare + mini-test"),
+        ("Ziua 7", "Recapitulare + consolidare"),
     ]
 
     html = "<strong>🗓️ Plan de învățare (7 zile):</strong><ul style='text-align:left'>"
@@ -739,7 +752,6 @@ def get_help_message():
         "<strong>📚 Lecție completă:</strong> 'Detalii' sau 'Toată materia'<br>"
         "<strong>💪 Exerciții:</strong> 'Dă-mi un exercițiu' sau 'Vreau să exersez'<br>"
         "<strong>🧠 Quiz:</strong> 'Quiz' sau 'Testează-mă'<br>"
-        "<strong>🎯 Test complet:</strong> 'Dă-mi un test' (5 întrebări, notă finală)<br>"
         "<strong>🗓️ Plan învățare:</strong> 'Dă-mi un plan de învățare'<br>"
         "<strong>🧩 Pas cu pas:</strong> 'Explică pas cu pas'<br>"
         "<strong>🔢 Calculator:</strong> 'Cât face 25+37?' sau '2^3 + 5'<br>"
@@ -755,11 +767,11 @@ def get_help_message():
 def index(): return send_from_directory('.', 'index.html')
 
 @app.route('/<path:path>')
-def static_proxy(path): 
-    # If path points directly to uploads folder, serve it securely
-    if path.startswith('uploads/'):
-        return send_from_directory(app.config['UPLOAD_FOLDER'], path.replace('uploads/', ''))
-    return send_from_directory('.', path)
+def static_proxy(path): return send_from_directory('.', path)
+
+@app.route('/uploads/<path:filename>')
+def serve_upload(filename):
+    return send_from_directory(UPLOAD_DIR, filename)
 
 @app.route('/api/chapters', methods=['GET'])
 def get_chapters(): return jsonify(CHAPTERS)
@@ -874,31 +886,16 @@ def add_homework():
     if not user or user['role'] != 'teacher':
         return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
     
-    # Handle possible multipart/form-data or JSON
-    req_json = request.get_json(silent=True) or {}
-    chapter_id = request.form.get('chapterId') or req_json.get('chapterId')
-    description = request.form.get('description') or req_json.get('description')
-    due_date = request.form.get('dueDate') or req_json.get('dueDate')
+    chapter_id = request.form.get('chapterId') or None
+    description = request.form.get('description') or None
+    due_date = request.form.get('dueDate') or None
+    uploaded = request.files.get('file')
+    file_path = _save_uploaded_file(uploaded)
 
-    if not user.get('class_code'):
-        return jsonify({'success': False, 'error': 'Trebuie să creezi o clasă mai întâi!'}), 400
+    if uploaded and not file_path:
+        return jsonify({'success': False, 'error': 'Tipul fișierului nu este permis.'}), 400
 
-    file_path = None
-    if 'file' in request.files:
-        file = request.files['file']
-        if file.filename != '':
-            filename = secure_filename(file.filename)
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            file_path = f'/uploads/{filename}'
-            
-    database.create_homework(
-        user['class_code'],
-        chapter_id,
-        description,
-        file_path,
-        due_date
-    )
+    database.create_homework(user['class_code'], chapter_id, description, file_path, due_date)
     return jsonify({'success': True})
 
 
@@ -920,144 +917,30 @@ def mark_homework_done():
     if not user:
         return jsonify({'success': False}), 401
     
-    req_json = request.get_json(silent=True) or {}
-    try:
-        homework_id = int(request.form.get('homeworkId') or req_json.get('homeworkId'))
-    except (TypeError, ValueError):
-        return jsonify({'success': False, 'error': 'ID temă invalid.'}), 400
-    
-    file_path = None
-    if 'file' in request.files:
-        file = request.files['file']
-        if file.filename != '':
-            filename = secure_filename(file.filename)
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            file_path = f'/uploads/{filename}'
+    homework_id = request.form.get('homeworkId')
+    uploaded = request.files.get('file')
+    file_path = _save_uploaded_file(uploaded)
 
-    if database.complete_homework(user['id'], homework_id, file_path):
-        return jsonify({'success': True})
-    else:
-        return jsonify({'success': False, 'error': 'Ai trimis deja această temă sau tema nu există.'}), 400
+    if not homework_id:
+        return jsonify({'success': False, 'error': 'Lipsește homeworkId.'}), 400
 
+    if uploaded and not file_path:
+        return jsonify({'success': False, 'error': 'Tipul fișierului nu este permis.'}), 400
 
-@app.route('/api/homework/<int:hw_id>/completions', methods=['GET'])
-def get_hw_completions(hw_id):
+    database.complete_homework(user['id'], homework_id, file_path)
+    return jsonify({'success': True})
+
+@app.route('/api/homework/<int:homework_id>/completions', methods=['GET'])
+def get_homework_completions(homework_id):
     token = request.headers.get('Authorization')
     user = database.get_user_by_token(token)
     if not user or user['role'] != 'teacher':
         return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
     if not user.get('class_code'):
-        return jsonify({'success': False, 'error': 'Nu ai o clasă activă.'}), 400
-    completions = database.get_homework_completions(hw_id, user['class_code'])
+        return jsonify({'success': False, 'error': 'Profesorul nu are clasă activă.'}), 400
+
+    completions = database.get_homework_completions(homework_id, user['class_code'])
     return jsonify({'success': True, 'completions': completions})
-
-
-# --- TEST ROUTES ---
-@app.route('/api/test/create', methods=['POST'])
-def create_test_route():
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user or user['role'] != 'teacher':
-        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
-        
-    req_json = request.get_json(silent=True) or {}
-    title = request.form.get('title', 'Test') or req_json.get('title', 'Test')
-    chapter_id = request.form.get('chapterId') or req_json.get('chapterId')
-    num_questions = int(request.form.get('numQuestions', 5) or req_json.get('numQuestions', 5))
-    custom_questions = request.form.get('customQuestions') or req_json.get('customQuestions')
-
-    if not user.get('class_code'):
-        return jsonify({'success': False, 'error': 'Trebuie să creezi o clasă mai întâi!'}), 400
-
-    file_path = None
-    if 'file' in request.files:
-        file = request.files['file']
-        if file.filename != '':
-            filename = secure_filename(file.filename)
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            file_path = f'/uploads/{filename}'
-
-    res = database.create_test(
-        user['class_code'],
-        title,
-        chapter_id,
-        num_questions,
-        file_path,
-        custom_questions
-    )
-    return jsonify(res)
-
-
-@app.route('/api/test/details/<int:test_id>', methods=['GET'])
-def get_test_details_route(test_id):
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user:
-        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
-    
-    test = database.get_test_details(test_id)
-    if not test:
-        return jsonify({'success': False, 'error': 'Testul nu există.'}), 404
-        
-    return jsonify({'success': True, 'test': test})
-
-@app.route('/api/test/submit', methods=['POST'])
-def submit_test_route():
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user or user['role'] != 'student':
-        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
-        
-    data = request.json
-    test_id = data.get('testId')
-    score = data.get('score')
-    total = data.get('total')
-    
-    if test_id is None or score is None or total is None:
-        return jsonify({'success': False, 'error': 'Date incomplete.'}), 400
-        
-    success = database.submit_test_result(test_id, user['id'], score, total)
-    return jsonify({'success': success})
-
-@app.route('/api/test/class/<code>', methods=['GET'])
-def get_tests_for_class(code):
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user:
-        return jsonify({'success': False}), 401
-    user_id = user['id'] if user['role'] == 'student' else None
-    tests = database.get_class_tests(code, user_id)
-    return jsonify({'success': True, 'tests': tests})
-
-
-@app.route('/api/test/submit', methods=['POST'])
-def submit_test():
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user:
-        return jsonify({'success': False}), 401
-    data = request.json
-    ok = database.submit_test_result(
-        data.get('testId'),
-        user['id'],
-        data.get('score', 0),
-        data.get('total', 0)
-    )
-    return jsonify({'success': ok})
-
-
-@app.route('/api/test/<int:test_id>/results', methods=['GET'])
-def get_test_results_route(test_id):
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user or user['role'] != 'teacher':
-        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
-    if not user.get('class_code'):
-        return jsonify({'success': False}), 400
-    results = database.get_test_results(test_id, user['class_code'])
-    return jsonify({'success': True, 'results': results})
 
 # --- PROVOCAREA ZILEI ---
 DAILY_CHALLENGES = [
@@ -1193,19 +1076,9 @@ def chat():
             recap_html += "</ul><br>Continuă să explorezi! 💪"
             return jsonify({"message": recap_html})
 
-        # F6 — MOD TEST
         if primary_intent == "test" or check_intent(user_input, "test"):
-            chapters_with_ex = [c for c in CHAPTERS if c.get('exercises')]
-            test_chapters = random.sample(chapters_with_ex, min(5, len(chapters_with_ex)))
-            questions = []
-            for ch in test_chapters:
-                ex = random.choice(ch['exercises'])
-                questions.append({"chapterId": ch['id'], "chapterTitle": ch['title'], "question": ex['question'], "answer": ex['answer']})
             return jsonify({
-                "message": "🎯 <strong>Mod Test Activat!</strong><br><br>Îți voi pune 5 întrebări din capitole diferite. Răspunde cu tot ce știi! Hai să începem!",
-                "testMode": True,
-                "testQuestions": questions,
-                "currentQuestion": 0
+                "message": "Am eliminat modul de test. Îți pot oferi în schimb quiz-uri rapide și exerciții pe capitol. Scrie <strong>quiz</strong> sau <strong>vreau exerciții</strong>."
             })
 
         # 2. Detecție capitol
@@ -1358,6 +1231,22 @@ def chat():
                         "suggestion": suggestion
                     })
 
+        if not target and primary_intent in {"elaborate", "example", "exercise", "quiz", "step_by_step", "summary", "define"}:
+            candidates = get_top_matches(user_input, count=3)
+            if candidates:
+                suggestions_html = "<br>".join([f"• <strong>{ch['title']}</strong>" for ch in candidates])
+                return jsonify({
+                    "message": (
+                        "Ca să răspund corect, am nevoie de capitolul exact.<br><br>"
+                        f"Poți alege unul dintre acestea:<br>{suggestions_html}"
+                    ),
+                    "lastChapterId": last_id
+                })
+            return jsonify({
+                "message": "Spune-mi capitolul exact (ex: fracții, puteri, divizibilitate) și îți dau direct răspunsul potrivit.",
+                "lastChapterId": last_id
+            })
+
         # 4. Math Solver
         solution = solve_math(user_input)
         if solution:
@@ -1466,124 +1355,6 @@ def check_answer():
         "feedback": feedback
     })
 
-
-# --- API MULTIPLAYER (ONLINE) ---
-
-@app.route('/api/multiplayer/create', methods=['POST'])
-def mp_create():
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user:
-        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
-    
-    # Generăm setul de 10 întrebări (din toate capitolele)
-    chapters_with_ex = [c for c in CHAPTERS if c.get('exercises')]
-    selected_chapters = random.sample(chapters_with_ex, min(10, len(chapters_with_ex)))
-    questions = []
-    for ch in selected_chapters:
-        ex = random.choice(ch['exercises'])
-        questions.append({
-            "question": ex['question'],
-            "answer": ex['answer'],
-            "chapterTitle": ch['title']
-        })
-
-    import time
-    initial_state = {
-        "questions": questions,
-        "currentQ": 0,
-        "scores": [0, 0], 
-        "roundStartTime": time.time(),
-        "lastFeedback": "",
-        "roundActive": True
-    }
-    
-    import json
-    code = database.create_multiplayer_session(user['id'], json.dumps(initial_state))
-    return jsonify({'success': True, 'code': code})
-
-@app.route('/api/multiplayer/join/<code>', methods=['POST'])
-def mp_join(code):
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user:
-        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
-    
-    success = database.join_multiplayer_session(user['id'], code)
-    if success:
-        return jsonify({'success': True})
-    return jsonify({'success': False, 'error': 'Cod invalid sau cameră plină.'}), 400
-
-@app.route('/api/multiplayer/status/<code>', methods=['GET'])
-def mp_status(code):
-    session = database.get_multiplayer_session(code)
-    if not session:
-        return jsonify({'success': False, 'error': 'Sesiune inexistentă.'}), 404
-    
-    import json
-    import time
-    state = json.loads(session['state_json'])
-    
-    # Check if timer expired (20 seconds)
-    if session['status'] == 'playing' and state['roundActive']:
-        elapsed = time.time() - state['roundStartTime']
-        if elapsed > 20:
-            state['lastFeedback'] = "⏰ Timpul a expirat pentru această rundă!"
-            state['currentQ'] += 1
-            state['roundStartTime'] = time.time() # Reset timer for next Q
-            
-            if state['currentQ'] >= len(state['questions']):
-                database.update_multiplayer_state(code, json.dumps(state), status='finished')
-            else:
-                database.update_multiplayer_state(code, json.dumps(state))
-
-    return jsonify({
-        'success': True,
-        'status': session['status'],
-        'host_name': session['host_name'],
-        'guest_name': session['guest_name'],
-        'state': state,
-        'server_time': time.time()
-    })
-
-@app.route('/api/multiplayer/action/<code>', methods=['POST'])
-def mp_action(code):
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    session = database.get_multiplayer_session(code)
-    if not user or not session:
-        return jsonify({'success': False}), 403
-
-    import json
-    import time
-    data = request.json
-    answer = data.get('answer', '').strip()
-    
-    state = json.loads(session['state_json'])
-    
-    # Verificăm dacă timpul a expirat deja între timp
-    if time.time() - state['roundStartTime'] > 20:
-        return jsonify({'success': True, 'timeout': True})
-
-    curr_q = state['questions'][state['currentQ']]
-    p_idx = 0 if user['id'] == session['host_id'] else 1
-    
-    is_correct = answers_match(answer, curr_q['answer'])
-    
-    if is_correct and state['roundActive']:
-        state['scores'][p_idx] += 10
-        state['currentQ'] += 1
-        state['roundStartTime'] = time.time() # Reset timer for next Q
-        state['lastFeedback'] = f"🎉 {user['username']} a răspuns corect!"
-        
-        if state['currentQ'] >= len(state['questions']):
-            database.update_multiplayer_state(code, json.dumps(state), status='finished')
-        else:
-            database.update_multiplayer_state(code, json.dumps(state))
-        
-        return jsonify({'success': True, 'isCorrect': True})
-    
-    return jsonify({'success': True, 'isCorrect': False})
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
