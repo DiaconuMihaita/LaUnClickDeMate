@@ -13,6 +13,7 @@ if os.environ.get('VERCEL'):
     if not os.path.exists(DB_PATH):
         # Inițializăm baza de date în /tmp dacă nu există
         import shutil
+        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
         if os.path.exists('data/mateai.db'):
             shutil.copy('data/mateai.db', DB_PATH)
 else:
@@ -342,6 +343,8 @@ def get_student_details(user_id):
 
 # --- HOMEWORK ---
 def create_homework(class_code, chapter_id, description=None, file_path=None, due_date=None):
+    if not class_code:
+        return False
     conn = get_db()
     conn.execute(
         'INSERT INTO homework (class_code, chapter_id, description, file_path, due_date) VALUES (?, ?, ?, ?, ?)',
@@ -403,6 +406,8 @@ def get_homework_completions(homework_id, class_code):
 
 # --- TESTS ---
 def create_test(class_code, title, chapter_id=None, num_questions=5, file_path=None, custom_questions=None):
+    if not class_code:
+        return {'success': False, 'error': 'Codul clasei lipsește.'}
     conn = get_db()
     conn.execute(
         'INSERT INTO tests (class_code, title, chapter_id, num_questions, file_path, custom_questions) VALUES (?, ?, ?, ?, ?, ?)',

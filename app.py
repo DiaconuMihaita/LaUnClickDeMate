@@ -13,7 +13,11 @@ app = Flask(__name__, static_folder='.')
 application = app # Pentru compatibilitate Vercel
 database.init_db()
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'data', 'uploads')
+if os.environ.get('VERCEL'):
+    UPLOAD_FOLDER = '/tmp/uploads'
+else:
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'data', 'uploads')
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -872,11 +876,15 @@ def add_homework():
     description = request.form.get('description') or req_json.get('description')
     due_date = request.form.get('dueDate') or req_json.get('dueDate')
 
+    if not user.get('class_code'):
+        return jsonify({'success': False, 'error': 'Trebuie să creezi o clasă mai întâi!'}), 400
+
     file_path = None
     if 'file' in request.files:
         file = request.files['file']
         if file.filename != '':
             filename = secure_filename(file.filename)
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             file_path = f'/uploads/{filename}'
             
@@ -916,6 +924,7 @@ def mark_homework_done():
         file = request.files['file']
         if file.filename != '':
             filename = secure_filename(file.filename)
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             file_path = f'/uploads/{filename}'
 
@@ -949,11 +958,15 @@ def create_test_route():
     num_questions = int(request.form.get('numQuestions', 5) or req_json.get('numQuestions', 5))
     custom_questions = request.form.get('customQuestions') or req_json.get('customQuestions')
 
+    if not user.get('class_code'):
+        return jsonify({'success': False, 'error': 'Trebuie să creezi o clasă mai întâi!'}), 400
+
     file_path = None
     if 'file' in request.files:
         file = request.files['file']
         if file.filename != '':
             filename = secure_filename(file.filename)
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             file_path = f'/uploads/{filename}'
 
