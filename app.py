@@ -147,19 +147,69 @@ FILLER_TERMS = {
     "la", "cu", "si", "sau", "in", "pe", "ce", "cum", "care", "cat", "este", "sunt"
 }
 
+PHRASE_NORMALIZATION = {
+    "poti sa imi explici": "explica",
+    "poti sa mi explici": "explica",
+    "poti sa-mi explici": "explica",
+    "imi poti explica": "explica",
+    "mi poti explica": "explica",
+    "poti explica": "explica",
+    "descrie mi": "descrie",
+    "descrie-mi": "descrie",
+    "explica mi": "explica",
+    "explica-mi": "explica",
+    "detaliaza mi": "detaliaza",
+    "detaliaza-mi": "detaliaza",
+    "da mi": "da",
+    "da-mi": "da",
+    "arata mi": "arata",
+    "arata-mi": "arata",
+    "pas cu pas": "pas_cu_pas"
+}
+
+SEMANTIC_SYNONYMS = {
+    "explica": ["descrie", "detaliaza", "clarifica", "lamureste", "explicati", "explicatie", "explicatii", "descriemi", "explicami", "amanunteste"],
+    "detaliaza": ["aprofundeaza", "dezvolta", "elaboreaza", "amanunte", "detalii", "pe_larg"],
+    "exemplu": ["model", "caz", "instanta", "exemplificare", "demonstratie"],
+    "exercitiu": ["problema", "antrenament", "practica", "tema", "aplicatie"],
+    "definitie": ["sens", "inteles", "semnificatie", "ce_inseamna", "explicatie"],
+    "rezumat": ["sumar", "pe_scurt", "esential", "concluzie", "sinteza"],
+    "quiz": ["intrebare", "testare", "verificare", "chestionare"],
+    "urmator": ["next", "mai_departe", "continua", "urmatoare"],
+    "ajutor": ["help", "ghid", "instructiuni", "cum_folosesc"],
+    "compara": ["comparatie", "ordonare", "mai_mic", "mai_mare"]
+}
+
+CANONICAL_BY_VARIANT = {}
+CANONICAL_VARIANTS = {}
+for canonical, variants in SEMANTIC_SYNONYMS.items():
+    norm_c = canonical
+    pool = {norm_c}
+    for variant in variants:
+        norm_v = variant
+        pool.add(norm_v)
+        CANONICAL_BY_VARIANT[norm_v] = norm_c
+    CANONICAL_BY_VARIANT[norm_c] = norm_c
+    CANONICAL_VARIANTS[norm_c] = pool
+
 def normalize(text):
     if not text: return ""
     text = text.lower()
     replacements = {'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ț': 't', 'ş': 's', 'ţ': 't'}
     for char, replacement in replacements.items():
         text = text.replace(char, replacement)
-    return re.sub(r'[?.,!;:\-]', '', text).strip()
+    text = re.sub(r"[?.,!;:\-_/()\[\]{}\"'`]", ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    for src, dst in PHRASE_NORMALIZATION.items():
+        text = text.replace(src, dst)
+    return re.sub(r'\s+', ' ', text).strip()
 
 def tokenize(text):
     norm = normalize(text)
     if not norm:
         return []
-    return [tok for tok in norm.split() if tok]
+    tokens = [tok for tok in norm.split() if tok]
+    return [CANONICAL_BY_VARIANT.get(tok, tok) for tok in tokens]
 
 def concept_variants(word):
     """Normalizează forme flexionate simple (ex: fractiile -> fractii/fractie)."""
@@ -182,7 +232,19 @@ def expand_query_words(query):
     words = tokenize(query)
     expanded = []
     for word in words:
-        expanded.extend(concept_variants(word))
+        variants = set(concept_variants(word))
+        canonical = CANONICAL_BY_VARIANT.get(word)
+        if canonical:
+            variants.update(concept_variants(canonical))
+            variants.update(CANONICAL_VARIANTS.get(canonical, set()))
+
+        for variant in list(variants):
+            canonical_of_variant = CANONICAL_BY_VARIANT.get(variant)
+            if canonical_of_variant:
+                variants.add(canonical_of_variant)
+                variants.update(CANONICAL_VARIANTS.get(canonical_of_variant, set()))
+
+        expanded.extend(v for v in variants if v)
     # deduplicate păstrând ordinea
     result = []
     for word in expanded:
