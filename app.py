@@ -634,6 +634,40 @@ def is_explicit_chapter_reference(ch, query):
             return True
     return False
 
+def find_explicit_chapter_in_query(query):
+    """Detectează dacă userul a menționat explicit un capitol/subiect în întrebare."""
+    norm_q = normalize(query)
+    if not norm_q:
+        return None
+
+    terms = set(significant_terms(query))
+    best = None
+    best_score = 0
+
+    for ch in CHAPTERS:
+        score = 0
+        title_norm = normalize(ch.get('title', ''))
+        if title_norm and title_norm in norm_q:
+            score += 8
+
+        for kw in ch.get('keywords', []):
+            kw_norm = normalize(kw)
+            if not kw_norm:
+                continue
+
+            if kw_norm in norm_q:
+                score += 5
+            elif any(partial_match(term, kw_norm) for term in terms):
+                score += 2
+
+        if score > best_score:
+            best_score = score
+            best = ch
+
+    if best_score >= 5:
+        return best
+    return None
+
 def get_targeted_snippet(ch, query):
     """Răspuns scurt pe subiectul întrebat, fără recapitulare completă."""
     if not ch:
@@ -1202,6 +1236,7 @@ def chat():
         visited_chapters = data.get('visitedChapters', [])
         current_ch = next((c for c in CHAPTERS if c['id'] == last_id), None)
         primary_intent = detect_best_intent(user_input)
+        explicit_ch = find_explicit_chapter_in_query(user_input)
 
         # 1. Identitate / Salut / Garbage
         if len(norm_input) < 2:
@@ -1221,7 +1256,7 @@ def chat():
             if symbol_def:
                 return jsonify({"message": symbol_def, "lastChapterId": last_id})
 
-            if current_ch:
+            if current_ch and (not explicit_ch or explicit_ch['id'] == current_ch['id']):
                 focused_current = get_targeted_snippet(current_ch, user_input)
                 if focused_current:
                     return jsonify({
@@ -1230,7 +1265,7 @@ def chat():
                         "suggestion": get_suggestion(current_ch['id'])
                     })
 
-            concept_ch = find_best_chapter_for_definition(user_input)
+            concept_ch = explicit_ch or find_best_chapter_for_definition(user_input)
             if concept_ch:
                 definition = get_definition_from_chapter(concept_ch, user_input)
                 focused = get_targeted_snippet(concept_ch, user_input)
@@ -1303,7 +1338,7 @@ def chat():
 
         # 2. Detecție capitol + dezambiguizare
         ranked_chapters = rank_chapters(user_input)
-        found_ch = ranked_chapters[0][0] if ranked_chapters else deep_search(user_input)
+        found_ch = explicit_ch or (ranked_chapters[0][0] if ranked_chapters else deep_search(user_input))
         if check_intent(user_input, "compare"):
             found_ch = next((c for c in CHAPTERS if c['id'] == "comparare_ordonare"), found_ch)
 
@@ -1323,7 +1358,7 @@ def chat():
                 })
 
         if current_ch and found_ch and current_ch['id'] != found_ch['id']:
-            if not is_explicit_chapter_reference(found_ch, user_input):
+            if explicit_ch is None and not is_explicit_chapter_reference(found_ch, user_input):
                 found_ch = current_ch
 
         if found_ch:
