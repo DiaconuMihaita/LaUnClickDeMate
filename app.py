@@ -700,6 +700,108 @@ def extract_rules_section(ch):
 
     return "📚 <strong>Din secvența lecției:</strong><br>" + "<br>".join(picked)
 
+SECTION_QUERY_MAP = {
+    "reguli": {
+        "query_terms": ["regula", "reguli", "regulile"],
+        "lesson_markers": ["regula", "📌 regula", "strategii"]
+    },
+    "criterii": {
+        "query_terms": ["criteriu", "criterii", "criteriile"],
+        "lesson_markers": ["criteriu", "criterii", "test de divizibilitate"]
+    },
+    "formule": {
+        "query_terms": ["formula", "formule", "formula de calcul"],
+        "lesson_markers": ["formula", "formule", "="]
+    },
+    "proprietati": {
+        "query_terms": ["proprietate", "proprietati", "proprietatile"],
+        "lesson_markers": ["proprietate", "proprietati"]
+    },
+    "pasi": {
+        "query_terms": ["pas", "pasi", "pasii", "metoda", "procedura"],
+        "lesson_markers": ["pas", "metoda", "procedura", "algoritm"]
+    },
+    "definitii": {
+        "query_terms": ["definitie", "definitii", "ce inseamna", "ce este"],
+        "lesson_markers": ["definitie", "se numeste", "inseamna"]
+    }
+}
+
+def _matches_query_term(term, query_terms):
+    for q in query_terms:
+        if term == q:
+            return True
+        if partial_match(term, q) or partial_match(q, term):
+            return True
+        if _fuzzy_similar(term, q) >= 0.84:
+            return True
+    return False
+
+def detect_requested_section(query):
+    terms = significant_terms(query)
+    if not terms:
+        return None
+
+    scores = []
+    for section_name, config in SECTION_QUERY_MAP.items():
+        query_terms = [normalize(t) for t in config["query_terms"]]
+        score = 0
+        for term in terms:
+            if _matches_query_term(term, query_terms):
+                score += 1
+        if score > 0:
+            scores.append((section_name, score))
+
+    if not scores:
+        return None
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return scores[0][0]
+
+def extract_section_block(ch, section_name):
+    if not ch or section_name not in SECTION_QUERY_MAP:
+        return None
+
+    lessons = ch.get('lessons', [])
+    if not lessons:
+        return None
+
+    markers = [normalize(m) for m in SECTION_QUERY_MAP[section_name]["lesson_markers"]]
+    picked = []
+    seen = set()
+
+    def _append(line):
+        txt = (line or "").strip()
+        if txt and txt not in seen:
+            seen.add(txt)
+            picked.append(txt)
+
+    for idx, lesson in enumerate(lessons):
+        lesson_norm = normalize(lesson)
+        marker_hit = any(marker in lesson_norm for marker in markers)
+        if marker_hit:
+            _append(lesson)
+
+            # Include formula/continuation line right after section line when relevant.
+            if idx + 1 < len(lessons):
+                next_line = (lessons[idx + 1] or "").strip()
+                next_norm = normalize(next_line)
+                looks_like_formula_or_detail = (
+                    "=" in next_line
+                    or "^" in next_line
+                    or "ᵐ" in next_line
+                    or "ⁿ" in next_line
+                    or "exponent" in next_norm
+                    or any(marker in next_norm for marker in markers)
+                )
+                if next_line and looks_like_formula_or_detail:
+                    _append(next_line)
+
+    if not picked:
+        return None
+
+    title = section_name.capitalize()
+    return f"📚 <strong>Din secvența lecției ({title}):</strong><br>" + "<br>".join(picked)
+
 def is_rules_query(query):
     terms = significant_terms(query)
     for term in terms:
@@ -753,6 +855,12 @@ def get_targeted_snippet(ch, query):
     content_words = significant_terms(query)
     if not content_words:
         return None
+
+    section_requested = detect_requested_section(query)
+    if section_requested:
+        section_block = extract_section_block(ch, section_requested)
+        if section_block:
+            return section_block
 
     if any(partial_match(w, "criterii") or partial_match(w, "criteriu") for w in content_words):
         title_norm = normalize(ch.get('title', ''))
