@@ -660,17 +660,40 @@ def extract_rules_section(ch):
 
     picked = []
     seen = set()
-    for lesson in lessons:
+
+    def _append_line(line):
+        key = (line or "").strip()
+        if key and key not in seen:
+            seen.add(key)
+            picked.append(key)
+
+    for idx, lesson in enumerate(lessons):
         lesson_norm = normalize(lesson)
-        if (
+        is_rule_header = (
             "regula" in lesson_norm
             or lesson.strip().startswith("📌 REGULA")
-            or "strategii" in lesson_norm
-        ):
-            key = lesson.strip()
-            if key and key not in seen:
-                seen.add(key)
-                picked.append(key)
+        )
+        is_strategy = "strategii" in lesson_norm
+
+        if is_rule_header:
+            _append_line(lesson)
+
+            # Dacă formula este pe linia următoare, o includem automat.
+            if idx + 1 < len(lessons):
+                next_line = (lessons[idx + 1] or "").strip()
+                next_norm = normalize(next_line)
+                looks_like_formula = (
+                    "=" in next_line
+                    or "^" in next_line
+                    or "ᵐ" in next_line
+                    or "ⁿ" in next_line
+                    or "exponent" in next_norm
+                )
+                if next_line and looks_like_formula and "regula" not in next_norm:
+                    _append_line(next_line)
+
+        elif is_strategy:
+            _append_line(lesson)
 
     if not picked:
         return None
@@ -730,6 +753,19 @@ def get_targeted_snippet(ch, query):
     content_words = significant_terms(query)
     if not content_words:
         return None
+
+    if any(partial_match(w, "criterii") or partial_match(w, "criteriu") for w in content_words):
+        title_norm = normalize(ch.get('title', ''))
+        if "puteri" in title_norm:
+            candidates = get_top_matches("criterii de divizibilitate", count=2)
+            if candidates:
+                suggestions_html = "<br>".join([f"• <strong>{c['title']}</strong>" for c in candidates])
+                return (
+                    "În capitolul de <strong>puteri</strong> avem <strong>reguli de calcul</strong>, nu criterii.<br><br>"
+                    "Pentru criterii, mergi la:<br>"
+                    f"{suggestions_html}"
+                )
+            return "În capitolul de <strong>puteri</strong> avem reguli de calcul, nu criterii. Criteriile sunt la divizibilitate."
 
     if is_rules_query(query):
         rules_block = extract_rules_section(ch)
