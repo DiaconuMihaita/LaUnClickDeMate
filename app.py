@@ -175,7 +175,7 @@ SEMANTIC_SYNONYMS = {
     "definitie": ["sens", "inteles", "semnificatie", "ce_inseamna", "explicatie"],
     "rezumat": ["sumar", "pe_scurt", "esential", "concluzie", "sinteza"],
     "quiz": ["intrebare", "testare", "verificare", "chestionare"],
-    "urmator": ["next", "mai_departe", "continua", "urmatoare"],
+    "urmator": ["next", "mai_departe", "urmatoare"],
     "ajutor": ["help", "ghid", "instructiuni", "cum_folosesc"],
     "compara": ["comparatie", "ordonare", "mai_mic", "mai_mare"]
 }
@@ -634,6 +634,60 @@ def is_explicit_chapter_reference(ch, query):
             return True
     return False
 
+def is_next_request(query):
+    norm_q = normalize(query)
+    markers = [
+        "urmatorul", "capitolul urmator", "urmatorul capitol", "treci la urmatorul",
+        "next", "mergem la urmatorul", "du ma la urmatorul"
+    ]
+    return any(marker in norm_q for marker in markers)
+
+def is_continue_current_request(query):
+    norm_q = normalize(query)
+    markers = [
+        "continua", "continua te rog", "continua aici", "continua la asta",
+        "mergi mai departe aici", "mai multe aici"
+    ]
+    return any(marker in norm_q for marker in markers)
+
+def extract_rules_section(ch):
+    if not ch:
+        return None
+
+    lessons = ch.get('lessons', [])
+    if not lessons:
+        return None
+
+    picked = []
+    seen = set()
+    for lesson in lessons:
+        lesson_norm = normalize(lesson)
+        if (
+            "regula" in lesson_norm
+            or lesson.strip().startswith("📌 REGULA")
+            or "strategii" in lesson_norm
+        ):
+            key = lesson.strip()
+            if key and key not in seen:
+                seen.add(key)
+                picked.append(key)
+
+    if not picked:
+        return None
+
+    return "📚 <strong>Din secvența lecției:</strong><br>" + "<br>".join(picked)
+
+def is_rules_query(query):
+    terms = significant_terms(query)
+    for term in terms:
+        if term in {"regula", "reguli", "regulile"}:
+            return True
+        if partial_match(term, "reguli") or partial_match(term, "regula"):
+            return True
+        if _fuzzy_similar(term, "reguli") >= 0.82 or _fuzzy_similar(term, "regula") >= 0.82:
+            return True
+    return False
+
 def find_explicit_chapter_in_query(query):
     """Detectează dacă userul a menționat explicit un capitol/subiect în întrebare."""
     norm_q = normalize(query)
@@ -676,6 +730,11 @@ def get_targeted_snippet(ch, query):
     content_words = significant_terms(query)
     if not content_words:
         return None
+
+    if is_rules_query(query):
+        rules_block = extract_rules_section(ch)
+        if rules_block:
+            return rules_block
 
     dictionary = ch.get('dictionary', {})
     for term, definition in dictionary.items():
@@ -1302,8 +1361,27 @@ def chat():
         if primary_intent == "plan" or check_intent(user_input, "plan"):
             return jsonify({"message": get_learning_plan_message(), "lastChapterId": last_id})
 
+        if current_ch and is_continue_current_request(user_input):
+            focused = get_targeted_snippet(current_ch, user_input)
+            if focused:
+                return jsonify({
+                    "message": focused,
+                    "lastChapterId": current_ch['id'],
+                    "suggestion": get_suggestion(current_ch['id'])
+                })
+
+            msg = (
+                f"Continuăm în <strong>{current_ch['title']}</strong>. "
+                "Spune exact ce vrei să continui: <em>reguli</em>, <em>exemplu</em> sau <em>exerciții</em>."
+            )
+            return jsonify({
+                "message": msg,
+                "lastChapterId": current_ch['id'],
+                "suggestion": get_suggestion(current_ch['id'])
+            })
+
         # NEXT — Capitol următor
-        if primary_intent == "next" or check_intent(user_input, "next"):
+        if primary_intent == "next" and is_next_request(user_input):
             if current_ch:
                 suggestion = get_suggestion(current_ch['id'])
                 if suggestion:
