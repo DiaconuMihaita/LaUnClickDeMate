@@ -167,6 +167,15 @@ PHRASE_NORMALIZATION = {
     "pas cu pas": "pas_cu_pas"
 }
 
+TYPO_CORRECTIONS = {
+    "meda": "media",
+    "aritmetie": "aritmetica",
+    "regurile": "regulile",
+    "regulaile": "regulile",
+    "divizibilitste": "divizibilitate",
+    "divizibiltate": "divizibilitate"
+}
+
 SEMANTIC_SYNONYMS = {
     "explica": ["descrie", "detaliaza", "clarifica", "lamureste", "explicati", "explicatie", "explicatii", "descriemi", "explicami", "amanunteste"],
     "detaliaza": ["aprofundeaza", "dezvolta", "elaboreaza", "amanunte", "detalii", "pe_larg"],
@@ -192,6 +201,33 @@ for canonical, variants in SEMANTIC_SYNONYMS.items():
     CANONICAL_BY_VARIANT[norm_c] = norm_c
     CANONICAL_VARIANTS[norm_c] = pool
 
+CHAPTER_GENERAL_DEFINITIONS = {
+    "intro_scriere_citire": "Numerele naturale sunt numerele folosite pentru a exprima cantități și pentru a număra obiecte: 0, 1, 2, 3, 4, … Ele se scriu folosind cifrele de la 0 la 9 și se organizează pe ordine și clase (unități, zeci, sute, mii, milioane etc.). Citirea numerelor naturale presupune identificarea valorii fiecărei cifre în funcție de poziția sa în număr.",
+    "sir_axa_naturale": "Șirul numerelor naturale reprezintă succesiunea lor în ordine crescătoare, fiecare număr având un succesor (numărul următor). Axa numerelor este o reprezentare grafică a acestui șir pe o dreaptă, unde numerele sunt plasate la distanțe egale, crescând de la stânga la dreapta.",
+    "comparare_ordonare": "Compararea numerelor naturale înseamnă stabilirea relației dintre două numere folosind semnele < (mai mic), > (mai mare) sau = (egal). Ordonarea numerelor presupune așezarea lor în ordine crescătoare sau descrescătoare, analizând mai întâi numărul de cifre și apoi valorile pe ordine.",
+    "aproximari_rotunjiri": "Aproximarea unui număr înseamnă înlocuirea lui cu un număr apropiat pentru a simplifica calculele. Rotunjirea se face la un anumit ordin (zeci, sute, mii etc.), după regula: dacă cifra următoare este 5 sau mai mare, rotunjim în sus; dacă este mai mică de 5, rotunjim în jos.",
+    "adunarea_naturale": "Adunarea este operația matematică prin care reunim două sau mai multe cantități pentru a afla totalul. Numerele care se adună se numesc termeni, iar rezultatul se numește sumă. Adunarea respectă proprietăți precum comutativitatea și asociativitatea.",
+    "scaderea_naturale": "Scăderea este operația prin care determinăm diferența dintre două numere. Primul număr se numește descăzut, al doilea scăzător, iar rezultatul diferență. Scăderea este operația inversă adunării.",
+    "inmultirea_naturale": "Înmulțirea reprezintă adunarea repetată a aceluiași număr. Numerele care se înmulțesc se numesc factori, iar rezultatul produs. Înmulțirea respectă proprietăți precum comutativitatea, asociativitatea și distributivitatea față de adunare.",
+    "impartirea_naturale": "Împărțirea este operația prin care un număr (deîmpărțitul) se împarte în părți egale după un alt număr (împărțitorul). Rezultatul se numește cât, iar uneori poate exista și un rest. Împărțirea este operația inversă înmulțirii.",
+    "factorul_comun": "Factorul comun este un număr sau o expresie care apare în mai mulți termeni ai unui calcul și poate fi scos în fața parantezei pentru a simplifica expresia. Această metodă se numește scoaterea factorului comun.",
+    "puteri_naturale": "Ridicarea la putere înseamnă înmulțirea repetată a unui număr cu el însuși. Numărul care se înmulțește se numește bază, iar de câte ori se înmulțește se numește exponent.",
+    "reguli_calcul_puteri": "Regulile de calcul cu puteri permit simplificarea operațiilor. De exemplu, la înmulțirea puterilor cu aceeași bază se adună exponenții, iar la împărțire se scad exponenții.",
+    "compararea_puterilor": "Compararea puterilor presupune stabilirea relației dintre două expresii de forma a^n. Se pot compara bazele sau exponenții, folosind proprietățile puterilor.",
+    "ordine_operatii": "Într-un calcul cu mai multe operații, se respectă o ordine: paranteze, puteri, înmulțiri și împărțiri, adunări și scăderi. Respectarea acestei ordini asigură obținerea rezultatului corect.",
+    "baze_aritmetica": "O bază de numerație este un sistem de scriere a numerelor folosind un anumit set de cifre. De exemplu, baza 10 folosește cifrele 0–9, iar baza 2 folosește doar 0 și 1. Fiecare cifră are o valoare în funcție de poziția sa.",
+    "media_aritmetica": "Media aritmetică este o măsură a tendinței centrale. Se calculează adunând toate valorile și împărțind suma la numărul total de valori. Ea indică valoarea medie a unui set de date.",
+    "metode_aritmetice_1": "Metoda reducerii la unitate constă în aflarea valorii unei singure unități pornind de la o valoare totală, apoi determinarea valorii cerute prin înmulțire.",
+    "metode_aritmetice_2": "Metoda comparației se folosește pentru rezolvarea problemelor prin stabilirea relațiilor dintre mărimi, comparând datele oferite pentru a determina necunoscuta.",
+    "metode_aritmetice_3": "Metoda mersului invers presupune rezolvarea problemei pornind de la rezultat și efectuând operațiile în ordine inversă pentru a ajunge la datele inițiale.",
+    "metode_aritmetice_4": "Metoda falsei ipoteze constă în presupunerea unei valori pentru necunoscută, verificarea rezultatului și corectarea presupunerii în funcție de diferența obținută.",
+    "divizibilitate": "Un număr este divizibil cu altul dacă împărțirea se face fără rest. Divizibilitatea ajută la simplificarea fracțiilor și la descompunerea numerelor.",
+    "criterii_divizibilitate": "Criteriile de divizibilitate sunt reguli care permit verificarea rapidă a divizibilității fără a efectua împărțirea. De exemplu, un număr este divizibil cu 2 dacă ultima cifră este pară.",
+    "numere_prime_compuse": "Un număr prim este un număr natural mai mare decât 1 care are exact doi divizori: 1 și el însuși. Un număr compus are mai mult de doi divizori și poate fi descompus în factori primi.",
+    "fractii_ordinare": "Fracțiile ordinare reprezintă părți egale dintr-un întreg. Ele sunt formate din numărător (partea de sus) și numitor (partea de jos), care arată în câte părți egale este împărțit întregul.",
+    "fractii_zecimale": "Fracțiile zecimale sunt numere scrise cu virgulă și reprezintă împărțiri la puteri ale lui 10 (10, 100, 1000 etc.). Ele pot fi finite sau periodice."
+}
+
 def normalize(text):
     if not text: return ""
     text = text.lower()
@@ -208,7 +244,7 @@ def tokenize(text):
     norm = normalize(text)
     if not norm:
         return []
-    tokens = [tok for tok in norm.split() if tok]
+    tokens = [TYPO_CORRECTIONS.get(tok, tok) for tok in norm.split() if tok]
     return [CANONICAL_BY_VARIANT.get(tok, tok) for tok in tokens]
 
 def concept_variants(word):
@@ -650,6 +686,18 @@ def is_continue_current_request(query):
     ]
     return any(marker in norm_q for marker in markers)
 
+def is_short_affirmative(query):
+    norm_q = normalize(query)
+    if not norm_q:
+        return False
+    affirmatives = {
+        "da", "da te rog", "da please", "ok", "oke", "bine", "sigur", "desigur", "mhm", "yes"
+    }
+    if norm_q in affirmatives:
+        return True
+    tokens = norm_q.split()
+    return len(tokens) <= 2 and any(tok in {"da", "ok", "bine", "sigur", "yes"} for tok in tokens)
+
 def extract_rules_section(ch):
     if not ch:
         return None
@@ -757,7 +805,44 @@ def detect_requested_section(query):
     scores.sort(key=lambda x: x[1], reverse=True)
     return scores[0][0]
 
-def extract_section_block(ch, section_name):
+def is_general_definition_query(query):
+    norm_q = normalize(query)
+    if not norm_q:
+        return False
+
+    generic_markers = [
+        "ce este", "ce sunt", "care e definitia", "care este definitia",
+        "definitia generala", "definitia capitolului"
+    ]
+    if not any(marker in norm_q for marker in generic_markers):
+        return False
+
+    # Dacă utilizatorul cere o secțiune specifică, NU e definiție generală.
+    if detect_requested_section(query) is not None:
+        return False
+
+    if is_rules_query(query):
+        return False
+
+    # Întrebări de tip „cu 5 / cu 3 / regula X” sunt specifice.
+    if re.search(r"\bcu\s+\d+\b", norm_q) or re.search(r"\b\d+\b", norm_q):
+        return False
+
+    # Când se cere "pentru n numere" / "pentru 2 numere" este cerință specifică, nu definiție generală.
+    if "pentru" in norm_q and ("numere" in norm_q or re.search(r"\bn\b", norm_q) is not None):
+        return False
+
+    terms = set(significant_terms(query))
+    specific_terms = {
+        "criteriu", "criterii", "regula", "reguli", "formula", "formule",
+        "proprietate", "proprietati", "pas", "pasi"
+    }
+    if any(term in specific_terms for term in terms):
+        return False
+
+    return True
+
+def extract_section_block(ch, section_name, filter_words=None):
     if not ch or section_name not in SECTION_QUERY_MAP:
         return None
 
@@ -769,6 +854,9 @@ def extract_section_block(ch, section_name):
     picked = []
     seen = set()
 
+    # Pre-climatizare filter_words
+    norm_filters = [normalize(w) for w in filter_words] if filter_words else []
+
     def _append(line):
         txt = (line or "").strip()
         if txt and txt not in seen:
@@ -778,7 +866,23 @@ def extract_section_block(ch, section_name):
     for idx, lesson in enumerate(lessons):
         lesson_norm = normalize(lesson)
         marker_hit = any(marker in lesson_norm for marker in markers)
+        
         if marker_hit:
+            # Dacă avem filter_words, verificăm dacă linia sau contextul imediat conține unul din ele.
+            # Exemplu: dacă userul cere "criteriu cu 5", linia trebuie să conțină "5".
+            if norm_filters:
+                # Verificăm hit direct pe iie
+                hit_filter = any(fw in lesson_norm for fw in norm_filters)
+                if not hit_filter:
+                    # Verificăm și linia următoare (uneori regula e sus și formula/cifra e jos)
+                    if idx + 1 < len(lessons):
+                        next_norm = normalize(lessons[idx + 1])
+                        if any(fw in next_norm for fw in norm_filters):
+                            hit_filter = True
+                
+                if not hit_filter:
+                    continue
+
             _append(lesson)
 
             # Include formula/continuation line right after section line when relevant.
@@ -796,11 +900,234 @@ def extract_section_block(ch, section_name):
                 if next_line and looks_like_formula_or_detail:
                     _append(next_line)
 
+            # Evită linii-header goale de tip "📌 CRITERIUL ...:" fără detaliul imediat.
+            if section_name in {"criterii", "reguli"}:
+                if lesson.strip().startswith("📌") and lesson.strip().endswith(":"):
+                    if idx + 1 < len(lessons):
+                        next_norm = normalize(lessons[idx + 1])
+                        if next_norm.strip().startswith("📌"):
+                            if lesson in picked:
+                                picked.remove(lesson)
+                                seen.discard(lesson)
+
     if not picked:
         return None
 
     title = section_name.capitalize()
     return f"📚 <strong>Din secvența lecției ({title}):</strong><br>" + "<br>".join(picked)
+
+def extract_number_targeted_section(ch, section_name, number_value):
+    if not ch or section_name not in SECTION_QUERY_MAP:
+        return None
+
+    lessons = ch.get('lessons', [])
+    if not lessons:
+        return None
+
+    markers = [normalize(m) for m in SECTION_QUERY_MAP[section_name]["lesson_markers"]]
+    number_str = str(number_value)
+
+    # Pattern-uri stricte, ca să evităm includerea tuturor criteriilor/regulilor.
+    if section_name == "criterii":
+        patterns = [f"criteriul cu {number_str}", f"divizibilitatii cu {number_str}", f"cu {number_str}:"]
+    elif section_name == "reguli":
+        patterns = [f"regula {number_str}", f"regula {number_str}:"]
+    else:
+        patterns = [f" {number_str}"]
+
+    picked = []
+    seen = set()
+
+    def _append(txt):
+        line = (txt or "").strip()
+        if line and line not in seen:
+            seen.add(line)
+            picked.append(line)
+
+    for idx, lesson in enumerate(lessons):
+        lesson_norm = normalize(lesson)
+        marker_hit = any(marker in lesson_norm for marker in markers)
+        pattern_hit = any(pattern in lesson_norm for pattern in patterns)
+
+        if marker_hit and pattern_hit:
+            lesson_txt = (lesson or "").strip()
+            is_header_line = lesson_txt.startswith("📌") and lesson_txt.endswith(":")
+
+            if not is_header_line:
+                _append(lesson)
+
+            if idx + 1 < len(lessons):
+                next_line = (lessons[idx + 1] or "").strip()
+                next_norm = normalize(next_line)
+                next_is_header = next_line.startswith("📌")
+                next_matches_same_number = any(pattern in next_norm for pattern in patterns)
+                next_is_other_short_criterion = False
+                next_number_match = re.match(r"^criteriul\s+cu\s+(\d+)\b", next_norm, flags=re.IGNORECASE)
+                if next_number_match and next_number_match.group(1) != number_str:
+                    next_is_other_short_criterion = True
+
+                next_is_other_header_criterion = False
+                next_header_match = re.search(r"divizibilitatii\s+cu\s+(\d+)", next_norm)
+                if next_header_match and next_header_match.group(1) != number_str:
+                    next_is_other_header_criterion = True
+
+                looks_like_detail = (
+                    "=" in next_line
+                    or "^" in next_line
+                    or "ᵐ" in next_line
+                    or "ⁿ" in next_line
+                    or "ultima" in next_norm
+                    or "suma" in next_norm
+                    or "divizibil" in next_norm
+                )
+
+                # Păstrăm doar detalii pentru același criteriu, fără a prelua header-ul altui criteriu.
+                if (
+                    next_line
+                    and not next_is_header
+                    and not next_is_other_short_criterion
+                    and not next_is_other_header_criterion
+                    and (next_matches_same_number or looks_like_detail)
+                ):
+                    _append(next_line)
+
+                # Dacă linia curentă este header pentru numărul cerut, următoarea linie utilă e detaliul.
+                if is_header_line and idx + 1 < len(lessons):
+                    detail_line = (lessons[idx + 1] or "").strip()
+                    detail_norm = normalize(detail_line)
+                    detail_is_header = detail_line.startswith("📌")
+                    detail_looks_like_rule = (
+                        "ultima" in detail_norm
+                        or "suma" in detail_norm
+                        or "divizibil" in detail_norm
+                        or "cifre" in detail_norm
+                        or "=" in detail_line
+                    )
+                    if detail_line and not detail_is_header and detail_looks_like_rule:
+                        _append(detail_line)
+            break
+
+    if not picked:
+        return None
+
+    title = section_name.capitalize()
+    return f"📚 <strong>Din secvența lecției ({title}):</strong><br>" + "<br>".join(picked)
+
+def build_divisibility_criteria_guide(ch):
+    """Răspuns structurat pentru capitolul de criterii de divizibilitate."""
+    if not ch:
+        return None
+
+    chapter_id = ch.get('id')
+    title = ch.get('title', '')
+    title_norm = normalize(title)
+    if chapter_id != "criterii_divizibilitate" and "criterii" not in title_norm:
+        return None
+
+    lessons = ch.get('lessons', [])
+    if not lessons:
+        return None
+
+    criteria_details = {}
+
+    # Linii scurte de tip: "Criteriul cu 2: ..."
+    for line in lessons:
+        line_txt = (line or "").strip()
+        m = re.match(r"^Criteriul\s+cu\s+(\d+)\s*:\s*(.+)$", line_txt, flags=re.IGNORECASE)
+        if m:
+            number = m.group(1)
+            rule = m.group(2).strip().rstrip('.')
+            criteria_details.setdefault(number, {})
+            criteria_details[number]["short_rule"] = rule
+
+    # Blocuri detaliate de tip: "📌 CRITERIUL DIVIZIBILITĂȚII CU 5:" + linia următoare
+    for idx, line in enumerate(lessons):
+        line_norm = normalize(line)
+        m = re.search(r"divizibilitatii\s+cu\s+(\d+)", line_norm)
+        if not m:
+            continue
+
+        number = m.group(1)
+        detail = ""
+        if idx + 1 < len(lessons):
+            detail = (lessons[idx + 1] or "").strip().rstrip('.')
+
+        if detail:
+            criteria_details.setdefault(number, {})
+            criteria_details[number]["detail_rule"] = detail
+
+    if not criteria_details:
+        return None
+
+    def how_to_apply(number):
+        if number in {"2", "5", "10"}:
+            return "Te uiți la ultima cifră și verifici regula."
+        if number in {"4", "25"}:
+            return "Te uiți la ultimele două cifre și verifici regula."
+        if number in {"3", "9"}:
+            return f"Aduni cifrele numărului, apoi verifici dacă suma este divizibilă cu {number}."
+        return "Aplici regula criteriului direct pe cifrele relevante."
+
+    sorted_numbers = sorted(criteria_details.keys(), key=lambda x: int(x))
+    lines = []
+    for number in sorted_numbers:
+        info = criteria_details[number]
+        rule = info.get("detail_rule") or info.get("short_rule")
+        if not rule:
+            continue
+
+        lines.append(
+            f"• <strong>Cu {number}</strong><br>"
+            f"&nbsp;&nbsp;Definiție / regulă: {rule}.<br>"
+            f"&nbsp;&nbsp;Cum se face: {how_to_apply(number)}"
+        )
+
+    if not lines:
+        return None
+
+    return (
+        f"📏 <strong>{title}</strong><br><br>"
+        "<strong>Definiție:</strong> Criteriile de divizibilitate sunt reguli rapide prin care verifici dacă un număr se împarte exact la altul, fără împărțire scrisă.<br><br>"
+        "<strong>Formule / reguli la fiecare criteriu:</strong><br>"
+        + "<br>".join(lines)
+    )
+
+def extract_chapter_focus_options(ch, limit=4):
+    """Construiește sugestii scurte de subiecte din capitol pentru clarificare."""
+    if not ch:
+        return []
+
+    options = []
+    seen = set()
+
+    for term in ch.get('dictionary', {}).keys():
+        t = (term or '').strip()
+        if t and t not in seen:
+            seen.add(t)
+            options.append(t)
+        if len(options) >= limit:
+            return options
+
+    for lesson in ch.get('lessons', []):
+        text = (lesson or '').strip()
+        if not text:
+            continue
+
+        if text.startswith('📌'):
+            candidate = text.replace('📌', '').strip()
+        elif ':' in text:
+            candidate = text.split(':', 1)[0].strip()
+        else:
+            continue
+
+        candidate = re.sub(r'\s+', ' ', candidate)
+        if 3 <= len(candidate) <= 70 and candidate not in seen:
+            seen.add(candidate)
+            options.append(candidate)
+        if len(options) >= limit:
+            break
+
+    return options[:limit]
 
 def is_rules_query(query):
     terms = significant_terms(query)
@@ -820,6 +1147,9 @@ def find_explicit_chapter_in_query(query):
         return None
 
     terms = set(significant_terms(query))
+    generic_chapter_keywords = {
+        "numere", "numar", "numarul", "metoda", "operatii", "calcul", "problema", "termen"
+    }
     best = None
     best_score = 0
 
@@ -834,6 +1164,9 @@ def find_explicit_chapter_in_query(query):
             if not kw_norm:
                 continue
 
+            if kw_norm in generic_chapter_keywords or len(kw_norm) < 4:
+                continue
+
             if kw_norm in norm_q:
                 score += 5
             elif any(partial_match(term, kw_norm) for term in terms):
@@ -843,7 +1176,7 @@ def find_explicit_chapter_in_query(query):
             best_score = score
             best = ch
 
-    if best_score >= 5:
+    if best_score >= 8:
         return best
     return None
 
@@ -856,11 +1189,42 @@ def get_targeted_snippet(ch, query):
     if not content_words:
         return None
 
+    norm_q = normalize(query)
+
+    # Tratament specific pentru capitolul de media aritmetică.
+    if ch.get('id') == 'media_aritmetica':
+        if "n numere" in norm_q or "pentru n" in norm_q:
+            return "📌 <strong>15. Media Aritmetică</strong><br><br>Pentru n numere: ma = (Suma elementelor) : n."
+        if re.search(r"\b2\s+numere\b", norm_q):
+            return "📌 <strong>15. Media Aritmetică</strong><br><br>Pentru 2 numere: ma = (a + b) : 2."
+
     section_requested = detect_requested_section(query)
     if section_requested:
-        section_block = extract_section_block(ch, section_requested)
+        # Extragem numerele din query (ex: "criteriu cu 5").
+        filters = re.findall(r"\d+", normalize(query))
+        if filters:
+            for number_value in filters:
+                exact_block = extract_number_targeted_section(ch, section_requested, number_value)
+                if exact_block:
+                    return exact_block
+
+            if section_requested == "criterii":
+                return (
+                    f"În capitolul <strong>{ch['title']}</strong> nu am criteriu standard pentru <strong>{filters[0]}</strong>."
+                )
+
+        if section_requested == "criterii" and not filters:
+            criteria_guide = build_divisibility_criteria_guide(ch)
+            if criteria_guide:
+                return criteria_guide
+
+        section_block = extract_section_block(ch, section_requested, filter_words=filters)
         if section_block:
             return section_block
+        # Fallback dacă filtrarea e prea strictă, dăm tot blocul
+        section_block_fallback = extract_section_block(ch, section_requested)
+        if section_block_fallback:
+            return section_block_fallback
 
     if any(partial_match(w, "criterii") or partial_match(w, "criteriu") for w in content_words):
         title_norm = normalize(ch.get('title', ''))
@@ -889,14 +1253,28 @@ def get_targeted_snippet(ch, query):
     lessons = ch.get('lessons', [])
     best_lesson = None
     best_hits = 0
+    lessons_with_hit = 0
     for lesson in lessons:
         lesson_norm = normalize(lesson)
         hits = sum(1 for w in content_words if w in lesson_norm)
+        if hits > 0:
+            lessons_with_hit += 1
         if hits > best_hits:
             best_hits = hits
             best_lesson = lesson
 
-    if best_lesson and best_hits >= 2:
+    # Dacă întrebarea e prea vagă și atinge multe lecții la fel de slab, cerem clarificare.
+    if best_hits == 1 and lessons_with_hit >= 4 and len(content_words) <= 2:
+        options = extract_chapter_focus_options(ch, limit=4)
+        if options:
+            options_html = "<br>".join([f"• <strong>{opt}</strong>" for opt in options])
+            return (
+                f"Sunt în <strong>{ch['title']}</strong>, dar întrebarea e prea generală.<br><br>"
+                f"Alege exact subiectul:<br>{options_html}"
+            )
+        return f"Sunt în <strong>{ch['title']}</strong>, dar întrebarea e prea generală. Spune exact noțiunea din capitol."
+
+    if best_lesson and best_hits >= 1:
         return f"📌 <strong>{ch['title']}</strong><br><br>{best_lesson}<br><br>Vrei și un exemplu rapid?"
     return None
 
@@ -954,6 +1332,28 @@ def get_definition_from_chapter(ch, query):
             return lesson
 
     return ""
+
+def get_chapter_general_definition(ch):
+    """Returnează definiția generală a capitolului (fără detalii suplimentare)."""
+    if not ch:
+        return ""
+
+    chapter_id = ch.get('id')
+    if chapter_id in CHAPTER_GENERAL_DEFINITIONS:
+        return CHAPTER_GENERAL_DEFINITIONS[chapter_id]
+
+    lessons = ch.get('lessons', [])
+    if not lessons:
+        return ""
+
+    # Prioritate: o linie explicită de tip definiție.
+    for lesson in lessons:
+        lesson_norm = normalize(lesson)
+        if lesson_norm.startswith("definitie") or " definitie:" in lesson_norm or " se numeste " in f" {lesson_norm} ":
+            return lesson.strip()
+
+    # Fallback: prima idee din capitol (de obicei introducerea/definiția generală).
+    return lessons[0].strip()
 
 def get_global_definition(query):
     """Caută definiție în toate capitolele, chiar fără capitol curent."""
@@ -1455,30 +1855,38 @@ def chat():
 
         # DEFINIȚII GENERALE (fără capitol detectat): x, y, z, n + termeni globali
         if primary_intent == "define" or check_intent(user_input, "define"):
+            best_define_ch = find_best_chapter_for_definition(user_input)
+            concept_ch = explicit_ch or best_define_ch or current_ch
+            if concept_ch:
+                if is_general_definition_query(user_input):
+                    general_definition = get_chapter_general_definition(concept_ch)
+                    if general_definition:
+                        return jsonify({
+                            "message": f"📘 <strong>{concept_ch['title']}</strong><br><br><strong>Definiție generală:</strong> {general_definition}",
+                            "lastChapterId": concept_ch['id'],
+                            "suggestion": get_suggestion(concept_ch['id'])
+                        })
+
+                focused = get_targeted_snippet(concept_ch, user_input)
+                if focused:
+                    return jsonify({
+                        "message": focused,
+                        "lastChapterId": concept_ch['id'],
+                        "suggestion": get_suggestion(concept_ch['id'])
+                    })
+
+                definition = get_definition_from_chapter(concept_ch, user_input)
+                if definition:
+                    return jsonify({
+                        "message": f"📘 <strong>{concept_ch['title']}</strong><br><br>{definition}",
+                        "lastChapterId": concept_ch['id'],
+                        "suggestion": get_suggestion(concept_ch['id'])
+                    })
+
+            # Dacă nu avem capitol clar, păstrăm fallback-urile existente.
             symbol_def = get_symbol_definition(user_input)
             if symbol_def:
                 return jsonify({"message": symbol_def, "lastChapterId": last_id})
-
-            if current_ch and (not explicit_ch or explicit_ch['id'] == current_ch['id']):
-                focused_current = get_targeted_snippet(current_ch, user_input)
-                if focused_current:
-                    return jsonify({
-                        "message": focused_current,
-                        "lastChapterId": current_ch['id'],
-                        "suggestion": get_suggestion(current_ch['id'])
-                    })
-
-            concept_ch = explicit_ch or find_best_chapter_for_definition(user_input)
-            if concept_ch:
-                definition = get_definition_from_chapter(concept_ch, user_input)
-                focused = get_targeted_snippet(concept_ch, user_input)
-                msg = focused if focused else f"📘 <strong>{concept_ch['title']}</strong><br><br>{definition}"
-                msg += "<br><br>Scrie <em>exemplu</em> dacă vrei și un model de rezolvare."
-                return jsonify({
-                    "message": msg,
-                    "lastChapterId": concept_ch['id'],
-                    "suggestion": get_suggestion(concept_ch['id'])
-                })
 
             global_def = get_global_definition(user_input)
             if global_def:
@@ -1523,6 +1931,15 @@ def chat():
                 "lastChapterId": current_ch['id'],
                 "suggestion": get_suggestion(current_ch['id'])
             })
+
+        if current_ch and is_short_affirmative(user_input):
+            examples = current_ch.get('examples', [])
+            if examples:
+                return jsonify({
+                    "message": f"Perfect! Iată un exemplu rapid din <strong>{current_ch['title']}</strong>:<br><em>{random.choice(examples)}</em>",
+                    "lastChapterId": current_ch['id'],
+                    "suggestion": get_suggestion(current_ch['id'])
+                })
 
         # NEXT — Capitol următor
         if primary_intent == "next" and is_next_request(user_input):

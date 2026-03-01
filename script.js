@@ -846,6 +846,7 @@ async function submitQuizAnswer() {
 
         const cls = data.isCorrect ? 'feedback-correct' : 'feedback-wrong';
         addMessage(data.feedback, 'ai', cls);
+        speak(data.feedback); // Speak quiz feedback
     } catch (e) {
         addMessage("Nu am putut verifica răspunsul. Încearcă din nou!", 'ai');
     }
@@ -940,6 +941,7 @@ document.getElementById('btn-solve').addEventListener('click', async () => {
         const data = await response.json();
 
         resultBox.innerHTML = `<h4>Rezultat MateAI:</h4><p>${data.message}</p>`;
+        speak(data.message); // Speak solver result
         if (studentAnswer) {
             resultBox.innerHTML += `<p style="margin-top:10px; color: #7f8c8d;">Verifică dacă răspunsul tău coincide cu cel al AI-ului!</p>`;
         }
