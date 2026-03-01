@@ -6,12 +6,48 @@ import hmac
 import base64
 import json
 from datetime import datetime, timedelta
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    from psycopg2 import IntegrityError as PsycopgIntegrityError
+except Exception:
+    psycopg2 = None
+    RealDictCursor = None
+    PsycopgIntegrityError = Exception
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'mateai.db')
+DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
+USE_POSTGRES = DATABASE_URL.startswith('postgres://') or DATABASE_URL.startswith('postgresql://')
+
+
+class _PgConnectionWrapper:
+    def __init__(self, conn):
+        self._conn = conn
+
+    def _translate_sql(self, sql):
+        return sql.replace('?', '%s')
+
+    def execute(self, sql, params=()):
+        cur = self._conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(self._translate_sql(sql), params)
+        return cur
+
+    def executescript(self, script):
+        cur = self._conn.cursor()
+        statements = [s.strip() for s in script.split(';') if s.strip()]
+        for stmt in statements:
+            cur.execute(stmt)
+        cur.close()
+
+    def commit(self):
+        self._conn.commit()
+
+    def close(self):
+        self._conn.close()
 
 
 # Configurare bază de date pentru Vercel (serverless)
-if os.environ.get('VERCEL'):
+if (not USE_POSTGRES) and os.environ.get('VERCEL'):
     DB_PATH = '/tmp/mateai.db'
     if not os.path.exists(DB_PATH):
         # Inițializăm baza de date în /tmp dacă nu există
@@ -19,21 +55,135 @@ if os.environ.get('VERCEL'):
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
         if os.path.exists('data/mateai.db'):
             shutil.copy('data/mateai.db', DB_PATH)
-else:
+elif not USE_POSTGRES:
     DB_PATH = 'data/mateai.db'
 
 def get_db_connection():
+    if USE_POSTGRES:
+        if psycopg2 is None:
+            raise RuntimeError('DATABASE_URL este setat, dar psycopg2 nu este instalat.')
+        conn = psycopg2.connect(DATABASE_URL)
+        conn.autocommit = False
+        return _PgConnectionWrapper(conn)
+
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 get_db = get_db_connection
+DBIntegrityError = (sqlite3.IntegrityError, PsycopgIntegrityError)
 
 
 def init_db():
     conn = get_db_connection()
-    conn.executescript('''
+    if USE_POSTGRES:
+        conn.executescript('''
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            role TEXT DEFAULT 'student',
+            class_code TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS progress (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            chapter_id TEXT NOT NULL,
+            correct INTEGER DEFAULT 0,
+            total INTEGER DEFAULT 0,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            UNIQUE(user_id, chapter_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS sessions (
+            token TEXT PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS classes (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            code TEXT UNIQUE NOT NULL,
+            teacher_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (teacher_id) REFERENCES users(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS daily_activity (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            date DATE DEFAULT CURRENT_DATE,
+            count INTEGER DEFAULT 0,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            UNIQUE(user_id, date)
+        );
+
+        CREATE TABLE IF NOT EXISTS homework (
+            id SERIAL PRIMARY KEY,
+            class_code TEXT NOT NULL,
+            chapter_id TEXT,
+            description TEXT,
+            file_path TEXT,
+            due_date DATE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (class_code) REFERENCES classes(code)
+        );
+
+        CREATE TABLE IF NOT EXISTS homework_completions (
+            id SERIAL PRIMARY KEY,
+            homework_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            file_path TEXT,
+            completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (homework_id) REFERENCES homework(id),
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            UNIQUE(homework_id, user_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS tests (
+            id SERIAL PRIMARY KEY,
+            class_code TEXT NOT NULL,
+            title TEXT NOT NULL,
+            chapter_id TEXT,
+            num_questions INTEGER DEFAULT 5,
+            file_path TEXT,
+            custom_questions TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (class_code) REFERENCES classes(code)
+        );
+
+        CREATE TABLE IF NOT EXISTS test_results (
+            id SERIAL PRIMARY KEY,
+            test_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            score INTEGER DEFAULT 0,
+            total INTEGER DEFAULT 0,
+            completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (test_id) REFERENCES tests(id),
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            UNIQUE(test_id, user_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS multiplayer_sessions (
+            id SERIAL PRIMARY KEY,
+            code TEXT UNIQUE NOT NULL,
+            host_id INTEGER NOT NULL,
+            guest_id INTEGER,
+            status TEXT DEFAULT 'waiting',
+            state_json TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (host_id) REFERENCES users(id),
+            FOREIGN KEY (guest_id) REFERENCES users(id)
+        );
+        ''')
+    else:
+        conn.executescript('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
@@ -202,15 +352,23 @@ def _verify_stateless_token(token):
 def create_user(username, password, role='student'):
     conn = get_db()
     try:
-        conn.execute(
-            'INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)',
-            (username.strip().lower(), hash_password(password), role)
-        )
+        if USE_POSTGRES:
+            row = conn.execute(
+                'INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?) RETURNING id',
+                (username.strip().lower(), hash_password(password), role)
+            ).fetchone()
+            user_id = row['id']
+        else:
+            conn.execute(
+                'INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)',
+                (username.strip().lower(), hash_password(password), role)
+            )
+            user_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+
         conn.commit()
-        user_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
         conn.close()
         return {'success': True, 'user_id': user_id}
-    except sqlite3.IntegrityError:
+    except DBIntegrityError:
         conn.close()
         return {'success': False, 'error': 'Numele de utilizator există deja.'}
 
@@ -301,11 +459,18 @@ def update_progress(user_id, chapter_id, is_correct):
         ''', (user_id, chapter_id, 1 if is_correct else 0))
 
     # Update daily activity
-    conn.execute('''
-        INSERT INTO daily_activity (user_id, date, count)
-        VALUES (?, date('now'), 1)
-        ON CONFLICT(user_id, date) DO UPDATE SET count = count + 1
-    ''', (user_id,))
+    if USE_POSTGRES:
+        conn.execute('''
+            INSERT INTO daily_activity (user_id, date, count)
+            VALUES (?, CURRENT_DATE, 1)
+            ON CONFLICT(user_id, date) DO UPDATE SET count = daily_activity.count + 1
+        ''', (user_id,))
+    else:
+        conn.execute('''
+            INSERT INTO daily_activity (user_id, date, count)
+            VALUES (?, date('now'), 1)
+            ON CONFLICT(user_id, date) DO UPDATE SET count = count + 1
+        ''', (user_id,))
 
     conn.commit()
     conn.close()
@@ -335,11 +500,18 @@ def get_user_stats(user_id):
 
 def get_daily_activity(user_id):
     conn = get_db()
-    rows = conn.execute('''
-        SELECT date, count FROM daily_activity 
-        WHERE user_id = ? AND date >= date('now', '-7 days')
-        ORDER BY date ASC
-    ''', (user_id,)).fetchall()
+    if USE_POSTGRES:
+        rows = conn.execute('''
+            SELECT date, count FROM daily_activity
+            WHERE user_id = ? AND date >= CURRENT_DATE - INTERVAL '7 days'
+            ORDER BY date ASC
+        ''', (user_id,)).fetchall()
+    else:
+        rows = conn.execute('''
+            SELECT date, count FROM daily_activity 
+            WHERE user_id = ? AND date >= date('now', '-7 days')
+            ORDER BY date ASC
+        ''', (user_id,)).fetchall()
     conn.close()
     return [dict(row) for row in rows]
 
@@ -455,7 +627,7 @@ def complete_homework(user_id, homework_id, file_path=None):
         conn.commit()
         conn.close()
         return True
-    except sqlite3.IntegrityError:
+    except DBIntegrityError:
         conn.close()
         return False
 
@@ -480,12 +652,19 @@ def create_test(class_code, title, chapter_id=None, num_questions=5, file_path=N
     if not class_code:
         return {'success': False, 'error': 'Codul clasei lipsește.'}
     conn = get_db()
-    conn.execute(
-        'INSERT INTO tests (class_code, title, chapter_id, num_questions, file_path, custom_questions) VALUES (?, ?, ?, ?, ?, ?)',
-        (class_code.strip().upper(), title, chapter_id, num_questions, file_path, custom_questions)
-    )
+    if USE_POSTGRES:
+        row = conn.execute(
+            'INSERT INTO tests (class_code, title, chapter_id, num_questions, file_path, custom_questions) VALUES (?, ?, ?, ?, ?, ?) RETURNING id',
+            (class_code.strip().upper(), title, chapter_id, num_questions, file_path, custom_questions)
+        ).fetchone()
+        test_id = row['id']
+    else:
+        conn.execute(
+            'INSERT INTO tests (class_code, title, chapter_id, num_questions, file_path, custom_questions) VALUES (?, ?, ?, ?, ?, ?)',
+            (class_code.strip().upper(), title, chapter_id, num_questions, file_path, custom_questions)
+        )
+        test_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
     conn.commit()
-    test_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
     conn.close()
     return {'success': True, 'test_id': test_id}
 
@@ -518,7 +697,15 @@ def submit_test_result(test_id, user_id, score, total):
     conn = get_db()
     try:
         conn.execute(
-            'INSERT OR REPLACE INTO test_results (test_id, user_id, score, total) VALUES (?, ?, ?, ?)',
+            '''
+            INSERT INTO test_results (test_id, user_id, score, total)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(test_id, user_id)
+            DO UPDATE SET
+                score = EXCLUDED.score,
+                total = EXCLUDED.total,
+                completed_at = CURRENT_TIMESTAMP
+            ''',
             (test_id, user_id, score, total)
         )
         conn.commit()
@@ -562,7 +749,7 @@ def create_multiplayer_session(host_id, state_json):
 
 def join_multiplayer_session(guest_id, code):
     conn = get_db()
-    session = conn.execute('SELECT * FROM multiplayer_sessions WHERE code = ? AND status = "waiting"', (code.upper().strip(),)).fetchone()
+    session = conn.execute("SELECT * FROM multiplayer_sessions WHERE code = ? AND status = 'waiting'", (code.upper().strip(),)).fetchone()
     if not session:
         conn.close()
         return False
@@ -572,7 +759,7 @@ def join_multiplayer_session(guest_id, code):
         return False
 
     conn.execute(
-        'UPDATE multiplayer_sessions SET guest_id = ?, status = "playing" WHERE code = ?',
+        "UPDATE multiplayer_sessions SET guest_id = ?, status = 'playing' WHERE code = ?",
         (guest_id, code.upper().strip())
     )
     conn.commit()
