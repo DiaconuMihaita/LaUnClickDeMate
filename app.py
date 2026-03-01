@@ -871,11 +871,11 @@ def extract_section_block(ch, section_name, filter_words=None):
             # Dacă avem filter_words, verificăm dacă linia sau contextul imediat conține unul din ele.
             # Exemplu: dacă userul cere "criteriu cu 5", linia trebuie să conțină "5".
             if norm_filters:
-                # Verificăm hit direct pe iie
+                # Verificăm hit direct pe line
                 hit_filter = any(fw in lesson_norm for fw in norm_filters)
                 if not hit_filter:
-                    # Verificăm și linia următoare (uneori regula e sus și formula/cifra e jos)
-                    if idx + 1 < len(lessons):
+                    # Verificăm și linia următoare doar dacă linia curentă pare a fi un titlu/header (ex: se termină în ":")
+                    if lesson.strip().endswith(":") and idx + 1 < len(lessons):
                         next_norm = normalize(lessons[idx + 1])
                         if any(fw in next_norm for fw in norm_filters):
                             hit_filter = True

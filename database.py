@@ -2,6 +2,9 @@ import sqlite3  #baza de date
 import os 
 import secrets
 import hashlib
+import hmac
+import base64
+import json
 from datetime import datetime, timedelta
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'mateai.db')
@@ -143,6 +146,59 @@ def hash_password(password):
     return hashlib.sha256((password + salt).encode()).hexdigest()
 
 
+def _auth_secret():
+    return os.environ.get('AUTH_SECRET', 'mateai_auth_secret_2026_change_me')
+
+
+def _create_stateless_token(user_id, expires):
+    payload = {
+        'uid': int(user_id),
+        'exp': int(expires.timestamp())
+    }
+    payload_json = json.dumps(payload, separators=(',', ':')).encode('utf-8')
+    payload_b64 = base64.urlsafe_b64encode(payload_json).decode('utf-8').rstrip('=')
+    signature = hmac.new(
+        _auth_secret().encode('utf-8'),
+        payload_b64.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    return f"st1.{payload_b64}.{signature}"
+
+
+def _verify_stateless_token(token):
+    try:
+        if not token or not token.startswith('st1.'):
+            return None
+
+        parts = token.split('.')
+        if len(parts) != 3:
+            return None
+
+        _, payload_b64, signature = parts
+        expected_signature = hmac.new(
+            _auth_secret().encode('utf-8'),
+            payload_b64.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+        if not hmac.compare_digest(signature, expected_signature):
+            return None
+
+        pad_len = (4 - (len(payload_b64) % 4)) % 4
+        payload_bytes = base64.urlsafe_b64decode(payload_b64 + ('=' * pad_len))
+        payload = json.loads(payload_bytes.decode('utf-8'))
+
+        user_id = int(payload.get('uid', 0))
+        exp = int(payload.get('exp', 0))
+        if user_id <= 0 or exp <= 0:
+            return None
+        if datetime.now().timestamp() >= exp:
+            return None
+
+        return {'user_id': user_id, 'exp': exp}
+    except Exception:
+        return None
+
+
 def create_user(username, password, role='student'):
     conn = get_db()
     try:
@@ -170,15 +226,19 @@ def login_user(username, password):
         conn.close()
         return None
 
-    # Create session token
-    token = secrets.token_hex(32)
+    # Create auth token (stateless, serverless-safe)
     expires = datetime.now() + timedelta(days=30)
+
+    # Legacy DB session kept for local compatibility/best-effort.
+    legacy_token = secrets.token_hex(32)
     conn.execute(
         'INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)',
-        (token, user['id'], expires.isoformat())
+        (legacy_token, user['id'], expires.isoformat())
     )
     conn.commit()
     conn.close()
+
+    token = _create_stateless_token(user['id'], expires)
     return {
         'token': token,
         'user_id': user['id'],
@@ -191,6 +251,17 @@ def login_user(username, password):
 def get_user_by_token(token):
     if not token:
         return None
+
+    # 1) Stateless token path (works across serverless instances)
+    parsed = _verify_stateless_token(token)
+    if parsed:
+        conn = get_db()
+        row = conn.execute('SELECT * FROM users WHERE id = ?', (parsed['user_id'],)).fetchone()
+        conn.close()
+        if row:
+            return dict(row)
+
+    # 2) Legacy DB-backed session path
     conn = get_db()
     row = conn.execute('''
         SELECT u.* FROM users u
