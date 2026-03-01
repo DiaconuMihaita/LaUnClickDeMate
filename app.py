@@ -6,6 +6,7 @@ import re
 import ast
 import operator
 import uuid
+import time
 from difflib import SequenceMatcher
 from werkzeug.utils import secure_filename
 import database
@@ -2281,6 +2282,207 @@ def get_competition():
             "answer": ex['answer']
         })
     return jsonify({"questions": questions})
+
+
+def _build_multiplayer_questions(count=10):
+    pool = []
+    for ch in CHAPTERS:
+        for ex in ch.get('exercises', []):
+            if isinstance(ex, dict) and ex.get('question') and ex.get('answer') is not None:
+                pool.append({
+                    "chapterId": ch.get('id'),
+                    "chapterTitle": ch.get('title'),
+                    "question": ex.get('question'),
+                    "answer": str(ex.get('answer')).strip()
+                })
+
+    if not pool:
+        return [
+            {"chapterId": "fallback", "chapterTitle": "General", "question": c["question"], "answer": c["answer"]}
+            for c in DAILY_CHALLENGES[:count]
+        ]
+
+    if len(pool) <= count:
+        random.shuffle(pool)
+        return pool
+
+    return random.sample(pool, count)
+
+
+def _advance_multiplayer_on_timeout(session_row, state):
+    now = int(time.time())
+    if not state:
+        return state, False
+
+    if state.get('status') == 'finished':
+        return state, False
+
+    if state.get('currentQ', 0) >= len(state.get('questions', [])):
+        state['status'] = 'finished'
+        state['lastFeedback'] = '🏁 Joc terminat.'
+        return state, True
+
+    round_start = int(state.get('roundStartTime') or now)
+    duration = int(state.get('roundDuration') or 20)
+    if now - round_start < duration:
+        return state, False
+
+    state['lastFeedback'] = '⌛ Timp expirat pentru rundă.'
+    state['currentQ'] = state.get('currentQ', 0) + 1
+    state['roundStartTime'] = now
+
+    if state['currentQ'] >= len(state.get('questions', [])):
+        state['status'] = 'finished'
+        return state, True
+
+    return state, True
+
+
+@app.route('/api/multiplayer/create', methods=['POST'])
+def multiplayer_create():
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
+
+    state = {
+        'questions': _build_multiplayer_questions(10),
+        'scores': [0, 0],
+        'currentQ': 0,
+        'roundDuration': 20,
+        'roundStartTime': int(time.time()),
+        'lastFeedback': '',
+        'status': 'waiting'
+    }
+
+    code = database.create_multiplayer_session(user['id'], json.dumps(state))
+    return jsonify({'success': True, 'code': code})
+
+
+@app.route('/api/multiplayer/join/<code>', methods=['POST'])
+def multiplayer_join(code):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
+
+    ok = database.join_multiplayer_session(user['id'], code)
+    if not ok:
+        return jsonify({'success': False, 'error': 'Camera nu există, nu e disponibilă sau ești deja host.'}), 400
+
+    session_row = database.get_multiplayer_session(code)
+    if not session_row:
+        return jsonify({'success': False, 'error': 'Camera nu a fost găsită după join.'}), 404
+
+    try:
+        state = json.loads(session_row.get('state_json') or '{}')
+    except Exception:
+        state = {}
+
+    state['status'] = 'playing'
+    state['roundStartTime'] = int(time.time())
+    state['lastFeedback'] = '🎮 Joc început!'
+    database.update_multiplayer_state(code, json.dumps(state), status='playing')
+
+    return jsonify({'success': True})
+
+
+@app.route('/api/multiplayer/status/<code>', methods=['GET'])
+def multiplayer_status(code):
+    session_row = database.get_multiplayer_session(code)
+    if not session_row:
+        return jsonify({'success': False, 'error': 'Camera nu există.'}), 404
+
+    try:
+        state = json.loads(session_row.get('state_json') or '{}')
+    except Exception:
+        state = {}
+
+    status = session_row.get('status', 'waiting')
+    state['status'] = status
+
+    updated = False
+    if status == 'playing':
+        state, updated = _advance_multiplayer_on_timeout(session_row, state)
+        status = state.get('status', status)
+        if updated:
+            database.update_multiplayer_state(code, json.dumps(state), status='finished' if status == 'finished' else 'playing')
+
+    return jsonify({
+        'success': True,
+        'code': session_row.get('code'),
+        'status': status,
+        'state': state,
+        'host_name': session_row.get('host_name'),
+        'guest_name': session_row.get('guest_name'),
+        'server_time': int(time.time())
+    })
+
+
+@app.route('/api/multiplayer/action/<code>', methods=['POST'])
+def multiplayer_action(code):
+    token = request.headers.get('Authorization')
+    user = database.get_user_by_token(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Neautorizat.'}), 401
+
+    session_row = database.get_multiplayer_session(code)
+    if not session_row:
+        return jsonify({'success': False, 'error': 'Camera nu există.'}), 404
+
+    host_id = session_row.get('host_id')
+    guest_id = session_row.get('guest_id')
+    if user['id'] not in {host_id, guest_id}:
+        return jsonify({'success': False, 'error': 'Nu faci parte din această cameră.'}), 403
+
+    try:
+        state = json.loads(session_row.get('state_json') or '{}')
+    except Exception:
+        state = {}
+
+    if session_row.get('status') != 'playing':
+        return jsonify({'success': False, 'error': 'Jocul nu este în desfășurare.'}), 400
+
+    state['status'] = 'playing'
+    state, updated = _advance_multiplayer_on_timeout(session_row, state)
+    if state.get('status') == 'finished':
+        if updated:
+            database.update_multiplayer_state(code, json.dumps(state), status='finished')
+        return jsonify({'success': True, 'timeout': True, 'isCorrect': False})
+
+    current_q = state.get('currentQ', 0)
+    questions = state.get('questions', [])
+    if current_q >= len(questions):
+        state['status'] = 'finished'
+        database.update_multiplayer_state(code, json.dumps(state), status='finished')
+        return jsonify({'success': True, 'timeout': True, 'isCorrect': False})
+
+    answer_payload = request.json or {}
+    user_answer = str(answer_payload.get('answer', '')).strip()
+    correct_answer = str(questions[current_q].get('answer', '')).strip()
+    is_correct = answers_match(user_answer, correct_answer)
+
+    if is_correct:
+        player_idx = 0 if user['id'] == host_id else 1
+        scores = state.get('scores', [0, 0])
+        if len(scores) < 2:
+            scores = [0, 0]
+        scores[player_idx] = scores[player_idx] + 1
+        state['scores'] = scores
+        state['lastFeedback'] = f"✅ {user.get('username', 'Jucător')} a răspuns corect!"
+        state['currentQ'] = current_q + 1
+        state['roundStartTime'] = int(time.time())
+
+        if state['currentQ'] >= len(questions):
+            state['status'] = 'finished'
+            database.update_multiplayer_state(code, json.dumps(state), status='finished')
+        else:
+            database.update_multiplayer_state(code, json.dumps(state), status='playing')
+
+        return jsonify({'success': True, 'isCorrect': True})
+
+    database.update_multiplayer_state(code, json.dumps(state), status='playing')
+    return jsonify({'success': True, 'isCorrect': False})
 
 
 @app.route('/api/check', methods=['POST'])

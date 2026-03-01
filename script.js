@@ -1169,8 +1169,13 @@ async function createRoom() {
             document.getElementById('mp-waiting').classList.remove('hidden');
             document.getElementById('mp-room-code-display').textContent = mpRoomCode;
             startPolling();
+        } else {
+            alert(data.error || "Nu am putut crea camera.");
         }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        console.error(e);
+        alert('Eroare la crearea camerei. Încearcă din nou.');
+    }
 }
 
 async function joinRoom() {
