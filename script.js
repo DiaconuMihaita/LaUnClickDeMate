@@ -1659,7 +1659,12 @@ async function assignHomework() {
             },
             body: formData
         });
-        const data = await res.json();
+        let data = null;
+        try {
+            data = await res.json();
+        } catch (_) {
+            data = { success: false, error: 'Serverul nu a returnat un răspuns valid.' };
+        }
         if (data.success) {
             alert("Temă asignată cu succes!");
             document.getElementById('hw-description').value = '';
@@ -1669,7 +1674,10 @@ async function assignHomework() {
         } else {
             alert(data.error || "Eroare la crearea temei.");
         }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        console.error(e);
+        alert("Nu am putut încărca tema. Verifică conexiunea și încearcă din nou.");
+    }
 }
 
 async function loadHomework() {
@@ -1750,14 +1758,22 @@ async function trimiteRezolvare(homeworkId) {
             },
             body: formData
         });
-        const data = await res.json();
+        let data = null;
+        try {
+            data = await res.json();
+        } catch (_) {
+            data = { success: false, error: 'Serverul nu a returnat un răspuns valid.' };
+        }
         if (data.success) {
             alert("Rezoluția ta a fost trimisă cu succes!");
             loadHomework();
         } else {
             alert(data.error || "A apărut o eroare la trimitere.");
         }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        console.error(e);
+        alert("Nu am putut trimite rezolvarea. Verifică conexiunea și încearcă din nou.");
+    }
 }
 
 async function loadHomeworkCompletions(hwId) {

@@ -13,7 +13,10 @@ import database
 app = Flask(__name__, static_folder='.')
 database.init_db()
 
-UPLOAD_DIR = os.path.join('data', 'uploads')
+if os.environ.get('VERCEL'):
+    UPLOAD_DIR = os.path.join('/tmp', 'uploads')
+else:
+    UPLOAD_DIR = os.path.join('data', 'uploads')
 ALLOWED_UPLOAD_EXTENSIONS = {'.pdf', '.doc', '.docx', '.png', '.jpg', '.jpeg', '.webp', '.gif'}
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -1730,22 +1733,32 @@ def get_student_detail(user_id):
 
 @app.route('/api/homework/create', methods=['POST'])
 def add_homework():
-    token = request.headers.get('Authorization')
-    user = database.get_user_by_token(token)
-    if not user or user['role'] != 'teacher':
-        return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
-    
-    chapter_id = request.form.get('chapterId') or None
-    description = request.form.get('description') or None
-    due_date = request.form.get('dueDate') or None
-    uploaded = request.files.get('file')
-    file_path = _save_uploaded_file(uploaded)
+    try:
+        token = request.headers.get('Authorization')
+        user = database.get_user_by_token(token)
+        if not user or user['role'] != 'teacher':
+            return jsonify({'success': False, 'error': 'Neautorizat.'}), 403
 
-    if uploaded and not file_path:
-        return jsonify({'success': False, 'error': 'Tipul fișierului nu este permis.'}), 400
+        chapter_id = request.form.get('chapterId') or None
+        description = request.form.get('description') or None
+        due_date = request.form.get('dueDate') or None
+        uploaded = request.files.get('file')
+        file_path = _save_uploaded_file(uploaded)
 
-    database.create_homework(user['class_code'], chapter_id, description, file_path, due_date)
-    return jsonify({'success': True})
+        if uploaded and not file_path:
+            return jsonify({'success': False, 'error': 'Tipul fișierului nu este permis.'}), 400
+
+        if not user.get('class_code'):
+            return jsonify({'success': False, 'error': 'Nu ai clasă activă. Creează mai întâi o clasă.'}), 400
+
+        created = database.create_homework(user['class_code'], chapter_id, description, file_path, due_date)
+        if not created:
+            return jsonify({'success': False, 'error': 'Nu am putut salva tema.'}), 500
+
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"add_homework error: {e}")
+        return jsonify({'success': False, 'error': 'Eroare la încărcarea temei. Încearcă din nou.'}), 500
 
 
 @app.route('/api/homework/class/<code>', methods=['GET'])
