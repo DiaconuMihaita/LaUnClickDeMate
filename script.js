@@ -6,6 +6,9 @@ let sessionScore = { correct: 0, total: 0 };
 let currentUser = JSON.parse(localStorage.getItem('mateai_user')) || null;
 let authMode = 'login'; // login sau register
 let ttsEnabled = localStorage.getItem('mateai_tts_enabled') !== 'false';
+let authWelcomeMode = 'returning';
+let authToastTimer = null;
+let greetingTypeTimer = null;
 
 // --- PERSISTENT PROGRESS (LocalStorage - Fallback) ---
 let userProgress = JSON.parse(localStorage.getItem('mateai_progress')) || {
@@ -19,6 +22,74 @@ let userProgress = JSON.parse(localStorage.getItem('mateai_progress')) || {
 
 function saveProgress() {
     localStorage.setItem('mateai_progress', JSON.stringify(userProgress));
+}
+
+function showAuthToast(message) {
+    const toast = document.getElementById('auth-toast');
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.classList.remove('hidden');
+    toast.classList.add('show');
+
+    if (authToastTimer) {
+        clearTimeout(authToastTimer);
+    }
+
+    authToastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.classList.add('hidden'), 240);
+    }, 2600);
+}
+
+function typeWriterText(element, text, speed = 34) {
+    if (!element) return;
+
+    if (greetingTypeTimer) {
+        clearInterval(greetingTypeTimer);
+        greetingTypeTimer = null;
+    }
+
+    element.classList.remove('typing-done');
+    element.textContent = '';
+
+    let index = 0;
+    greetingTypeTimer = setInterval(() => {
+        element.textContent = text.slice(0, index + 1);
+        index += 1;
+
+        if (index >= text.length) {
+            clearInterval(greetingTypeTimer);
+            greetingTypeTimer = null;
+            element.classList.add('typing-done');
+        }
+    }, speed);
+}
+
+function renderUserGreeting(mode = 'returning') {
+    const card = document.getElementById('user-greeting-card');
+    const title = document.getElementById('user-greeting-title');
+    const subtitle = document.getElementById('user-greeting-subtitle');
+    if (!card || !title || !subtitle) return;
+
+    if (!currentUser || !currentUser.username) {
+        card.classList.add('hidden');
+        return;
+    }
+
+    const username = currentUser.username;
+    let titleText = '';
+
+    if (mode === 'new') {
+        titleText = `Bine ai venit, ${username}! 🎉`;
+        subtitle.textContent = 'Contul tău este gata. Începe cu lecțiile recomandate și construiește-ți progresul pas cu pas.';
+    } else {
+        titleText = `Bine ai revenit, ${username}! 👋`;
+        subtitle.textContent = 'Continuă de unde ai rămas și vezi cât de mult ai progresat azi.';
+    }
+
+    card.classList.remove('hidden');
+    typeWriterText(title, titleText);
 }
 
 // --- DAILY PROGRESS LOGGING ---
@@ -650,7 +721,10 @@ function changeView(viewId) {
 
     if (viewId === 'lectii') renderChapters();
     if (viewId === 'laborator') geoLab.init();
-    if (viewId === 'home') fetchDailyChallenge();
+    if (viewId === 'home') {
+        fetchDailyChallenge();
+        renderUserGreeting(authWelcomeMode);
+    }
 }
 
 document.querySelectorAll('.nav-link').forEach(link => {
@@ -940,7 +1014,7 @@ document.getElementById('btn-solve').addEventListener('click', async () => {
         });
         const data = await response.json();
 
-        resultBox.innerHTML = `<h4>Rezultat MateAI:</h4><p>${data.message}</p>`;
+        resultBox.innerHTML = `<h4>Rezultat Mate dintr-un Click:</h4><p>${data.message}</p>`;
         speak(data.message); // Speak solver result
         if (studentAnswer) {
             resultBox.innerHTML += `<p style="margin-top:10px; color: #7f8c8d;">Verifică dacă răspunsul tău coincide cu cel al AI-ului!</p>`;
@@ -1347,7 +1421,8 @@ function updateAuthUI() {
     if (!navAuth) return;
 
     if (currentUser) {
-        navAuth.innerHTML = `<a href="#" class="nav-link" onclick="handleLogout()">${currentUser.username} (Logout)</a>`;
+        navAuth.innerHTML = `<a href="#" class="nav-link" onclick="handleLogout()">👤 ${currentUser.username} • Logout</a>`;
+        renderUserGreeting(authWelcomeMode);
         if (!document.getElementById('login').classList.contains('hidden')) {
             changeView('home');
         }
@@ -1384,7 +1459,16 @@ async function handleLogin() {
         if (data.success) {
             currentUser = data.user;
             localStorage.setItem('mateai_user', JSON.stringify(currentUser));
+            const justRegisteredUser = sessionStorage.getItem('mateai_just_registered');
+            authWelcomeMode = justRegisteredUser && justRegisteredUser === currentUser.username ? 'new' : 'returning';
+            if (authWelcomeMode === 'new') {
+                sessionStorage.removeItem('mateai_just_registered');
+            }
             updateAuthUI();
+            const toastText = authWelcomeMode === 'new'
+                ? `Bine ai venit, ${currentUser.username}!`
+                : `Bine ai revenit, ${currentUser.username}!`;
+            showAuthToast(toastText);
             launchConfetti();
             changeView('home');
         } else {
@@ -1419,6 +1503,11 @@ async function handleRegister() {
         if (data.success) {
             alert("Cont creat cu succes! Acum te poți conecta.");
             launchConfetti();
+            showAuthToast(`Bine ai venit, ${username}! Contul tău este gata.`);
+            sessionStorage.setItem('mateai_just_registered', username);
+            const loginUser = document.getElementById('login-username');
+            if (loginUser) loginUser.value = username;
+            authWelcomeMode = 'new';
             userEl.value = '';
             passEl.value = '';
             switchAuth('login');

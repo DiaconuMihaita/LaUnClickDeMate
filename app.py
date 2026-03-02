@@ -1859,7 +1859,7 @@ def chat():
         if len(norm_input) < 2:
             return jsonify({"message": "Hopa! Mesajul tău e prea scurt. Spune-mi cu ce te pot ajuta la matematică! 💡 Scrie <strong>ajutor</strong> pentru a vedea ce pot face."})
         if (primary_intent == "identity" or check_intent(user_input, "identity")) and is_identity_query(user_input):
-            return jsonify({"message": "Sunt <strong>MateAI</strong>, asistentul tău virtual de matematică! 🤖 Te pot ajuta cu oricare din cele 22 de capitole de clasa a 5-a. Scrie <strong>ajutor</strong> pentru lista completă de comenzi!"})
+            return jsonify({"message": "Sunt <strong>Mate dintr-un Click</strong>, asistentul tău virtual de matematică! 🤖 Te pot ajuta cu oricare din cele 22 de capitole de clasa a 5-a. Scrie <strong>ajutor</strong> pentru lista completă de comenzi!"})
         if (primary_intent == "greeting" or check_intent(user_input, "greeting")) and len(norm_input.split()) < 4:
             return jsonify({"message": "Salut! 😄 Sunt aici să explorăm matematica. Ce capitol vrei să discutăm azi? 🍕🔢<br><br>💡 Scrie <strong>ajutor</strong> dacă vrei să vezi ce pot face!"})
 
